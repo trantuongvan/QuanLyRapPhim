@@ -42,7 +42,7 @@ public class TrangChu extends JPanel {
         boxInfo.add(lblManager);
         boxInfo.add(Box.createVerticalStrut(15));
 
-        JLabel lblName = new JLabel("QUẢN LÝ RẠP: NGUYỄN CHÍ TÂM");
+        JLabel lblName = new JLabel("QUẢN LÝ RẠP: TRẦN THỊ TƯỜNG VÂN");
         lblName.setFont(new Font("Arial", Font.BOLD, 18));
         lblName.setForeground(new Color(0, 0, 128));
         lblName.setAlignmentX(Component.CENTER_ALIGNMENT);

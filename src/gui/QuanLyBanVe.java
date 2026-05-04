@@ -441,7 +441,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         Rap rap = rapManager.findRapByID(suatChieuDuocChon.getMaRap());
         if (rap == null)
             return;
-        int soGhe = rap.getSoLuongGhe() +1;
+        int soGhe = rap.getSoLuongGhe();
         int row = (int) Math.ceil(Math.sqrt(soGhe));
         int col = row;
 

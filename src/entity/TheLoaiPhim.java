@@ -8,6 +8,7 @@ public enum TheLoaiPhim {
     HOAT_HINH("Hoạt hình"),
     TAM_LY("Tâm lý"),
     VIEN_TUONG("Viễn tưởng"),
+    CHINH_KICH("Chính kịch"),
     CHUA_RO("Chưa rõ");
 
     private final String tenHienThi;

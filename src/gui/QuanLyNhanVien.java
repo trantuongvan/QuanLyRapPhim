@@ -335,6 +335,15 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
     private void themNhanVien() {
         try {
             NhanVien nv = layDuLieuForm();
+
+            if (daoNV.tonTaiMaNV(nv.getMaNV())) {
+                JOptionPane.showMessageDialog(this,
+                    "Mã nhân viên đã tồn tại!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             if (daoNV.themNhanVien(nv)) {
                 JOptionPane.showMessageDialog(this, "✅ Thêm nhân viên thành công!");
                 loadNhanVien();

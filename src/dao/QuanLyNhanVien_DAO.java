@@ -34,6 +34,21 @@ public class QuanLyNhanVien_DAO {
         return ds;
     }
 
+    public boolean tonTaiMaNV(String maNV) {
+        try {
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT 1 FROM NhanVien WHERE maNV = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, maNV);
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next(); // có dòng → đã tồn tại
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean themNhanVien(NhanVien nv) {
         try {
             Connection con = ConnectDB.getConnection();

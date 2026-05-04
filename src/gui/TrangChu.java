@@ -10,7 +10,7 @@ public class TrangChu extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        ImageIcon bgIcon = new ImageIcon("icon/backGround.jpg");
+        ImageIcon bgIcon = new ImageIcon("icon/logo.png");
         Image bgImg = bgIcon.getImage().getScaledInstance(1100, 750, Image.SCALE_SMOOTH);
         JLabel lblBg = new JLabel(new ImageIcon(bgImg));
         lblBg.setHorizontalAlignment(JLabel.CENTER);

@@ -406,24 +406,25 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         }
 
         String ma = txtMaPhim.getText().trim();
+
+        if (phimDAO.phimDaDuocSuDung(ma)) {
+            JOptionPane.showMessageDialog(this,
+                    "Không thể xóa phim vì phim đã có suất chiếu hoặc vé liên quan!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
         int confirm = JOptionPane.showConfirmDialog(this, "Xóa phim " + ma + "?", "Xác nhận",
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         
         if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                if (phimDAO.xoaPhim(ma)) {
-                    JOptionPane.showMessageDialog(this, "✅ Xóa thành công!");
-                    loadDataToTable();
-                    xoaRong();
-                } else {
-                    JOptionPane.showMessageDialog(this, "❌ Không tìm thấy phim cần xóa!");
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, 
-                    "❌ Không thể xóa phim này!\nPhim đã có vé được bán trong hóa đơn.",
-                    "Lỗi CSDL", 
-                    JOptionPane.ERROR_MESSAGE);
+            if (phimDAO.xoaPhim(ma)) {
+                JOptionPane.showMessageDialog(this, "✅ Xóa thành công!");
+                loadDataToTable();
+                xoaRong();
+            } else {
+                JOptionPane.showMessageDialog(this, "❌ Xóa thất bại!");
             }
         }
     }

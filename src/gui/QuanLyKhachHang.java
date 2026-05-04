@@ -37,7 +37,7 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
 
         kh_dao = new QuanLyKhachHang_DAO();
 
-        JLabel lblTieuDe = new JLabel("Quản lý hội viên");
+        JLabel lblTieuDe = new JLabel("Quản lý khách hàng");
         lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
         lblTieuDe.setBounds(0, 15, 1180, 35);
@@ -46,7 +46,7 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         JPanel pnInput = new JPanel();
         pnInput.setLayout(null);
         pnInput.setBackground(Color.WHITE);
-        pnInput.setBorder(BorderFactory.createTitledBorder("Thông tin hội viên"));
+        pnInput.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
         pnInput.setBounds(40, 60, 780, 240); 
         add(pnInput);
 
@@ -238,26 +238,27 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         String diaChi = txtDiaChi.getText().trim();
         String maKH_hien_tai = txtMaKH.getText().trim();
 
-        if (hoTen.isEmpty() || !hoTen.matches("^[\\p{L}\\s.']+$")) {
-            JOptionPane.showMessageDialog(this, "Họ tên không hợp lệ (chỉ chứa chữ, dấu cách, . và ').", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (hoTen.isEmpty() || sdt.isEmpty() || diaChi.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin khách hàng", "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+
+
+        if (!hoTen.matches("^([A-ZÀ-Ỹ][a-zà-ỹ]+)(\\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$")) {
+            JOptionPane.showMessageDialog(this, "Gồm phần họ và tên, chữ cái đầu phải viết hoa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             txtHoTen.requestFocus();
             return false;
         }
 
-        if (sdt.isEmpty() || !sdt.matches("0\\d{9}")) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ (phải là 10 số, bắt đầu bằng 0).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (!sdt.matches("^(03|05|07|08|09)[0-9]{8}$")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 số và 2 số đầu phải là 03, 05, 07,...", "Lỗi", JOptionPane.ERROR_MESSAGE);
             txtSoDT.requestFocus();
             return false;
         }
 
-        if (diaChi.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            txtDiaChi.requestFocus();
-            return false;
-        }
-        
-        if (!diaChi.matches(".*[\\p{L}].*")) {
-             JOptionPane.showMessageDialog(this, "Địa chỉ không hợp lệ (phải chứa ít nhất một chữ cái, không thể chỉ là số).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (!diaChi.matches("^[A-Ỹa-ỹ0-9/,\\s]+$")) {
+            JOptionPane.showMessageDialog(this, "Địa chỉ không được có kí tự đặc biệt.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             txtDiaChi.requestFocus();
             return false;
         }

@@ -437,12 +437,20 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
             JOptionPane.showMessageDialog(this, "Vui lòng chọn suất chiếu cần xóa.");
             return;
         }
-        String maSuat = String.valueOf(model.getValueAt(selectedRow, 0));
-        SuatChieu suatChieu = quanLySuatChieu_DAO.timSuatChieu(maSuat);
-        quanLySuatChieu_DAO.removeSuatChieu(suatChieu);
 
-        model.removeRow(selectedRow);
-        xoaRong();
+        String ma = txtMaSuat.getText().trim();
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Xóa suất chiếu " + ma + "?", "Xác nhận",
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        if(confirm == JOptionPane.YES_OPTION) {
+            String maSuat = String.valueOf(model.getValueAt(selectedRow, 0));
+            SuatChieu suatChieu = quanLySuatChieu_DAO.timSuatChieu(maSuat);
+            quanLySuatChieu_DAO.removeSuatChieu(suatChieu);
+
+            model.removeRow(selectedRow);
+            xoaRong();
+        }
     }
 
     private void sua() {

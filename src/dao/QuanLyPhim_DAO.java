@@ -85,6 +85,30 @@ public class QuanLyPhim_DAO {
         return n > 0;
     }
 
+    public boolean phimDaDuocSuDung(String maPhim) {
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT COUNT(*) FROM SuatChieu WHERE maPhim=?";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, maPhim);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs, stmt);
+        }
+
+        return false;
+    }
+
     public boolean xoaPhim(String maPhim) {
         Connection con = ConnectDB.getConnection();
         PreparedStatement stmt = null;

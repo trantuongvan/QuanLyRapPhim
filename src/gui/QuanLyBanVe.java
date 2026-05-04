@@ -265,7 +265,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
                     JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        String regexHoten = "^[A-Ỹ][a-ỹ]+(\\s[A-Ỹ][a-ỹ]+)*\\s[A-Ỹ][a-ỹ]+$"; // Gồm Họ và tên - chữ cái đầu phải viết hoa
+        String regexHoten = "^([A-ZÀ-Ỹ][a-zà-ỹ]+)(\\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$"; // Gồm Họ và tên - chữ cái đầu phải viết hoa
         String regexSDT = "^(03|05|07|08|09)[0-9]{8}$"; // số điện thoại - có 10 số
         String regexDiaChi = "^[A-Ỹa-ỹ0-9/,\\s]+$";
         if (!hoten.matches(regexHoten)) {
@@ -275,13 +275,13 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         }
         if (!sdt.matches(regexSDT)) {
             JOptionPane.showMessageDialog(this,
-                    "số điện thoại phải có 10 số và 2 số đầu phải khớp với nhà mạng Việt Nam (03, 05, 07,...)",
+                    "Số điện thoại phải có 10 số và 2 số đầu phải là 03, 05, 07,...",
                     "Lỗi cú pháp số điện thoại",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (!diaChi.matches(regexDiaChi)) {
-            JOptionPane.showMessageDialog(this, "Địa chỉ bao gồm các kí tự chữ, kí tự số, dấu phẩy, khoảng trắng",
+            JOptionPane.showMessageDialog(this, "Địa chỉ không được có kí tự đặc biệt.",
                     "Lỗi cú pháp địa chỉ", JOptionPane.ERROR_MESSAGE);
             return;
         }

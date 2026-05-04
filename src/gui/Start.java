@@ -32,7 +32,7 @@ public class Start extends JFrame implements ActionListener {
         boxMenu.add(Box.createVerticalStrut(25));
 
         // Logo
-        ImageIcon logoIcon = new ImageIcon("icon/logo.jpg");
+        ImageIcon logoIcon = new ImageIcon("icon/logo.png");
         Image logoImg = logoIcon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
         JLabel lblLogo = new JLabel(new ImageIcon(logoImg));
         lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);

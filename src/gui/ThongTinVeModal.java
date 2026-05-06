@@ -114,7 +114,7 @@ public class ThongTinVeModal extends JFrame {
         String thoiGian = suatChieu.getGioChieu().toString() + ", "
                 + suatChieu.getNgayChieu().toString();
 
-        String soVe = Integer.toString(this.hoaDon.getSoLuongVe());
+//        String soVe = Integer.toString(this.hoaDon.getSoLuongVe());
 
         String soGhe = String.join(", ", this.soGheDuocChon);
 
@@ -124,7 +124,7 @@ public class ThongTinVeModal extends JFrame {
         JLabel lblTenPhim = new JLabel("  Tên phim:             " + tenPhim);
         JLabel lblTenPhong = new JLabel("  Phòng chiếu:        " + tenPhong);
         JLabel lblThoiGian = new JLabel("  Thời gian:             " + thoiGian);
-        JLabel lblSoVe = new JLabel("  Số vé:                     " + soVe);
+//        JLabel lblSoVe = new JLabel("  Số vé:                     " + soVe);
         JLabel lblSoGhe = new JLabel("  Số ghế:                   " + soGhe);
         JLabel lblThoiGianDatVe = new JLabel("  Thời gian đặt vé:  " + thoiGianDatVe);
         this.lblTrangThai = new JLabel("  Trạng thái:             " + this.ticketOrigin.getTrangThai());
@@ -137,7 +137,7 @@ public class ThongTinVeModal extends JFrame {
         pCenter.add(Box.createVerticalStrut(5));
         pCenter.add(lblThoiGian);
         pCenter.add(Box.createVerticalStrut(5));
-        pCenter.add(lblSoVe);
+//        pCenter.add(lblSoVe);
         pCenter.add(Box.createVerticalStrut(5));
         pCenter.add(lblSoGhe);
         pCenter.add(Box.createVerticalStrut(5));
@@ -217,7 +217,7 @@ public class ThongTinVeModal extends JFrame {
             String tenPhong = rap == null ? "" : rap.getTenRap();
             String thoiGian = this.suatChieu == null ? "" : this.suatChieu.getGioChieu().toString() + ", "
                     + this.suatChieu.getNgayChieu().toString();
-            String soVe = Integer.toString(this.hoaDon.getSoLuongVe());
+//            String soVe = Integer.toString(this.hoaDon.getSoLuongVe());
             String soGhe = String.join(", ", this.soGheDuocChon);
             String thoiGianDatVe = this.ticketOrigin.getNgayBan().toString();
             String trangThai = this.ticketOrigin.getTrangThai();
@@ -257,7 +257,7 @@ public class ThongTinVeModal extends JFrame {
             doc.add(new Paragraph("Tên phim: " + tenPhim, fontNormal));
             doc.add(new Paragraph("Phòng chiếu: " + tenPhong, fontNormal));
             doc.add(new Paragraph("Thời gian: " + thoiGian, fontNormal));
-            doc.add(new Paragraph("Số vé: " + soVe, fontNormal));
+//            doc.add(new Paragraph("Số vé: " + soVe, fontNormal));
             doc.add(new Paragraph("Số ghế: " + soGhe, fontNormal));
             doc.add(new Paragraph("Thời gian đặt vé: " + thoiGianDatVe, fontNormal));
             doc.add(new Paragraph("Trạng thái: " + trangThai, fontNormal));
@@ -289,8 +289,6 @@ public class ThongTinVeModal extends JFrame {
             if (ve != null) {
                 danhSachVeDaDat.add(ve);
                 this.ticketManager.add(ve);
-                ghe.setTinhTrang(true);
-                this.chairManager.capNhatTinhTrangGhe(ghe);
             }
         }
 

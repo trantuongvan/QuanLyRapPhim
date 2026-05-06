@@ -77,7 +77,7 @@ public class HoaDonModal extends JFrame {
 
         JLabel lblMaHD = new JLabel("   Mã hóa đơn:             " + hoaDon.getMaHoaDon());
         JLabel lblNgayLap = new JLabel("   Ngày lập hóa đơn:   " + hoaDon.getNgayLap().toString());
-        JLabel lblSoLuongVe = new JLabel("   Số lượng vé:             " + hoaDon.getSoLuongVe());
+//        JLabel lblSoLuongVe = new JLabel("   Số lượng vé:             " + hoaDon.getSoLuongVe());
         JLabel lblTongTien = new JLabel("   Tổng tiền:                  " + hoaDon.getTongTien());
 
         JLabel lblNhanVien = new JLabel("   Nhân viên bán vé:  " + hoaDon.getNhanVien().getTenNV());
@@ -122,7 +122,7 @@ public class HoaDonModal extends JFrame {
         pThongTinHoaDon.add(Box.createVerticalStrut(5));
         pThongTinHoaDon.add(lblNgayLap);
         pThongTinHoaDon.add(Box.createVerticalStrut(5));
-        pThongTinHoaDon.add(lblSoLuongVe);
+//        pThongTinHoaDon.add(lblSoLuongVe);
         pThongTinHoaDon.add(Box.createVerticalStrut(5));
         pThongTinHoaDon.add(lblTongTien);
         pThongTinHoaDon.add(Box.createVerticalStrut(5));
@@ -244,7 +244,7 @@ public class HoaDonModal extends JFrame {
 
             doc.add(new Paragraph("Mã hóa đơn: " + this.hoaDon.getMaHoaDon(), fontNormal));
             doc.add(new Paragraph("Ngày lập hóa đơn: " + this.hoaDon.getNgayLap().toString(), fontNormal));
-            doc.add(new Paragraph("Số lượng vé: " + this.hoaDon.getSoLuongVe(), fontNormal));
+//            doc.add(new Paragraph("Số lượng vé: " + this.hoaDon.getSoLuongVe(), fontNormal));
             doc.add(new Paragraph("Tổng tiền: " + nf.format(this.hoaDon.getTongTien()), fontNormal));
             doc.add(new Paragraph(" ", fontNormal));
 

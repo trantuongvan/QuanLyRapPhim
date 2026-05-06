@@ -307,8 +307,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         // Get NhanVien đang đăng nhập vào hệ thống - giả sử có mã là NV01
         NhanVien nhanVien = DangNhap.nhanVienDangNhap;
         float tongTien = giaVe * soLuongVe;
-        HoaDon hoaDon = new HoaDon(this.billManager.taoMaHoaDonTuDong(), LocalDate.now(), nhanVien, khachHang,
-                soLuongVe, tongTien);
+        HoaDon hoaDon = new HoaDon(this.billManager.taoMaHoaDonTuDong(), LocalDate.now(), nhanVien, khachHang, tongTien);
         return hoaDon;
     }
 

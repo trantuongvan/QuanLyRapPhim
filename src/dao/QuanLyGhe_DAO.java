@@ -29,10 +29,10 @@ public class QuanLyGhe_DAO {
             if (rs.next()) {
                 String tenGhe = rs.getString("tenGhe");
                 String maRap = rs.getString("maRap");
-                boolean tinhTrang = rs.getBoolean("tinhTrang");
+
                 QuanLyRap_DAO rapManager = new QuanLyRap_DAO();
                 Rap rap = rapManager.findRapByID(maRap);
-                ghe = new Ghe(maGhe, tenGhe, rap, tinhTrang);
+                ghe = new Ghe(maGhe, tenGhe, rap);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,10 +56,10 @@ public class QuanLyGhe_DAO {
             rs = stmt.executeQuery();
             if (rs.next()) {
                 String maGhe = rs.getString("maGhe");
-                boolean tinhTrang = rs.getBoolean("tinhTrang");
+
                 QuanLyRap_DAO rapManager = new QuanLyRap_DAO();
                 Rap rap = rapManager.findRapByID(maRap);
-                ghe = new Ghe(maGhe, tenGhe, rap, tinhTrang);
+                ghe = new Ghe(maGhe, tenGhe, rap);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,10 +84,10 @@ public class QuanLyGhe_DAO {
                 String maGhe = rs.getString("maGhe");
                 String tenGhe = rs.getString("tenGhe");
                 String maRap = rs.getString("maRap");
-                boolean tinhTrang = rs.getBoolean("tinhTrang");
+
                 QuanLyRap_DAO rapManager = new QuanLyRap_DAO();
                 Rap rap = rapManager.findRapByID(maRap);
-                Ghe ghe = new Ghe(maGhe, tenGhe, rap, tinhTrang);
+                Ghe ghe = new Ghe(maGhe, tenGhe, rap);
                 danhSachGhe.add(ghe);
             }
         } catch (Exception e) {
@@ -113,8 +113,8 @@ public class QuanLyGhe_DAO {
             while (rs.next()) {
                 String maGhe = rs.getString("maGhe");
                 String tenGhe = rs.getString("tenGhe");
-                boolean tinhTrang = rs.getBoolean("tinhTrang");
-                Ghe ghe = new Ghe(maGhe, tenGhe, rap, tinhTrang);
+
+                Ghe ghe = new Ghe(maGhe, tenGhe, rap);
                 danhSachGhe.add(ghe);
             }
         } catch (Exception e) {
@@ -125,24 +125,7 @@ public class QuanLyGhe_DAO {
         return danhSachGhe;
     }
 
-    public boolean capNhatTinhTrangGhe(Ghe ghe) {
-        if (this.conn == null || ghe == null)
-            return false;
-        PreparedStatement stmt = null;
-        try {
-            String sql = "Update Ghe set tinhTrang = ? where maGhe = ?";
-            stmt = this.conn.prepareStatement(sql);
-            stmt.setBoolean(1, ghe.isDaDat());
-            stmt.setString(2, ghe.getMaGhe());
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close(null, stmt);
-        }
-        return false;
-    }
+    // Đã xóa hàm capNhatTinhTrangGhe() vì không cần thiết nữa
 
     // ====== HÀM TIỆN ÍCH ======
     private void close(ResultSet rs, Statement stmt) {

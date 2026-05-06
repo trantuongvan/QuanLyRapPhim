@@ -65,6 +65,7 @@ public class NhanVien {
         this.gioiTinh = gioiTinh == null ? "" : gioiTinh.trim();
     }
 
+
     @Override
     public String toString() {
         return "NhanVien [maNV=" + maNV + ", tenNV=" + tenNV +

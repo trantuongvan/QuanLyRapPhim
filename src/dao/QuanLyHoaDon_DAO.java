@@ -23,15 +23,13 @@ public class QuanLyHoaDon_DAO {
         PreparedStatement stmt = null;
         int n = 0;
         try {
-            String sql = "Insert into HoaDon(maHoaDon, ngayLap, maNV, maKH, soLuongVe, tongTien) "
-                    + "values(?,?,?,?,?,?)";
+            String sql = "Insert into HoaDon(maHoaDon, ngayLap, maNV, maKH, tongTien) VALUES (?,?,?,?,?)";
             stmt = this.conn.prepareStatement(sql);
             stmt.setString(1, hoaDon.getMaHoaDon());
             stmt.setDate(2, Date.valueOf(hoaDon.getNgayLap()));
             stmt.setString(3, hoaDon.getNhanVien().getMaNV());
             stmt.setString(4, hoaDon.getKhachHang().getMaKH());
-            stmt.setInt(5, hoaDon.getSoLuongVe());
-            stmt.setFloat(6, hoaDon.getTongTien());
+            stmt.setFloat(5, hoaDon.getTongTien());
             n = stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,14 +54,13 @@ public class QuanLyHoaDon_DAO {
                 Date ngayLapDate = rs.getDate("ngayLap");
                 String maNV = rs.getString("maNV");
                 String maKH = rs.getString("maKH");
-                int soLuongVe = rs.getInt("soLuongVe");
                 float tongTien = rs.getFloat("tongTien");
 
                 QuanLyNhanVien_DAO nhanVienDAO = new QuanLyNhanVien_DAO();
                 QuanLyKhachHang_DAO khachHangDAO = new QuanLyKhachHang_DAO();
                 NhanVien nv = nhanVienDAO.timTheoMa(maNV);
                 KhachHang kh = khachHangDAO.findKhachHang(maKH);
-                hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh, soLuongVe, tongTien);
+                hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh, tongTien);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,14 +91,13 @@ public class QuanLyHoaDon_DAO {
                 Date ngayLapDate = rs.getDate("ngayLap");
                 String maNV = rs.getString("maNV");
                 String maKH = rs.getString("maKH");
-                int soLuongVe = rs.getInt("soLuongVe");
                 float tongTien = rs.getFloat("tongTien");
 
                 QuanLyNhanVien_DAO nhanVienDAO = new QuanLyNhanVien_DAO();
                 QuanLyKhachHang_DAO khachHangDAO = new QuanLyKhachHang_DAO();
                 NhanVien nv = nhanVienDAO.timTheoMa(maNV);
                 KhachHang kh = khachHangDAO.findKhachHang(maKH);
-                HoaDon hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh, soLuongVe, tongTien);
+                HoaDon hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh, tongTien);
                 danhSachHoaDon.add(hoaDon);
             }
         } catch (Exception e) {

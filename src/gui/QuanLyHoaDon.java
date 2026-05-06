@@ -199,9 +199,9 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
             String ngay = hd.getNgayLap() != null ? hd.getNgayLap().toString() : "";
             String maNV = hd.getNhanVien() != null ? hd.getNhanVien().getMaNV() : "";
             String maKH = hd.getKhachHang() != null ? hd.getKhachHang().getMaKH() : "";
-            int sl = hd.getSoLuongVe();
+//            int sl = hd.getSoLuongVe();
             float tt = hd.getTongTien();
-            this.model.addRow(new Object[] { ma, ngay, maNV, maKH, sl, tt });
+            this.model.addRow(new Object[] { ma, ngay, maNV, maKH, tt });
         }
     }
 
@@ -257,7 +257,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
             this.txtNgayLap.setText(p.getNgayLap().toString());
             this.txtMaNV.setText(p.getNhanVien().getMaNV());
             this.txtMaKH.setText(p.getKhachHang().getMaKH());
-            this.txtSoLuongVe.setText(String.valueOf(p.getSoLuongVe()));
+//            this.txtSoLuongVe.setText(String.valueOf(p.getSoLuongVe()));
             this.txtTongTien.setText(Float.toString(p.getTongTien()));
         }
     }

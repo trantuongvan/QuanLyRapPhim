@@ -111,13 +111,13 @@ public class QuanLyNhanVien_DAO {
 
             while (rs.next()) {
                 NhanVien nv = new NhanVien(
-                    rs.getString("maNV"),
-                    rs.getString("tenNV"),
-                    rs.getString("diaChi"),
-                    rs.getString("soDienThoai"),
-                    rs.getDate("ngaySinh").toLocalDate(),
-                    rs.getString("email"),
-                    rs.getString("gioiTinh")
+                        rs.getString("maNV"),
+                        rs.getString("tenNV"),
+                        rs.getString("diaChi"),
+                        rs.getString("soDienThoai"),
+                        rs.getDate("ngaySinh").toLocalDate(),
+                        rs.getString("email"),
+                        rs.getString("gioiTinh")
                 );
                 ds.add(nv);
             }
@@ -139,13 +139,13 @@ public class QuanLyNhanVien_DAO {
 
         if (rs.next()) {
             nv = new NhanVien(
-                rs.getString("maNV"),
-                rs.getString("tenNV"),
-                rs.getString("diaChi"),
-                rs.getString("soDienThoai"),
-                rs.getDate("ngaySinh").toLocalDate(),
-                rs.getString("email"),
-                rs.getString("gioiTinh")
+                    rs.getString("maNV"),
+                    rs.getString("tenNV"),
+                    rs.getString("diaChi"),
+                    rs.getString("soDienThoai"),
+                    rs.getDate("ngaySinh").toLocalDate(),
+                    rs.getString("email"),
+                    rs.getString("gioiTinh")
             );
         }
     } catch (SQLException e) {

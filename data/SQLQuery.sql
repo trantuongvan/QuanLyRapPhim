@@ -28,11 +28,13 @@ GO
 
 CREATE TABLE Ghe (
     maGhe NVARCHAR(20) PRIMARY KEY,
-	tenGhe NVARCHAR(20) NOT NULL,
+    tenGhe NVARCHAR(20) NOT NULL,
     maRap NVARCHAR(10) NOT NULL,
-    tinhTrang BIT DEFAULT 0, 
-    
-    CONSTRAINT FK_GHE_RAP FOREIGN KEY (maRap) REFERENCES Rap(maRap) ON DELETE CASCADE
+
+    CONSTRAINT FK_GHE_RAP
+        FOREIGN KEY (maRap)
+        REFERENCES Rap(maRap)
+        ON DELETE CASCADE
 );
 GO
 
@@ -72,7 +74,7 @@ CREATE TABLE SuatChieu (
     maRap NVARCHAR(10) NOT NULL,
     ngayChieu DATE NOT NULL,
     gioChieu TIME NOT NULL,
-    giaVe FLOAT CHECK (giaVe > 0),
+    giaVe DECIMAL(10,2) CHECK (giaVe > 0),
 
     CONSTRAINT FK_SUATCHIEU_PHIM FOREIGN KEY (maPhim) REFERENCES Phim(maPhim) ON DELETE CASCADE,
     CONSTRAINT FK_SUATCHIEU_RAP FOREIGN KEY (maRap) REFERENCES Rap(maRap) ON DELETE CASCADE
@@ -82,25 +84,29 @@ GO
 CREATE TABLE Ve (
     maVe NVARCHAR(50) PRIMARY KEY,
     maGhe NVARCHAR(20) NOT NULL,
-    ngayBan DATE NOT NULL DEFAULT GETDATE(),
+    ngayBan DATETIME DEFAULT GETDATE(),
     maSuatChieu NVARCHAR(10) NOT NULL,
     daThanhToan BIT DEFAULT 0,
 
-    CONSTRAINT FK_VE_GHE FOREIGN KEY (maGhe) REFERENCES Ghe(maGhe),
-    CONSTRAINT FK_VE_SUATCHIEU FOREIGN KEY (maSuatChieu) REFERENCES SuatChieu(maSuatChieu)
+    CONSTRAINT FK_VE_GHE
+        FOREIGN KEY (maGhe) REFERENCES Ghe(maGhe),
+
+    CONSTRAINT FK_VE_SUATCHIEU
+        FOREIGN KEY (maSuatChieu) REFERENCES SuatChieu(maSuatChieu),
+
+    CONSTRAINT UQ_Ghe_Suat UNIQUE (maGhe, maSuatChieu)
 );
 GO
 
 CREATE TABLE HoaDon (
     maHoaDon NVARCHAR(50) PRIMARY KEY,
-    ngayLap DATE DEFAULT GETDATE(),
+    ngayLap DATETIME DEFAULT GETDATE(),
     maNV NVARCHAR(10) NOT NULL,
     maKH NVARCHAR(50) NOT NULL,
-	soLuongVe INT NOT NULL,
-    tongTien FLOAT CHECK (tongTien >= 0),
+    tongTien DECIMAL(12,2) DEFAULT 0,
 
     CONSTRAINT FK_HOADON_NV FOREIGN KEY (maNV) REFERENCES NhanVien(maNV),
-    CONSTRAINT FK_HOADON_KH FOREIGN KEY (maKH) REFERENCES KhachHang(maKH) ON DELETE CASCADE
+    CONSTRAINT FK_HOADON_KH FOREIGN KEY (maKH) REFERENCES KhachHang(maKH)
 );
 GO
 
@@ -108,7 +114,7 @@ CREATE TABLE ChiTietHoaDon (
     maHoaDon NVARCHAR(50) NOT NULL,
     maVe NVARCHAR(50) NOT NULL,
     soLuong INT CHECK (soLuong > 0),
-    giaVe FLOAT CHECK (giaVe > 0),
+    giaVe DECIMAL(10,2) CHECK (giaVe > 0),
 
     CONSTRAINT PK_CTHD PRIMARY KEY (maHoaDon, maVe),
     CONSTRAINT FK_CTHD_HD FOREIGN KEY (maHoaDon) REFERENCES HoaDon(maHoaDon) ON DELETE CASCADE,
@@ -120,9 +126,44 @@ CREATE TABLE TaiKhoan (
     maNV NVARCHAR(10) PRIMARY KEY,
     taiKhoan NVARCHAR(50) UNIQUE NOT NULL,
     matKhau NVARCHAR(100) NOT NULL,
+    vaiTro NVARCHAR(20) NOT NULL,
 
     CONSTRAINT FK_TAIKHOAN_NV FOREIGN KEY (maNV) REFERENCES NhanVien(maNV) ON DELETE CASCADE
 );
+GO
+
+CREATE TRIGGER trg_UpdateTongTien
+ON ChiTietHoaDon
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    UPDATE HoaDon
+    SET tongTien = (
+        SELECT SUM(soLuong * giaVe)
+        FROM ChiTietHoaDon
+        WHERE ChiTietHoaDon.maHoaDon = HoaDon.maHoaDon
+    )
+    WHERE maHoaDon IN (
+        SELECT maHoaDon FROM inserted
+        UNION
+        SELECT maHoaDon FROM deleted
+    );
+END;
+GO
+
+CREATE TRIGGER trg_CheckGheHopLe
+ON Ve
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO Ve (maVe, maGhe, ngayBan, maSuatChieu, daThanhToan)
+    SELECT i.maVe, i.maGhe, i.ngayBan, i.maSuatChieu, i.daThanhToan
+    FROM inserted i
+    JOIN Ghe g ON i.maGhe = g.maGhe
+    JOIN SuatChieu sc ON i.maSuatChieu = sc.maSuatChieu
+    WHERE g.maRap = sc.maRap
+END
+
 GO
 
 INSERT INTO Phim (maPhim, tenPhim, nhaSanXuat, theLoai, thoiLuong, quocGia) VALUES
@@ -191,38 +232,45 @@ INSERT INTO SuatChieu (maSuatChieu, maPhim, maRap, ngayChieu, gioChieu, giaVe) V
 ('SC020', 'P020', 'RAP003', '2026-05-12', '20:00', 60000);
 GO
 
-INSERT INTO Ghe (maGhe, tenGhe, maRap, tinhTrang) VALUES
-('RAP001_G1', N'Ghế 1', 'RAP001', 1), ('RAP001_G2', N'Ghế 2', 'RAP001', 1), ('RAP001_G3', N'Ghế 3', 'RAP001', 0), ('RAP001_G4', N'Ghế 4', 'RAP001', 0), ('RAP001_G5', N'Ghế 5', 'RAP001', 0),
-('RAP001_G6', N'Ghế 6', 'RAP001', 0), ('RAP001_G7', N'Ghế 7', 'RAP001', 0), ('RAP001_G8', N'Ghế 8', 'RAP001', 0), ('RAP001_G9', N'Ghế 9', 'RAP001', 0), ('RAP001_G10', N'Ghế 10', 'RAP001', 0),
-('RAP001_G11', N'Ghế 11', 'RAP001', 0), ('RAP001_G12', N'Ghế 12', 'RAP001', 0), ('RAP001_G13', N'Ghế 13', 'RAP001', 0), ('RAP001_G14', N'Ghế 14', 'RAP001', 0), ('RAP001_G15', N'Ghế 15', 'RAP001', 0),
-('RAP001_G16', N'Ghế 16', 'RAP001', 0), ('RAP001_G17', N'Ghế 17', 'RAP001', 0), ('RAP001_G18', N'Ghế 18', 'RAP001', 0), ('RAP001_G19', N'Ghế 19', 'RAP001', 0), ('RAP001_G20', N'Ghế 20', 'RAP001', 0),
-('RAP001_G21', N'Ghế 21', 'RAP001', 0), ('RAP001_G22', N'Ghế 22', 'RAP001', 0), ('RAP001_G23', N'Ghế 23', 'RAP001', 0), ('RAP001_G24', N'Ghế 24', 'RAP001', 0), ('RAP001_G25', N'Ghế 25', 'RAP001', 0);
+-- Rạp 001
+INSERT INTO Ghe (maGhe, tenGhe, maRap) VALUES
+('RAP001_G1', N'Ghế 1', 'RAP001'), ('RAP001_G2', N'Ghế 2', 'RAP001'), ('RAP001_G3', N'Ghế 3', 'RAP001'), ('RAP001_G4', N'Ghế 4', 'RAP001'), ('RAP001_G5', N'Ghế 5', 'RAP001'),
+('RAP001_G6', N'Ghế 6', 'RAP001'), ('RAP001_G7', N'Ghế 7', 'RAP001'), ('RAP001_G8', N'Ghế 8', 'RAP001'), ('RAP001_G9', N'Ghế 9', 'RAP001'), ('RAP001_G10', N'Ghế 10', 'RAP001'),
+('RAP001_G11', N'Ghế 11', 'RAP001'), ('RAP001_G12', N'Ghế 12', 'RAP001'), ('RAP001_G13', N'Ghế 13', 'RAP001'), ('RAP001_G14', N'Ghế 14', 'RAP001'), ('RAP001_G15', N'Ghế 15', 'RAP001'),
+('RAP001_G16', N'Ghế 16', 'RAP001'), ('RAP001_G17', N'Ghế 17', 'RAP001'), ('RAP001_G18', N'Ghế 18', 'RAP001'), ('RAP001_G19', N'Ghế 19', 'RAP001'), ('RAP001_G20', N'Ghế 20', 'RAP001'),
+('RAP001_G21', N'Ghế 21', 'RAP001'), ('RAP001_G22', N'Ghế 22', 'RAP001'), ('RAP001_G23', N'Ghế 23', 'RAP001'), ('RAP001_G24', N'Ghế 24', 'RAP001'), ('RAP001_G25', N'Ghế 25', 'RAP001');
 GO
-INSERT INTO Ghe (maGhe, tenGhe, maRap, tinhTrang) VALUES
-('RAP002_G1', N'Ghế 1', 'RAP002', 0), ('RAP002_G2', N'Ghế 2', 'RAP002', 0), ('RAP002_G3', N'Ghế 3', 'RAP002', 0), ('RAP002_G4', N'Ghế 4', 'RAP002', 0), ('RAP002_G5', N'Ghế 5', 'RAP002', 0),
-('RAP002_G6', N'Ghế 6', 'RAP002', 0), ('RAP002_G7', N'Ghế 7', 'RAP002', 0), ('RAP002_G8', N'Ghế 8', 'RAP002', 0), ('RAP002_G9', N'Ghế 9', 'RAP002', 0), ('RAP002_G10', N'Ghế 10', 'RAP002', 1),
-('RAP002_G11', N'Ghế 11', 'RAP002', 1), ('RAP002_G12', N'Ghế 12', 'RAP002', 0), ('RAP002_G13', N'Ghế 13', 'RAP002', 0), ('RAP002_G14', N'Ghế 14', 'RAP002', 0), ('RAP002_G15', N'Ghế 15', 'RAP002', 0),
-('RAP002_G16', N'Ghế 16', 'RAP002', 0), ('RAP002_G17', N'Ghế 17', 'RAP002', 0), ('RAP002_G18', N'Ghế 18', 'RAP002', 0), ('RAP002_G19', N'Ghế 19', 'RAP002', 0), ('RAP002_G20', N'Ghế 20', 'RAP002', 0),
-('RAP002_G21', N'Ghế 21', 'RAP002', 0), ('RAP002_G22', N'Ghế 22', 'RAP002', 0), ('RAP002_G23', N'Ghế 23', 'RAP002', 0), ('RAP002_G24', N'Ghế 24', 'RAP002', 0), ('RAP002_G25', N'Ghế 25', 'RAP002', 0),
-('RAP002_G26', N'Ghế 26', 'RAP002', 0), ('RAP002_G27', N'Ghế 27', 'RAP002', 0), ('RAP002_G28', N'Ghế 28', 'RAP002', 0),
-('RAP002_G29', N'Ghế 29', 'RAP002', 0), ('RAP002_G30', N'Ghế 30', 'RAP002', 0);
+
+-- Rạp 002
+INSERT INTO Ghe (maGhe, tenGhe, maRap) VALUES
+('RAP002_G1', N'Ghế 1', 'RAP002'), ('RAP002_G2', N'Ghế 2', 'RAP002'), ('RAP002_G3', N'Ghế 3', 'RAP002'), ('RAP002_G4', N'Ghế 4', 'RAP002'), ('RAP002_G5', N'Ghế 5', 'RAP002'),
+('RAP002_G6', N'Ghế 6', 'RAP002'), ('RAP002_G7', N'Ghế 7', 'RAP002'), ('RAP002_G8', N'Ghế 8', 'RAP002'), ('RAP002_G9', N'Ghế 9', 'RAP002'), ('RAP002_G10', N'Ghế 10', 'RAP002'),
+('RAP002_G11', N'Ghế 11', 'RAP002'), ('RAP002_G12', N'Ghế 12', 'RAP002'), ('RAP002_G13', N'Ghế 13', 'RAP002'), ('RAP002_G14', N'Ghế 14', 'RAP002'), ('RAP002_G15', N'Ghế 15', 'RAP002'),
+('RAP002_G16', N'Ghế 16', 'RAP002'), ('RAP002_G17', N'Ghế 17', 'RAP002'), ('RAP002_G18', N'Ghế 18', 'RAP002'), ('RAP002_G19', N'Ghế 19', 'RAP002'), ('RAP002_G20', N'Ghế 20', 'RAP002'),
+('RAP002_G21', N'Ghế 21', 'RAP002'), ('RAP002_G22', N'Ghế 22', 'RAP002'), ('RAP002_G23', N'Ghế 23', 'RAP002'), ('RAP002_G24', N'Ghế 24', 'RAP002'), ('RAP002_G25', N'Ghế 25', 'RAP002'),
+('RAP002_G26', N'Ghế 26', 'RAP002'), ('RAP002_G27', N'Ghế 27', 'RAP002'), ('RAP002_G28', N'Ghế 28', 'RAP002'),
+('RAP002_G29', N'Ghế 29', 'RAP002'), ('RAP002_G30', N'Ghế 30', 'RAP002');
 GO
-INSERT INTO Ghe (maGhe, tenGhe, maRap, tinhTrang) VALUES
-('RAP003_G1', N'Ghế 1', 'RAP003', 0), ('RAP003_G2', N'Ghế 2', 'RAP003', 0), ('RAP003_G3', N'Ghế 3', 'RAP003', 0), ('RAP003_G4', N'Ghế 4', 'RAP003', 0), ('RAP003_G5', N'Ghế 5', 'RAP003', 0),
-('RAP003_G6', N'Ghế 6', 'RAP003', 0), ('RAP003_G7', N'Ghế 7', 'RAP003', 0), ('RAP003_G8', N'Ghế 8', 'RAP003', 0), ('RAP003_G9', N'Ghế 9', 'RAP003', 0), ('RAP003_G10', N'Ghế 10', 'RAP003', 0),
-('RAP003_G11', N'Ghế 11', 'RAP003', 0), ('RAP003_G12', N'Ghế 12', 'RAP003', 0), ('RAP003_G13', N'Ghế 13', 'RAP003', 0), ('RAP003_G14', N'Ghế 14', 'RAP003', 0), ('RAP003_G15', N'Ghế 15', 'RAP003', 1),
-('RAP003_G16', N'Ghế 16', 'RAP003', 1), ('RAP003_G17', N'Ghế 17', 'RAP003', 1), ('RAP003_G18', N'Ghế 18', 'RAP003', 0), ('RAP003_G19', N'Ghế 19', 'RAP003', 0), ('RAP003_G20', N'Ghế 20', 'RAP003', 0),
-('RAP003_G21', N'Ghế 21', 'RAP003', 0), ('RAP003_G22', N'Ghế 22', 'RAP003', 0), ('RAP003_G23', N'Ghế 23', 'RAP003', 0), ('RAP003_G24', N'Ghế 24', 'RAP003', 0), ('RAP003_G25', N'Ghế 25', 'RAP003', 0),
-('RAP003_G26', N'Ghế 26', 'RAP003', 0), ('RAP003_G27', N'Ghế 27', 'RAP003', 0), ('RAP003_G28', N'Ghế 28', 'RAP003', 0),
-('RAP003_G29', N'Ghế 29', 'RAP003', 0), ('RAP003_G30', N'Ghế 30', 'RAP003', 0), ('RAP003_G31', N'Ghế 31', 'RAP003', 0);
+
+-- Rạp 003
+INSERT INTO Ghe (maGhe, tenGhe, maRap) VALUES
+('RAP003_G1', N'Ghế 1', 'RAP003'), ('RAP003_G2', N'Ghế 2', 'RAP003'), ('RAP003_G3', N'Ghế 3', 'RAP003'), ('RAP003_G4', N'Ghế 4', 'RAP003'), ('RAP003_G5', N'Ghế 5', 'RAP003'),
+('RAP003_G6', N'Ghế 6', 'RAP003'), ('RAP003_G7', N'Ghế 7', 'RAP003'), ('RAP003_G8', N'Ghế 8', 'RAP003'), ('RAP003_G9', N'Ghế 9', 'RAP003'), ('RAP003_G10', N'Ghế 10', 'RAP003'),
+('RAP003_G11', N'Ghế 11', 'RAP003'), ('RAP003_G12', N'Ghế 12', 'RAP003'), ('RAP003_G13', N'Ghế 13', 'RAP003'), ('RAP003_G14', N'Ghế 14', 'RAP003'), ('RAP003_G15', N'Ghế 15', 'RAP003'),
+('RAP003_G16', N'Ghế 16', 'RAP003'), ('RAP003_G17', N'Ghế 17', 'RAP003'), ('RAP003_G18', N'Ghế 18', 'RAP003'), ('RAP003_G19', N'Ghế 19', 'RAP003'), ('RAP003_G20', N'Ghế 20', 'RAP003'),
+('RAP003_G21', N'Ghế 21', 'RAP003'), ('RAP003_G22', N'Ghế 22', 'RAP003'), ('RAP003_G23', N'Ghế 23', 'RAP003'), ('RAP003_G24', N'Ghế 24', 'RAP003'), ('RAP003_G25', N'Ghế 25', 'RAP003'),
+('RAP003_G26', N'Ghế 26', 'RAP003'), ('RAP003_G27', N'Ghế 27', 'RAP003'), ('RAP003_G28', N'Ghế 28', 'RAP003'),
+('RAP003_G29', N'Ghế 29', 'RAP003'), ('RAP003_G30', N'Ghế 30', 'RAP003'), ('RAP003_G31', N'Ghế 31', 'RAP003');
 GO
-INSERT INTO Ghe (maGhe, tenGhe, maRap, tinhTrang) VALUES
-('RAP004_G1', N'Ghế 1', 'RAP004', 0), ('RAP004_G2', N'Ghế 2', 'RAP004', 0), ('RAP004_G3', N'Ghế 3', 'RAP004', 0), ('RAP004_G4', N'Ghế 4', 'RAP004', 0), ('RAP004_G5', N'Ghế 5', 'RAP004', 0),
-('RAP004_G6', N'Ghế 6', 'RAP004', 0), ('RAP004_G7', N'Ghế 7', 'RAP004', 0), ('RAP004_G8', N'Ghế 8', 'RAP004', 0), ('RAP004_G9', N'Ghế 9', 'RAP004', 0), ('RAP004_G10', N'Ghế 10', 'RAP004', 0),
-('RAP004_G11', N'Ghế 11', 'RAP004', 0), ('RAP004_G12', N'Ghế 12', 'RAP004', 0), ('RAP004_G13', N'Ghế 13', 'RAP004', 0), ('RAP004_G14', N'Ghế 14', 'RAP004', 0), ('RAP004_G15', N'Ghế 15', 'RAP004', 0),
-('RAP004_G16', N'Ghế 16', 'RAP004', 0), ('RAP004_G17', N'Ghế 17', 'RAP004', 0), ('RAP004_G18', N'Ghế 18', 'RAP004', 0), ('RAP004_G19', N'Ghế 19', 'RAP004', 0), ('RAP004_G20', N'Ghế 20', 'RAP004', 0),
-('RAP004_G21', N'Ghế 21', 'RAP004', 0), ('RAP004_G22', N'Ghế 22', 'RAP004', 0), ('RAP004_G23', N'Ghế 23', 'RAP004', 0), ('RAP004_G24', N'Ghế 24', 'RAP004', 0), ('RAP004_G25', N'Ghế 25', 'RAP004', 0),
-('RAP004_G26', N'Ghế 26', 'RAP004', 0), ('RAP004_G27', N'Ghế 27', 'RAP004', 0), ('RAP004_G28', N'Ghế 28', 'RAP004', 0), ('RAP004_G29', N'Ghế 29', 'RAP004', 1), ('RAP004_G30', N'Ghế 30', 'RAP004', 1);
+
+-- Rạp 004
+INSERT INTO Ghe (maGhe, tenGhe, maRap) VALUES
+('RAP004_G1', N'Ghế 1', 'RAP004'), ('RAP004_G2', N'Ghế 2', 'RAP004'), ('RAP004_G3', N'Ghế 3', 'RAP004'), ('RAP004_G4', N'Ghế 4', 'RAP004'), ('RAP004_G5', N'Ghế 5', 'RAP004'),
+('RAP004_G6', N'Ghế 6', 'RAP004'), ('RAP004_G7', N'Ghế 7', 'RAP004'), ('RAP004_G8', N'Ghế 8', 'RAP004'), ('RAP004_G9', N'Ghế 9', 'RAP004'), ('RAP004_G10', N'Ghế 10', 'RAP004'),
+('RAP004_G11', N'Ghế 11', 'RAP004'), ('RAP004_G12', N'Ghế 12', 'RAP004'), ('RAP004_G13', N'Ghế 13', 'RAP004'), ('RAP004_G14', N'Ghế 14', 'RAP004'), ('RAP004_G15', N'Ghế 15', 'RAP004'),
+('RAP004_G16', N'Ghế 16', 'RAP004'), ('RAP004_G17', N'Ghế 17', 'RAP004'), ('RAP004_G18', N'Ghế 18', 'RAP004'), ('RAP004_G19', N'Ghế 19', 'RAP004'), ('RAP004_G20', N'Ghế 20', 'RAP004'),
+('RAP004_G21', N'Ghế 21', 'RAP004'), ('RAP004_G22', N'Ghế 22', 'RAP004'), ('RAP004_G23', N'Ghế 23', 'RAP004'), ('RAP004_G24', N'Ghế 24', 'RAP004'), ('RAP004_G25', N'Ghế 25', 'RAP004'),
+('RAP004_G26', N'Ghế 26', 'RAP004'), ('RAP004_G27', N'Ghế 27', 'RAP004'), ('RAP004_G28', N'Ghế 28', 'RAP004'), ('RAP004_G29', N'Ghế 29', 'RAP004'), ('RAP004_G30', N'Ghế 30', 'RAP004');
 GO
 
 INSERT INTO NhanVien (maNV, tenNV, diaChi, soDienThoai, ngaySinh, email, gioiTinh)
@@ -232,11 +280,11 @@ VALUES
 ('NV03', N'Nguyễn Xuân Việt Anh', N'67 Nguyễn Huệ, Đà Lạt', '0912345678', '2006-09-10', 'anhnguyen@example.com', N'Nam');
 GO
 
-INSERT INTO TaiKhoan (maNV, taiKhoan, matKhau)
+INSERT INTO TaiKhoan (maNV, taiKhoan, matKhau, vaiTro)
 VALUES
-('NV01', N'tranthituongvan', N'123456'),
-('NV02', N'buithaivy', N'123456'),
-('NV03', N'nguyenxuanvietanh', N'123456');
+('NV01', N'tranthituongvan', N'123456', N'QUAN_LY'),
+('NV02', N'buithaivy', N'123456', N'NHAN_VIEN'),
+('NV03', N'nguyenxuanvietanh', N'123456', N'NHAN_VIEN');
 GO
 
 INSERT INTO KhachHang (maKH, hoTen, gioiTinh, soDT, diaChi)
@@ -284,127 +332,113 @@ VALUES
 ('VE0001', 'RAP001_G1', '2026-04-01', 'SC001', 1),
 ('VE0002', 'RAP001_G2', '2026-04-01', 'SC001', 1),
 
-('VE0003', 'RAP002_G10', '2026-04-02', 'SC002', 1),
+('VE0003', 'RAP002_G1', '2026-04-02', 'SC002', 1),
 
-('VE0004', 'RAP003_G15', '2026-04-03', 'SC003', 1),
-('VE0005', 'RAP003_G16', '2026-04-03', 'SC003', 1),
+('VE0004', 'RAP003_G1', '2026-04-03', 'SC003', 1),
+('VE0005', 'RAP003_G2', '2026-04-03', 'SC003', 1),
 
-('VE0006',  'RAP001_G3',  '2026-04-04', 'SC003', 1),
-('VE0007',  'RAP001_G4',  '2026-04-04', 'SC007', 1),
+('VE0006', 'RAP004_G1', '2026-04-04', 'SC004', 1),
+('VE0007', 'RAP001_G3', '2026-04-04', 'SC007', 1),
 
-('VE0008',  'RAP001_G10', '2026-04-05', 'SC001', 1),
+('VE0008', 'RAP001_G4', '2026-04-05', 'SC001', 1),
 
-('VE0009',  'RAP001_G11', '2026-04-06', 'SC004', 1),
-('VE0010',  'RAP001_G12', '2026-04-06', 'SC009', 1),
+('VE0009', 'RAP001_G5', '2026-04-06', 'SC006', 1),
+('VE0010', 'RAP001_G6', '2026-04-06', 'SC009', 1),
 
-('VE0011',  'RAP001_G13', '2026-04-07', 'SC002', 1),
-('VE0012',  'RAP001_G14', '2026-04-07', 'SC008', 1),
+('VE0011', 'RAP002_G2', '2026-04-07', 'SC002', 1),
+('VE0012', 'RAP001_G7', '2026-04-07', 'SC008', 1),
 
-('VE0013',  'RAP001_G15', '2026-04-08', 'SC006', 1),
-('VE0014',  'RAP001_G20', '2026-04-08', 'SC010', 1),
+('VE0013', 'RAP001_G8', '2026-04-08', 'SC006', 1),
+('VE0014', 'RAP001_G9', '2026-04-08', 'SC010', 1),
 
-('VE0015', 'RAP002_G11', '2026-04-09', 'SC003', 1),
-('VE0016', 'RAP002_G12', '2026-04-09', 'SC005', 1),
+('VE0015', 'RAP003_G3', '2026-04-09', 'SC003', 1),
+('VE0016', 'RAP001_G10', '2026-04-09', 'SC005', 1),
 
-('VE0017', 'RAP002_G13', '2026-04-10', 'SC001', 1),
+('VE0017', 'RAP001_G11', '2026-04-10', 'SC001', 1),
 
-('VE0018', 'RAP002_G1',  '2026-04-11', 'SC007', 1),
+('VE0018', 'RAP001_G12', '2026-04-11', 'SC007', 1),
 
-('VE0019', 'RAP002_G3',  '2026-04-12', 'SC008', 1),
+('VE0019', 'RAP001_G13', '2026-04-12', 'SC008', 1),
 
-('VE0020', 'RAP002_G17', '2026-04-13', 'SC009', 1),
-('VE0021', 'RAP003_G17', '2026-04-13', 'SC004', 1),
+('VE0020', 'RAP001_G14', '2026-04-13', 'SC009', 1),
+('VE0021', 'RAP004_G2', '2026-04-13', 'SC004', 1),
 
-('VE0022', 'RAP003_G30', '2026-04-14', 'SC002', 1),
+('VE0022', 'RAP002_G3', '2026-04-14', 'SC002', 1),
 
-('VE0023', 'RAP003_G29', '2026-04-15', 'SC003', 1),
+('VE0023', 'RAP003_G4', '2026-04-15', 'SC003', 1),
 
-('VE0024', 'RAP003_G25', '2026-04-16', 'SC010', 1),
+('VE0024', 'RAP001_G15', '2026-04-16', 'SC010', 1),
 
-('VE0025', 'RAP003_G24', '2026-04-17', 'SC008', 1),
+('VE0025', 'RAP001_G16', '2026-04-17', 'SC008', 1),
 
-('VE0026', 'RAP004_G1',  '2026-04-18', 'SC006', 1),
+('VE0026', 'RAP001_G17', '2026-04-18', 'SC006', 1),
 
-('VE0027', 'RAP004_G2',  '2026-04-19', 'SC004', 1),
+('VE0027', 'RAP004_G3', '2026-04-19', 'SC004', 1),
 
-('VE0028', 'RAP004_G3',  '2026-04-20', 'SC001', 1),
+('VE0028', 'RAP001_G18', '2026-04-20', 'SC001', 1),
 
-('VE0029', 'RAP004_G4',  '2026-04-21', 'SC009', 1),
+('VE0029', 'RAP001_G19', '2026-04-21', 'SC009', 1),
 
-('VE0030', 'RAP004_G5',  '2026-04-22', 'SC002', 1),
+('VE0030', 'RAP002_G4', '2026-04-22', 'SC002', 1),
 
-('VE0031', 'RAP004_G6',  '2026-04-23', 'SC005', 1),
+('VE0031', 'RAP001_G20', '2026-04-23', 'SC005', 1),
 
-('VE0032', 'RAP004_G7',  '2026-04-24', 'SC003', 1),
-('VE0033', 'RAP004_G11', '2026-04-24', 'SC006', 1),
-('VE0034', 'RAP004_G12', '2026-04-24', 'SC009', 1),
+('VE0032', 'RAP003_G5', '2026-04-24', 'SC003', 1),
+('VE0033', 'RAP001_G21', '2026-04-24', 'SC006', 1),
+('VE0034', 'RAP001_G22', '2026-04-24', 'SC009', 1),
 
-('VE0035', 'RAP004_G23', '2026-04-25', 'SC010', 1),
+('VE0035', 'RAP001_G23', '2026-04-25', 'SC010', 1),
 
-('VE0036', 'RAP004_G14', '2026-04-26', 'SC008', 1),
-('VE0037', 'RAP004_G15', '2026-04-26', 'SC002', 1),
+('VE0036', 'RAP001_G24', '2026-04-26', 'SC008', 1),
+('VE0037', 'RAP002_G5', '2026-04-26', 'SC002', 1),
 
-('VE0038', 'RAP004_G16', '2026-04-27', 'SC005', 1),
+('VE0038', 'RAP001_G25', '2026-04-27', 'SC005', 1),
 
-('VE0039', 'RAP004_G17', '2026-04-28', 'SC004', 1),
-('VE0040', 'RAP004_G18', '2026-04-28', 'SC001', 1),
+('VE0039', 'RAP004_G4', '2026-04-28', 'SC004', 1),
+('VE0040', 'RAP001_G3', '2026-04-28', 'SC001', 1),
 
-('VE0041', 'RAP004_G19', '2026-04-29', 'SC007', 1),
-('VE0042', 'RAP004_G20', '2026-04-29', 'SC003', 1),
-('VE0043', 'RAP004_G21', '2026-04-29', 'SC002', 1),
-
-('VE0044', 'RAP004_G22', '2026-04-30', 'SC006', 1),
-
-('VE0045', 'RAP004_G23', '2026-05-01', 'SC010', 1),
-
-('VE0046', 'RAP004_G24', '2026-05-02', 'SC009', 1),
-('VE0047', 'RAP004_G25', '2026-05-02', 'SC002', 1),
-
-('VE0048', 'RAP004_G26', '2026-05-03', 'SC001', 1),
-('VE0049', 'RAP004_G27', '2026-05-03', 'SC008', 1),
-
-('VE0050', 'RAP004_G28', '2026-05-04', 'SC008', 1);
-
-
+('VE0041', 'RAP001_G2', '2026-04-29', 'SC007', 1),
+('VE0042', 'RAP003_G6', '2026-04-29', 'SC003', 1),
+('VE0043', 'RAP002_G6', '2026-04-29', 'SC002', 1);
 GO
 
-INSERT INTO HoaDon (maHoaDon, ngayLap, maNV, maKH, soLuongVe, tongTien) 
+INSERT INTO HoaDon (maHoaDon, ngayLap, maNV, maKH, tongTien)
 VALUES
-('HD001', '2026-04-01', 'NV01', 'KH001', 2, 90000),
-('HD002', '2026-04-02', 'NV02', 'KH002', 1, 45000),
-('HD003', '2026-04-03', 'NV03', 'KH003', 2, 90000),
-('HD004', '2026-04-04', 'NV01', 'KH004', 2, 90000),
-('HD005', '2026-04-05', 'NV02', 'KH005', 1, 45000),
+('HD001', '2026-04-01', 'NV01', 'KH001', 90000),
+('HD002', '2026-04-02', 'NV02', 'KH002', 45000),
+('HD003', '2026-04-03', 'NV03', 'KH003', 90000),
+('HD004', '2026-04-04', 'NV01', 'KH004', 90000),
+('HD005', '2026-04-05', 'NV02', 'KH005', 45000),
 
-('HD006', '2026-04-06', 'NV03', 'KH006', 2, 90000),
-('HD007', '2026-04-07', 'NV01', 'KH007', 1, 45000),
-('HD008', '2026-04-08', 'NV02', 'KH008', 1, 45000),
-('HD009', '2026-04-09', 'NV03', 'KH009', 1, 45000),
-('HD010', '2026-04-10', 'NV01', 'KH010', 2, 90000),
+('HD006', '2026-04-06', 'NV03', 'KH006', 90000),
+('HD007', '2026-04-07', 'NV01', 'KH007', 45000),
+('HD008', '2026-04-08', 'NV02', 'KH008', 45000),
+('HD009', '2026-04-09', 'NV03', 'KH009', 45000),
+('HD010', '2026-04-10', 'NV01', 'KH010', 90000),
 
-('HD011', '2026-04-11', 'NV02', 'KH011', 1, 45000),
-('HD012', '2026-04-12', 'NV03', 'KH012', 1, 45000),
-('HD013', '2026-04-13', 'NV01', 'KH013', 2, 90000),
-('HD014', '2026-04-14', 'NV02', 'KH014', 1, 45000),
-('HD015', '2026-04-15', 'NV03', 'KH015', 1, 45000),
+('HD011', '2026-04-11', 'NV02', 'KH011', 45000),
+('HD012', '2026-04-12', 'NV03', 'KH012', 45000),
+('HD013', '2026-04-13', 'NV01', 'KH013', 90000),
+('HD014', '2026-04-14', 'NV02', 'KH014', 45000),
+('HD015', '2026-04-15', 'NV03', 'KH015', 45000),
 
-('HD016', '2026-04-16', 'NV01', 'KH016', 1, 45000),
-('HD017', '2026-04-17', 'NV02', 'KH017', 2, 90000),
-('HD018', '2026-04-18', 'NV03', 'KH018', 1, 45000),
-('HD019', '2026-04-19', 'NV01', 'KH019', 1, 45000),
-('HD020', '2026-04-20', 'NV02', 'KH020', 2, 90000),
+('HD016', '2026-04-16', 'NV01', 'KH016', 45000),
+('HD017', '2026-04-17', 'NV02', 'KH017', 90000),
+('HD018', '2026-04-18', 'NV03', 'KH018', 45000),
+('HD019', '2026-04-19', 'NV01', 'KH019', 45000),
+('HD020', '2026-04-20', 'NV02', 'KH020', 90000),
 
-('HD021', '2026-04-21', 'NV03', 'KH021', 1, 45000),
-('HD022', '2026-04-22', 'NV01', 'KH022', 1, 45000),
-('HD023', '2026-04-23', 'NV02', 'KH023', 2, 90000),
-('HD024', '2026-04-24', 'NV03', 'KH024', 1, 45000),
-('HD025', '2026-04-25', 'NV01', 'KH025', 2, 90000),
+('HD021', '2026-04-21', 'NV03', 'KH021', 45000),
+('HD022', '2026-04-22', 'NV01', 'KH022', 45000),
+('HD023', '2026-04-23', 'NV02', 'KH023', 90000),
+('HD024', '2026-04-24', 'NV03', 'KH024', 45000),
+('HD025', '2026-04-25', 'NV01', 'KH025', 90000),
 
-('HD026', '2026-04-26', 'NV02', 'KH026', 1, 45000),
-('HD027', '2026-04-27', 'NV03', 'KH027', 2, 90000),
-('HD028', '2026-04-28', 'NV01', 'KH028', 1, 45000),
-('HD029', '2026-04-29', 'NV02', 'KH029', 2, 90000),
-('HD030', '2026-05-03', 'NV03', 'KH030', 2, 90000);
+('HD026', '2026-04-26', 'NV02', 'KH026', 45000),
+('HD027', '2026-04-27', 'NV03', 'KH027', 90000),
+('HD028', '2026-04-28', 'NV01', 'KH028', 45000),
+('HD029', '2026-04-29', 'NV02', 'KH029', 90000),
+('HD030', '2026-05-03', 'NV03', 'KH030', 90000);
 GO
 
 INSERT INTO ChiTietHoaDon (maHoaDon, maVe, soLuong, giaVe) 

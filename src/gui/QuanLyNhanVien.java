@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import entity.LoadData;
+import entity.VaiTro;
 
 public class QuanLyNhanVien extends JPanel implements LoadData {
     private QuanLyNhanVien_DAO daoNV;
@@ -224,17 +225,17 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         txtTim.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         pnlSearch.add(txtTim);
         
-        btnTim = createStyledButton("🔍 Tìm kiếm", new Color(0, 102, 204));
+        btnTim = createStyledButton("Tìm kiếm", new Color(0, 102, 204));
         pnlSearch.add(btnTim);
 
         // Các nút chức năng
         JPanel pnlFunctionButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
         pnlFunctionButtons.setBackground(new Color(245, 245, 245));
         
-        btnThem = createStyledButton("➕ Thêm mới", new Color(40, 167, 69));
-        btnSua = createStyledButton("✏️ Cập nhật", new Color(255, 193, 7));
-        btnXoa = createStyledButton("🗑️ Xóa", new Color(220, 53, 69));
-        btnTaiLai = createStyledButton("🔄 Làm mới", new Color(108, 117, 125));
+        btnThem = createStyledButton("Thêm mới", new Color(40, 167, 69));
+        btnSua = createStyledButton("Cập nhật", new Color(255, 193, 7));
+        btnXoa = createStyledButton("Xóa", new Color(220, 53, 69));
+        btnTaiLai = createStyledButton("Làm mới", new Color(108, 117, 125));
 
         pnlFunctionButtons.add(btnThem);
         pnlFunctionButtons.add(btnSua);
@@ -364,7 +365,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
             }
             NhanVien nv = layDuLieuForm();
             if (daoNV.capNhatNhanVien(nv)) {
-                JOptionPane.showMessageDialog(this, "✏️ Cập nhật thành công!");
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
                 loadNhanVien();
             } else {
                 JOptionPane.showMessageDialog(this, "❌ Không thể cập nhật!");

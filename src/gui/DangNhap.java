@@ -112,19 +112,22 @@ public class DangNhap extends JFrame implements ActionListener {
         String matKhauNhap = new String(txtMatKhau.getPassword());
 
         TaiKhoan tk = dangNhapDAO.ktDangNhap(taiKhoan, matKhauNhap);
+
         if (tk != null) {
-            this.nhanVienDangNhap = tk.getNhanVien();
+            DangNhap.nhanVienDangNhap = tk.getNhanVien();
+
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-            new Start().setVisible(true);
+
+            new Start(tk).setVisible(true);
             dispose();
+
         } else {
-            JOptionPane.showMessageDialog(this, "Tên tài khoản hoặc mật khẩu không đúng!", "Lỗi",
+            JOptionPane.showMessageDialog(this,
+                    "Tên tài khoản hoặc mật khẩu không đúng!",
+                    "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
             txtTaiKhoan.requestFocus();
-            return;
         }
-        new Start();
-        setVisible(false);
     }
 
     public DangNhap_DAO getDangNhapDAO() {

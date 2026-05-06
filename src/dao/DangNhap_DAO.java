@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import ConnectDB.ConnectDB;
 import entity.NhanVien;
 import entity.TaiKhoan;
+import entity.VaiTro;
 
 public class DangNhap_DAO {
 	public TaiKhoan ktDangNhap(String taiKhoan, String matKhau) {
@@ -16,7 +17,7 @@ public class DangNhap_DAO {
 		ResultSet rs = null;
 		TaiKhoan tkhoan = null;
 		try {
-			String sql = "SELECT K.maNV, K.taiKhoan, K.matKhau, " +
+			String sql = "SELECT K.maNV, K.taiKhoan, K.matKhau, K.vaiTro, " +
 					"V.tenNV, V.diaChi, V.soDienThoai, V.ngaySinh, V.email, V.gioiTinh " +
 					"FROM TaiKhoan K JOIN NhanVien V ON K.maNV = V.maNV " +
 					"WHERE K.taiKhoan = ? and K.matKhau = ?";
@@ -36,8 +37,11 @@ public class DangNhap_DAO {
 				String email = rs.getString("email");
 				String gioiTinh = rs.getString("gioiTinh");
 
+                String role = rs.getString("vaiTro");
+                VaiTro vaiTro = VaiTro.valueOf(role);
+
 				NhanVien nvien = new NhanVien(maNV, tenNV, diaChi, sdt, ngaySinh, email, gioiTinh);
-				tkhoan = new TaiKhoan(nvien, tenDN, mk);
+				tkhoan = new TaiKhoan(nvien, tenDN, mk, vaiTro);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

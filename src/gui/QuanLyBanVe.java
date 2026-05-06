@@ -434,71 +434,142 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     }
 
     private void selectChair() {
-        if (this.suatChieuDuocChon == null || this.suatChieuDuocChon.getMaRap() == null)
-            return;
+        if (this.suatChieuDuocChon == null || this.suatChieuDuocChon.getMaRap() == null) return;
 
         Rap rap = rapManager.findRapByID(suatChieuDuocChon.getMaRap());
-        if (rap == null)
-            return;
+        if (rap == null) return;
+
+        int numCols = 5;
         int soGhe = rap.getSoLuongGhe();
-        int row = (int) Math.ceil(Math.sqrt(soGhe));
-        int col = row;
+        int numRows = (int) Math.ceil((double) soGhe / numCols);
 
         JFrame chairFrame = new JFrame("Chọn ghế");
-        chairFrame.setSize(this.modalDimension);
+        chairFrame.getContentPane().setBackground(new Color(10, 10, 10)); // Dark background
+        chairFrame.setSize(800, 600);
         chairFrame.setLocationRelativeTo(this);
-        chairFrame.setLayout(new BorderLayout());
+        chairFrame.setLayout(new BorderLayout(10, 10));
 
-        // Màn hình
         JPanel screenPanel = new JPanel(new BorderLayout());
-        screenPanel.setBackground(Color.DARK_GRAY);
-        JLabel lblScreen = new JLabel("MÀN HÌNH", SwingConstants.CENTER);
+        screenPanel.setOpaque(false);
+        JLabel lblScreen = new JLabel("Màn hình", SwingConstants.CENTER);
         lblScreen.setForeground(Color.WHITE);
-        lblScreen.setFont(new Font("Arial", Font.BOLD, 18));
-        screenPanel.add(lblScreen, BorderLayout.CENTER);
-        screenPanel.setPreferredSize(new Dimension(500, 40));
-        chairFrame.add(screenPanel, BorderLayout.NORTH);
+        lblScreen.setFont(new Font("Tahoma", Font.BOLD, 24));
+        lblScreen.setBorder(BorderFactory.createEmptyBorder(20, 0, 40, 0));
+        lblScreen.setBackground(new Color(20, 20, 20));
+        chairFrame.add(lblScreen, BorderLayout.NORTH);
 
-        // Sơ đồ ghế
-        int distance = 1; // khoảng cách tới màn hình
-        JPanel chairPanel = new JPanel();
-        chairPanel.setLayout(new GridLayout(row + distance, col, 5, 5));
-        // tạo khoảng cách với màn hình
-        int i = 0;
-        while (i < col * distance) {
-            chairPanel.add(new JLabel(""));
-            i++;
-        }
+        JPanel centerPanel = new JPanel(new GridLayout(numRows + 1, numCols + 1, 8, 8));
+        centerPanel.setBackground(new Color(18, 18, 18));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
+
         ArrayList<Ghe> chairList = this.chairManager.getDanhSachGheTheoRap(rap);
         ArrayList<Ve> ticketList = this.ticketManager.timVeTheoMaSuatChieu(this.suatChieuDuocChon.getMaSuatChieu());
         ArrayList<String> selectedChairs = new ArrayList<>();
-        for (i = 0; i < soGhe; i++) {
-            Ghe ghe = chairList.get(i);
-            JButton btn = new JButton(ghe.getTenGhe());
-            if (isGheDaDat(ghe, ticketList)) {
-                btn.setBackground(Color.LIGHT_GRAY);
-                btn.setEnabled(false);
-            } else {
-                btn.setBackground(Color.GREEN);
+
+        for (int r = 0; r < numRows; r++) {
+            JLabel rowLabel = new JLabel(String.valueOf((char)('A' + r)), SwingConstants.CENTER);
+            rowLabel.setForeground(Color.WHITE);
+            rowLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+            centerPanel.add(rowLabel);
+
+            for (int c = 0; c < numCols; c++) {
+                int index = r * numCols + c;
+                if (index < soGhe) {
+                    Ghe ghe = chairList.get(index);
+                    JPanel cell = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+                    cell.setOpaque(false);
+
+                    JButton btn = new JButton();
+                    btn.setPreferredSize(new Dimension(35, 35));
+                    btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    btn.setBorder(null);
+
+                    if (isGheDaDat(ghe, ticketList)) {
+                        btn.setBackground(new Color(180, 0, 0));
+                        btn.setEnabled(false);
+                    } else {
+                        btn.setBackground(new Color(100, 100, 100));
+                    }
+
+                    btn.addActionListener(e -> {
+                        if (btn.getBackground().equals(Color.ORANGE)) {
+                            btn.setBackground(new Color(100, 100, 100));
+                            selectedChairs.remove(ghe.getMaGhe());
+                        } else {
+                            btn.setBackground(Color.ORANGE);
+                            selectedChairs.add(ghe.getMaGhe());
+                        }
+                    });
+
+                    cell.add(btn);
+                    centerPanel.add(cell);
+                } else {
+                    centerPanel.add(new JLabel(""));
+                }
             }
-            btn.addActionListener(e -> hanldeSelectChair(selectedChairs, btn));
-            chairPanel.add(btn);
         }
 
-        chairFrame.add(chairPanel, BorderLayout.CENTER);
+        centerPanel.add(new JLabel(""));
 
-        // Nút xác nhận
-        JPanel confirmPanel = new JPanel();
+        for (int c = 1; c <= numCols; c++) {
+            JPanel colWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+            colWrapper.setOpaque(false);
+
+            JLabel colLabel = new JLabel(String.format("%02d", c), SwingConstants.CENTER);
+            colLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+            colLabel.setForeground(Color.WHITE);
+            colLabel.setPreferredSize(new Dimension(35, 20));
+
+            colWrapper.add(colLabel);
+            centerPanel.add(colWrapper);
+        }
+
+
+        chairFrame.add(centerPanel, BorderLayout.CENTER);
+
+        JPanel southPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        southPanel.setOpaque(false);
+
+        southPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 30, 10));
+
+        JPanel legendPanel = new JPanel();
+        legendPanel.setOpaque(false);
+        addLegendItem(legendPanel, Color.ORANGE, "Ghế đang chọn");
+        addLegendItem(legendPanel, new Color(100, 100, 100), "Ghế còn trống");
+        addLegendItem(legendPanel, new Color(180, 0, 0), "Ghế đã đặt");
+        southPanel.add(legendPanel);
+
         JButton btnConfirm = new JButton("Xác nhận");
-        btnConfirm.setBackground(Color.GREEN);
+        btnConfirm.setBackground(Color.ORANGE);
+        btnConfirm.setForeground(Color.WHITE);
+        btnConfirm.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnConfirm.setFocusPainted(false);
+        btnConfirm.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnConfirm.setPreferredSize(new Dimension(150, 45));
         btnConfirm.addActionListener(e -> handleConfirmSelectChairs(selectedChairs, chairFrame, rap));
-        confirmPanel.add(btnConfirm);
 
-        chairFrame.add(confirmPanel, BorderLayout.SOUTH);
-        chairFrame.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+        JPanel btnWrapper = new JPanel();
+        btnWrapper.setOpaque(false);
+        btnWrapper.add(btnConfirm);
+        southPanel.add(btnWrapper);
+
+        chairFrame.add(southPanel, BorderLayout.SOUTH);
         chairFrame.setVisible(true);
     }
 
+    private void addLegendItem(JPanel panel, Color color, String text) {
+        JPanel box = new JPanel();
+        box.setBackground(color);
+        box.setPreferredSize(new Dimension(25, 25));
+
+        JLabel label = new JLabel(text);
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+        panel.add(box);
+        panel.add(label);
+        panel.add(Box.createHorizontalStrut(20));
+    }
     private void hanldeSelectChair(ArrayList<String> selectedChairs, JButton btn) {
         if (selectedChairs.contains(btn.getText())) {
             selectedChairs.remove(btn.getText());

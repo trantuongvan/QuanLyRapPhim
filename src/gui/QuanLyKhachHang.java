@@ -19,8 +19,8 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
     private JComboBox<String> cboGioiTinh;
     private JButton btnThem, btnXoaTrang, btnXoa1Dong, btnLamMoi, btnSua, btnTimKiem;
 
-    private final Font FONT_LBL = new Font("Segoe UI", Font.BOLD, 16);
-    private final Font FONT_TXT = new Font("Segoe UI", Font.PLAIN, 16);
+    private final Font FONT_LBL = new Font("Tamoha", Font.BOLD, 16);
+    private final Font FONT_TXT = new Font("Tamoha", Font.PLAIN, 16);
     private final Border BORDER_BTN = BorderFactory.createLineBorder(new Color(0, 123, 255), 1);
 
     @Override

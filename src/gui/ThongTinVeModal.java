@@ -50,7 +50,7 @@ public class ThongTinVeModal extends JFrame {
     private QuanLyGhe_DAO chairManager;
     private QuanLyVe_DAO ticketManager;
     private QuanLyHoaDon_DAO billManager;
-    private Font fChonGhe = new Font("Arial", Font.BOLD, 16);
+    private Font fChonGhe = new Font("Tamoha", Font.BOLD, 16);
     private JPanel parentform;
     private QuanLyCTHD_DAO cthdManager;
     private Dimension modalDimension = new Dimension(500, 600);
@@ -89,7 +89,7 @@ public class ThongTinVeModal extends JFrame {
         setTitle("Thông tin vé");
 
         JLabel lblTitle = new JLabel("THÔNG TIN VÉ XEM PHIM");
-        Font fTitle = new Font("Arial", Font.BOLD, 20);
+        Font fTitle = new Font("Tamoha", Font.BOLD, 20);
         lblTitle.setFont(fTitle);
         lblTitle.setForeground(Color.RED);
         JPanel pNorth = new JPanel();

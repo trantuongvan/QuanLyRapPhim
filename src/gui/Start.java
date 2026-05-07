@@ -39,7 +39,7 @@ public class Start extends JFrame implements ActionListener {
         pnWest.add(boxMenu);
         boxMenu.add(Box.createVerticalStrut(25));
 
-        Font fontButton = new Font("Arial", Font.BOLD, 18);
+        Font fontButton = new Font("Tahoma", Font.BOLD, 20);
         Color bgMenu = pnWest.getBackground();
         Color hoverBgColor = new Color(234, 234, 234);
         Color hoverTextColor = new Color(255, 144, 0);
@@ -68,7 +68,7 @@ public class Start extends JFrame implements ActionListener {
             btn.setHorizontalAlignment(SwingConstants.LEFT);
             btn.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 55));
+            btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
             btn.setBorderPainted(false);
             btn.setFocusPainted(false);
             btn.setIconTextGap(5);
@@ -117,7 +117,7 @@ public class Start extends JFrame implements ActionListener {
         boxMenu.add(Box.createVerticalStrut(10));
         for (JButton btn : menuButtons) {
             boxMenu.add(btn);
-            boxMenu.add(Box.createVerticalStrut(10));
+//            boxMenu.add(Box.createVerticalStrut(10));
         }
 
 //        boxMenu.add(createSeparatorLine(3));

@@ -26,8 +26,8 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
     private QuanLyPhim_DAO phimDAO;
     private ArrayList<Phim> dsPhim;
 
-    private final Font FONT_LBL = new Font("Segoe UI", Font.BOLD, 16);
-    private final Font FONT_TXT = new Font("Segoe UI", Font.PLAIN, 16);
+    private final Font FONT_LBL = new Font("Tamoha", Font.BOLD, 16);
+    private final Font FONT_TXT = new Font("Tamoha", Font.PLAIN, 16);
     private final Border BORDER_BTN = BorderFactory.createLineBorder(new Color(0, 123, 255), 1);
 
     public QuanLyPhim() {
@@ -45,7 +45,7 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         phimDAO = new QuanLyPhim_DAO();
 
         JLabel lblTieuDe = new JLabel("Quản lý phim");
-        lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblTieuDe.setFont(new Font("Tamoha", Font.BOLD, 24));
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
         lblTieuDe.setBounds(0, 15, 1180, 35);
         add(lblTieuDe);

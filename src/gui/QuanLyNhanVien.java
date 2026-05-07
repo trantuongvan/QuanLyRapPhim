@@ -46,7 +46,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         JPanel pnlTitle = new JPanel(new FlowLayout(FlowLayout.CENTER));
         pnlTitle.setBackground(new Color(245, 245, 245));
         JLabel lblTitle = new JLabel("QUẢN LÝ NHÂN VIÊN");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        lblTitle.setFont(new Font("Tamoha", Font.BOLD, 32));
         lblTitle.setForeground(new Color(220, 0, 0));
         pnlTitle.add(lblTitle);
         pnlContent.add(pnlTitle, BorderLayout.NORTH);
@@ -87,8 +87,8 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         // Font chung
-        Font labelFont = new Font("Segoe UI", Font.BOLD, 14);
-        Font fieldFont = new Font("Segoe UI", Font.PLAIN, 14);
+        Font labelFont = new Font("Tamoha", Font.BOLD, 14);
+        Font fieldFont = new Font("Tamoha", Font.PLAIN, 14);
 
         int row = 0;
 

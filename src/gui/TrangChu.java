@@ -42,10 +42,10 @@ public class TrangChu extends JPanel {
 
         JLabel title1 = new JLabel("Hệ thống quản lý rạp chiếu phim ");
         title1.setForeground(Color.WHITE);
-        title1.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        title1.setFont(new Font("Tamoha", Font.BOLD, 36));
         JLabel title2 = new JLabel("AbsoluteCinema");
         title2.setForeground(new Color(255, 144, 0));
-        title2.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        title2.setFont(new Font("Tamoha", Font.BOLD, 36));
 
         titleTop.add(title1);
         titleTop.add(title2);
@@ -60,7 +60,7 @@ public class TrangChu extends JPanel {
 
         JLabel name = new JLabel("Xin kính chào");
         name.setForeground(Color.WHITE);
-        name.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        name.setFont(new Font("Tamoha", Font.BOLD, 36));
         name.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 

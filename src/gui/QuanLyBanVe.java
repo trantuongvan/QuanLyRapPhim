@@ -46,7 +46,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         loadData();
         // ===== NORTH: Tiêu đề =====
         JLabel lblTitle = new JLabel("QUẢN LÝ BÁN VÉ", JLabel.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setFont(new Font("Tamoha", Font.BOLD, 28));
         lblTitle.setForeground(Color.RED);
         add(lblTitle, BorderLayout.NORTH);
 
@@ -80,7 +80,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         pSuat.setLayout(new BoxLayout(pSuat, BoxLayout.X_AXIS));
         pSuat.add(new JLabel("     Chọn suất chiếu:    "));
         pSuat.add(cbSuatChieu);
-        this.fChonGhe = new Font("Arial", Font.BOLD, 16);
+        this.fChonGhe = new Font("Tamoha", Font.BOLD, 16);
         btnChonGhe = new JButton("Chọn ghế");
         btnChonGhe.setEnabled(false);
         btnChonGhe.setBackground(Color.RED);

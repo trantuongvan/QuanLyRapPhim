@@ -1,6 +1,8 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -23,13 +25,11 @@ import entity.SuatChieu;
 public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
     private JTable tblThongKe;
     private JButton btnXem, btnBaoCao, btnTim;
-    private JLabel lblTotalPhimValue, lblTotalVeValue, lblTotalDoanhThuValue;
-    private JTextField txtTimKiem;
+    private JTextField txtTotalPhim, txtTotalVe, txtTotalDoanhThu, txtTimKiem;
     private JTree treeNgayChieu;
     private DefaultTableModel model;
 
     private QuanLySuatChieu_DAO quanLySuatChieu_DAO;
-
     private QuanLyPhim_DAO quanLyPhim_Dao;
     private QuanLyHoaDon_DAO quanLyHoaDon_DAO;
     private String month;
@@ -40,87 +40,142 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
     }
 
     public QuanLyThongKe() {
+        setLayout(null);
+
+        Color darkBg = new Color(34, 34, 34);
+        setBackground(darkBg);
+        Color orangeColor = new Color(245, 140, 0);
+
         quanLyPhim_Dao = new QuanLyPhim_DAO();
         quanLyHoaDon_DAO = new QuanLyHoaDon_DAO();
+        quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
 
-        setLayout(new BorderLayout(10, 10));
-        setBackground(Color.WHITE);
-
-        // ===== NORTH =====
-        JLabel lblTitle = new JLabel("BÁO CÁO THỐNG KÊ", SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel("BÁO CÁO THỐNG KÊ");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
-        lblTitle.setForeground(new Color(220, 20, 60));
-        lblTitle.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        add(lblTitle, BorderLayout.NORTH);
+        lblTitle.setForeground(orangeColor);
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitle.setBounds(20, 15, 1210, 40);
+        add(lblTitle);
 
-        // ===== WEST (JTree ngày chiếu) =====
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Danh sách Tháng chiếu");
-        String[] thangList = {
-                "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+        JPanel pnTop = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
         };
-        for (String thang : thangList) {
-            root.add(new DefaultMutableTreeNode("Tháng: " + thang));
+        pnTop.setOpaque(false);
+        pnTop.setLayout(null);
+        pnTop.setBounds(20, 70, 940, 60);
+        add(pnTop);
+
+        txtTimKiem = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(orangeColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        txtTimKiem.setOpaque(false);
+        txtTimKiem.setBorder(new EmptyBorder(0, 15, 0, 15));
+        txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        txtTimKiem.setForeground(Color.BLACK);
+        txtTimKiem.setCaretColor(Color.BLACK);
+        txtTimKiem.setBounds(178, 15, 200, 30);
+        pnTop.add(txtTimKiem);
+
+        btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
+        btnBaoCao = taoNutBoGoc("Lập Báo cáo", orangeColor);
+        btnXem = taoNutBoGoc("Làm mới", orangeColor);
+        btnTim.setBounds(393, 15, 80, 30);
+        pnTop.add(btnTim);
+        btnBaoCao.setBounds(488, 15, 140, 30);
+        pnTop.add(btnBaoCao);
+        btnXem.setBounds(643, 15, 120, 30);
+        pnTop.add(btnXem);
+
+        JPanel pnInput = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
+        };
+        pnInput.setOpaque(false);
+        pnInput.setLayout(null);
+        pnInput.setBounds(20, 150, 940, 240);
+        add(pnInput);
+
+        JLabel lblThongTin = new JLabel("THỐNG KÊ TỔNG QUAN");
+        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
+        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblThongTin.setBounds(0, 10, 940, 30);
+        pnInput.add(lblThongTin);
+
+        JTextField[] tfs = new JTextField[3];
+        for (int i = 0; i < 3; i++) {
+            tfs[i] = new JTextField("0") {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setColor(orangeColor);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    g2.dispose();
+                    super.paintComponent(g);
+                }
+            };
+            tfs[i].setOpaque(false);
+            tfs[i].setBorder(new EmptyBorder(0, 15, 0, 15));
+            tfs[i].setForeground(Color.BLACK);
+            tfs[i].setFont(new Font("Tahoma", Font.BOLD, 18));
+            tfs[i].setHorizontalAlignment(JTextField.CENTER);
+            tfs[i].setEditable(false);
         }
 
-        treeNgayChieu = new JTree(new DefaultTreeModel(root));
-        JScrollPane scrollTree = new JScrollPane(treeNgayChieu);
-        scrollTree.setPreferredSize(new Dimension(220, 0));
-        add(scrollTree, BorderLayout.WEST);
+        txtTotalPhim = tfs[0];
+        txtTotalVe = tfs[1];
+        txtTotalDoanhThu = tfs[2];
 
-        // ===== CENTER =====
-        JPanel pnCenter = new JPanel(new BorderLayout(10, 10));
-        pnCenter.setBackground(Color.WHITE);
-        add(pnCenter, BorderLayout.CENTER);
+        Font fontLbl = new Font("Tahoma", Font.BOLD, 16);
+        int y1 = 70, y2 = 140;
+        int wLbl = 200, hComp = 35, wFld = 240;
 
-        // === Thống kê tổng quan ===
-        JPanel pnThongKe = new JPanel(new GridLayout(1, 4, 12, 5));
-        pnThongKe.setBackground(Color.WHITE);
-        pnThongKe.setBorder(BorderFactory.createTitledBorder("Thống kê tổng quan"));
+        JLabel lblTotalPhimTitle = new JLabel("Tổng số phim:");
+        lblTotalPhimTitle.setFont(fontLbl);
+        lblTotalPhimTitle.setBounds(60, y1, wLbl, hComp);
+        pnInput.add(lblTotalPhimTitle);
+        txtTotalPhim.setBounds(250, y1, wFld, hComp);
+        pnInput.add(txtTotalPhim);
 
-        Font fTitle = new Font("Tahoma", Font.BOLD, 15);
-        Font fValue = new Font("Tahoma", Font.BOLD, 20);
-        // -- Tổng phim --
-        JPanel pnTotalPhim = new JPanel(new BorderLayout());
-        pnTotalPhim.setBackground(Color.WHITE);
-        JLabel lblTotalPhimTitle = new JLabel("Tổng số phim", SwingConstants.CENTER);
-        lblTotalPhimTitle.setFont(fTitle);
-        lblTotalPhimTitle.setForeground(Color.BLACK);
-        lblTotalPhimValue = new JLabel("0", SwingConstants.CENTER);
-        lblTotalPhimValue.setFont(fValue);
-        lblTotalPhimValue.setForeground(Color.BLACK);
-        pnTotalPhim.add(lblTotalPhimTitle, BorderLayout.NORTH);
-        pnTotalPhim.add(lblTotalPhimValue, BorderLayout.CENTER);
-        pnThongKe.add(pnTotalPhim);
-        // -- Tổng vé --
-        JPanel pnTotalVe = new JPanel(new BorderLayout());
-        pnTotalVe.setBackground(Color.WHITE);
-        JLabel lblTotalVeTitle = new JLabel("Tổng số vé đã bán", SwingConstants.CENTER);
-        lblTotalVeTitle.setFont(fTitle);
-        lblTotalVeTitle.setForeground(Color.BLACK);
-        lblTotalVeValue = new JLabel("0", SwingConstants.CENTER);
-        lblTotalVeValue.setFont(fValue);
-        lblTotalVeValue.setForeground(Color.BLACK);
-        pnTotalVe.add(lblTotalVeTitle, BorderLayout.NORTH);
-        pnTotalVe.add(lblTotalVeValue, BorderLayout.CENTER);
-        pnThongKe.add(pnTotalVe);
-        // -- Tổng doanh thu --
-        JPanel pnTotalDoanhThu = new JPanel(new BorderLayout());
-        pnTotalDoanhThu.setBackground(Color.WHITE);
-        JLabel lblTotalDoanhThuTitle = new JLabel("Tổng doanh thu (vnđ)", SwingConstants.CENTER);
-        lblTotalDoanhThuTitle.setFont(fTitle);
-        lblTotalDoanhThuTitle.setForeground(Color.BLACK);
-        lblTotalDoanhThuValue = new JLabel("0", SwingConstants.CENTER);
-        lblTotalDoanhThuValue.setFont(fValue);
-        lblTotalDoanhThuValue.setForeground(Color.BLACK);
-        pnTotalDoanhThu.add(lblTotalDoanhThuTitle, BorderLayout.NORTH);
-        pnTotalDoanhThu.add(lblTotalDoanhThuValue, BorderLayout.CENTER);
-        pnThongKe.add(pnTotalDoanhThu);
+        JLabel lblTotalVeTitle = new JLabel("Tổng số vé đã bán:");
+        lblTotalVeTitle.setFont(fontLbl);
+        lblTotalVeTitle.setBounds(530, y1, 180, hComp);
+        pnInput.add(lblTotalVeTitle);
+        txtTotalVe.setBounds(710, y1, 190, hComp);
+        pnInput.add(txtTotalVe);
 
-        pnCenter.add(pnThongKe, BorderLayout.NORTH);
+        JLabel lblTotalDoanhThuTitle = new JLabel("Tổng doanh thu (vnđ):");
+        lblTotalDoanhThuTitle.setFont(fontLbl);
+        lblTotalDoanhThuTitle.setBounds(60, y2, wLbl, hComp);
+        pnInput.add(lblTotalDoanhThuTitle);
+        txtTotalDoanhThu.setBounds(250, y2, wFld, hComp);
+        txtTotalDoanhThu.setForeground(new Color(178, 34, 34));
+        pnInput.add(txtTotalDoanhThu);
 
-        // === BẢNG DỮ LIỆU ===
+
+
+
         String[] columns = { "Mã phim", "Tên phim", "Ngày", "Số vé đã bán", "Tổng doanh thu (vnđ)" };
-
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -128,48 +183,72 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
             }
         };
         tblThongKe = new JTable(model);
-        tblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        tblThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
-        tblThongKe.setRowHeight(28);
-        JScrollPane scrollTable = new JScrollPane(tblThongKe);
-        pnCenter.add(scrollTable, BorderLayout.CENTER);
+        tblThongKe.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        tblThongKe.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+        tblThongKe.setRowHeight(35);
+        tblThongKe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        tinhTongThongKe();
-
-        // ===== SOUTH (nút chức năng) =====
-        JPanel pnSouth = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        pnSouth.setBackground(Color.WHITE);
-
-        JLabel lblTim = new JLabel("Tìm mã phim:");
-        lblTim.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        txtTimKiem = new JTextField(15);
-        txtTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        pnSouth.add(lblTim);
-        pnSouth.add(txtTimKiem);
-        btnTim = new JButton("Tìm");
-        btnBaoCao = new JButton("Lập Báo cáo");
-        btnXem = new JButton("Làm mới");
-
-        JButton[] arrBtns = { btnTim, btnBaoCao, btnXem };
-        Color[] colors = {
-                new Color(231, 76, 60),
-                new Color(46, 204, 113),
-                new Color(52, 152, 219)
-
-        };
-
-        Font btnFont = new Font("Segoe UI", Font.BOLD, 16);
-        for (int i = 0; i < arrBtns.length; i++) {
-            arrBtns[i].setFont(btnFont);
-            arrBtns[i].setBackground(colors[i]);
-            arrBtns[i].setForeground(Color.WHITE);
-            arrBtns[i].setFocusPainted(false);
-            arrBtns[i].setPreferredSize(new Dimension(160, 45));
-            arrBtns[i].addActionListener(this);
-            pnSouth.add(arrBtns[i]);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for(int i=0; i<tblThongKe.getColumnCount(); i++){
+            tblThongKe.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        add(pnSouth, BorderLayout.SOUTH);
+        JScrollPane scrollTable = new JScrollPane(tblThongKe);
+        scrollTable.setBounds(20, 420, 940, 360);
+        scrollTable.getViewport().setBackground(Color.WHITE);
+        scrollTable.setBorder(BorderFactory.createEmptyBorder());
+        add(scrollTable);
+
+        JPanel pnRight = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+            }
+        };
+        pnRight.setLayout(null);
+        pnRight.setOpaque(false);
+        pnRight.setBounds(1000, 70, 270, 710);
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Danh sách Tháng chiếu");
+        String[] thangList = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
+        for (String thang : thangList) {
+            root.add(new DefaultMutableTreeNode("Tháng: " + thang));
+        }
+
+        treeNgayChieu = new JTree(new DefaultTreeModel(root));
+        treeNgayChieu.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        treeNgayChieu.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        //render lại list tháng
+        treeNgayChieu.setRowHeight(35);
+        treeNgayChieu.putClientProperty("JTree.lineStyle", "Angled");
+        javax.swing.tree.DefaultTreeCellRenderer renderer = new javax.swing.tree.DefaultTreeCellRenderer();
+        renderer.setBackgroundSelectionColor(orangeColor);
+        renderer.setTextSelectionColor(Color.WHITE);
+        renderer.setBackgroundNonSelectionColor(Color.WHITE);
+        renderer.setTextNonSelectionColor(Color.BLACK);
+        renderer.setLeafIcon(null);
+        renderer.setClosedIcon(null);
+        renderer.setOpenIcon(null);
+        renderer.setBorderSelectionColor(null);
+        treeNgayChieu.setCellRenderer(renderer);
+
+        JScrollPane scrollTree = new JScrollPane(treeNgayChieu);
+        scrollTree.setBounds(10 , 10, 230, 690);
+        scrollTree.setBorder(BorderFactory.createEmptyBorder());
+        pnRight.add(scrollTree);
+
+        add(pnRight);
+
+        btnXem.addActionListener(this);
+        btnBaoCao.addActionListener(this);
+        btnTim.addActionListener(this);
+
         capNhatBang();
         chonNut();
     }
@@ -177,18 +256,42 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
-        if (src == btnXem)
+        if (src == btnXem) {
             capNhatBang();
-        else if (src == btnTim)
+            txtTimKiem.setText("");
+        } else if (src == btnTim) {
             timKiem();
-        else if (src == btnBaoCao)
+        } else if (src == btnBaoCao) {
             if (month != null) {
                 lapBaoCao(month);
             } else {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn tháng để lập báo cáo!", "Thông báo",
                         JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
 
+    private JButton taoNutBoGoc(String text, Color bgColor) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btn.setBackground(bgColor);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        return btn;
     }
 
     private void tinhTongThongKeTheoThang(String thang) {
@@ -204,16 +307,15 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
                 totalDoanhThu += quanLyHoaDon_DAO.tinhDoanhThuTheoPhim(phim.getMaPhim());
             }
         }
-        lblTotalPhimValue.setText(String.valueOf(totalPhim));
-        lblTotalVeValue.setText(String.valueOf(totalVe));
+        txtTotalPhim.setText(String.valueOf(totalPhim));
+        txtTotalVe.setText(String.valueOf(totalVe));
         NumberFormat nf = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
         nf.setMinimumFractionDigits(2);
         nf.setMaximumFractionDigits(2);
-        lblTotalDoanhThuValue.setText(nf.format(totalDoanhThu));
+        txtTotalDoanhThu.setText(nf.format(totalDoanhThu));
     }
 
     private boolean ktPhimTrongThang(String maPhim, int month) {
-
         if (quanLySuatChieu_DAO == null)
             quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
         for (SuatChieu suat : quanLySuatChieu_DAO.getAllSuatChieu()) {
@@ -225,15 +327,12 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
     }
 
     private void chonNut() {
-        // ===== Sự kiện chọn node trên cây =====
         treeNgayChieu.addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeNgayChieu.getLastSelectedPathComponent();
-            if (node == null)
-                return;
+            if (node == null) return;
             String text = node.toString();
             if (text.startsWith("Tháng:")) {
                 try {
-                    // chỉ có tháng và không có ngày chiếu nên lấy tháng
                     month = text.replace("Tháng:", "").trim();
                     capNhatBangTheoThang(month);
                 } catch (Exception ex) {
@@ -249,21 +348,19 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         int totalPhim = model.getRowCount();
         int totalVe = 0;
         long totalDoanhThu = 0L;
-        // compute totals from DAOs to avoid parsing formatted strings
         for (Phim phim : quanLyPhim_Dao.getAllPhim()) {
             totalVe += quanLyHoaDon_DAO.tinhTongSoLuongVeTheoPhim(phim.getMaPhim());
             totalDoanhThu += quanLyHoaDon_DAO.tinhDoanhThuTheoPhim(phim.getMaPhim());
         }
-        lblTotalPhimValue.setText(String.valueOf(totalPhim));
-        lblTotalVeValue.setText(String.valueOf(totalVe));
+        txtTotalPhim.setText(String.valueOf(totalPhim));
+        txtTotalVe.setText(String.valueOf(totalVe));
         NumberFormat nf = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
         nf.setMinimumFractionDigits(2);
         nf.setMaximumFractionDigits(2);
-        lblTotalDoanhThuValue.setText(nf.format(totalDoanhThu));
+        txtTotalDoanhThu.setText(nf.format(totalDoanhThu));
     }
 
     private void capNhatBang() {
-
         model.setRowCount(0);
         for (Phim phim : quanLyPhim_Dao.getAllPhim()) {
             model.addRow(new Object[] {
@@ -292,35 +389,30 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         for (Phim phim : quanLyPhim_Dao.getAllPhim()) {
             String dateStr = ngayChieu(phim.getMaPhim());
             if (dateStr == null || dateStr.trim().isEmpty()) {
-                // không có suất chiếu cho phim này -> bỏ qua
                 continue;
             }
             try {
                 LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 if (date.getMonthValue() == Integer.parseInt(monthStr)) {
-                    // Chú ý: cột đã khai báo là {"Mã phim", "Ngày", "Tên phim", ...}
                     model.addRow(new Object[] {
                             phim.getMaPhim(),
-                            dateStr,
                             phim.getTenPhim(),
+                            dateStr,
                             quanLyHoaDon_DAO.tinhTongSoLuongVeTheoPhim(phim.getMaPhim()),
                             quanLyHoaDon_DAO.tinhDoanhThuTheoPhim(phim.getMaPhim())
                     });
                 }
             } catch (Exception ex) {
-                // Nếu parse thất bại, bỏ qua phim này (tránh ném ngoại lệ làm vỡ giao diện)
                 System.err.println("Bỏ qua phim do lỗi parse ngày: " + phim.getMaPhim() + " -> " + dateStr);
             }
         }
-
         tinhTongThongKeTheoThang(monthStr);
-
     }
 
     private void timKiem() {
         String maTim = txtTimKiem.getText().trim();
         if (maTim.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập mã suất cần tìm!", "Thông báo",
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập mã phim cần tìm!", "Thông báo",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -333,12 +425,10 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(this, "Không tìm thấy suất chiếu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Không tìm thấy phim!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void lapBaoCao(String month) {
         new BaoCaoUI(month);
-
     }
-
 }

@@ -2,7 +2,7 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +16,7 @@ import entity.Phim;
 import entity.TheLoaiPhim;
 import entity.LoadData;
 
-public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
+public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
     private JTable table;
     private DefaultTableModel model;
     private JTextField txtMaPhim, txtTenPhim, txtNhaSX, txtThoiLuong, txtQuocGia, txtTimPhim;
@@ -26,169 +26,202 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
     private QuanLyPhim_DAO phimDAO;
     private ArrayList<Phim> dsPhim;
 
-    private final Font FONT_LBL = new Font("Segoe UI", Font.BOLD, 16);
-    private final Font FONT_TXT = new Font("Segoe UI", Font.PLAIN, 16);
-    private final Border BORDER_BTN = BorderFactory.createLineBorder(new Color(0, 123, 255), 1);
+    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 16);
+    private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
 
     public QuanLyPhim() {
         setLayout(null);
-        
-        Color bgColor = new Color(235, 245, 255);
-        setBackground(bgColor);
+
+        Color darkBg = new Color(34, 34, 34);
+        setBackground(darkBg);
 
         try {
             ConnectDB.getInstance().connect();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "❌ Không thể kết nối CSDL: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Không thể kết nối CSDL: " + e.getMessage());
         }
 
         phimDAO = new QuanLyPhim_DAO();
 
+        Color orangeColor = new Color(245, 140, 0);
+        Color redColor = new Color(175, 25, 25);
+
         JLabel lblTieuDe = new JLabel("Quản lý phim");
-        lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
+        lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTieuDe.setBounds(0, 15, 1180, 35);
+        lblTieuDe.setBounds(0, 15, 1300, 40);
         add(lblTieuDe);
-        
-        JPanel pnInput = new JPanel();
+
+        JPanel pnTop = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+            }
+        };
+        pnTop.setOpaque(false);
+        pnTop.setLayout(null);
+        pnTop.setBounds(40, 70, 1220, 60);
+        add(pnTop);
+
+        txtTimPhim = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(orangeColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                super.paintComponent(g);
+            }
+        };
+        txtTimPhim.setOpaque(false);
+        txtTimPhim.setBorder(new EmptyBorder(0, 15, 0, 15));
+        txtTimPhim.setFont(FONT_TXT);
+        txtTimPhim.setForeground(Color.BLACK);
+        txtTimPhim.setCaretColor(Color.BLACK);
+        txtTimPhim.setBounds(20, 15, 450, 30);
+        pnTop.add(txtTimPhim);
+
+        btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
+        btnThem = taoNutBoGoc("Thêm", orangeColor);
+        btnSua = taoNutBoGoc("Sửa", orangeColor);
+        btnXoa = taoNutBoGoc("Xóa", orangeColor);
+        btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);
+        btnLamMoi = taoNutBoGoc("Làm mới", orangeColor);
+
+        btnTim.setBounds(500, 15, 80, 30);
+        pnTop.add(btnTim);
+        btnThem.setBounds(600, 15, 90, 30);
+        pnTop.add(btnThem);
+        btnSua.setBounds(710, 15, 90, 30);
+        pnTop.add(btnSua);
+        btnXoa.setBounds(820, 15, 90, 30);
+        pnTop.add(btnXoa);
+        btnXoaRong.setBounds(930, 15, 110, 30);
+        pnTop.add(btnXoaRong);
+        btnLamMoi.setBounds(1060, 15, 110, 30);
+        pnTop.add(btnLamMoi);
+
+        JPanel pnInput = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.white);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+            }
+        };
+        pnInput.setOpaque(false);
         pnInput.setLayout(null);
-        pnInput.setBackground(Color.WHITE);
-        pnInput.setBorder(BorderFactory.createTitledBorder("Thông tin phim"));
-        pnInput.setBounds(40, 60, 780, 240); 
+        pnInput.setBounds(40, 150, 1220, 200);
         add(pnInput);
 
-        JLabel lblMaPhim = new JLabel("Mã phim:");
-        lblMaPhim.setBounds(40, 40, 120, 30);
-        lblMaPhim.setFont(FONT_LBL);
-        pnInput.add(lblMaPhim);
+        JLabel lblThongTin = new JLabel("THÔNG TIN PHIM");
+        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
+        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 20));
+        lblThongTin.setForeground(Color.BLACK);
+        lblThongTin.setBounds(0, 10, 1220, 30);
+        pnInput.add(lblThongTin);
 
-        txtMaPhim = new JTextField();
-        txtMaPhim.setBounds(170, 40, 200, 30);
-        txtMaPhim.setEditable(false);
-        styleTextField(txtMaPhim);
-        pnInput.add(txtMaPhim);
+        JTextField[] tfs = new JTextField[5];
+        for (int i = 0; i < 5; i++) {
+            tfs[i] = new JTextField() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setColor(orangeColor);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    super.paintComponent(g);
+                }
+            };
+            tfs[i].setOpaque(false);
+            tfs[i].setBorder(new EmptyBorder(0, 10, 0, 10));
+            tfs[i].setForeground(Color.BLACK);
+            tfs[i].setFont(FONT_TXT);
+            tfs[i].setCaretColor(Color.BLACK);
+        }
 
-        JLabel lblTenPhim = new JLabel("Tên phim:");
-        lblTenPhim.setBounds(410, 40, 120, 30);
-        lblTenPhim.setFont(FONT_LBL);
-        pnInput.add(lblTenPhim);
-
-        txtTenPhim = new JTextField();
-        txtTenPhim.setBounds(540, 40, 200, 30);
-        styleTextField(txtTenPhim);
-        pnInput.add(txtTenPhim);
-        
-        JLabel lblNhaSX = new JLabel("Nhà sản xuất:");
-        lblNhaSX.setBounds(40, 100, 120, 30);
-        lblNhaSX.setFont(FONT_LBL);
-        pnInput.add(lblNhaSX);
-
-        txtNhaSX = new JTextField();
-        txtNhaSX.setBounds(170, 100, 200, 30);
-        styleTextField(txtNhaSX);
-        pnInput.add(txtNhaSX);
-
-        JLabel lblTheLoai = new JLabel("Thể loại:");
-        lblTheLoai.setBounds(410, 100, 120, 30);
-        lblTheLoai.setFont(FONT_LBL);
-        pnInput.add(lblTheLoai);
+        txtMaPhim = tfs[0]; txtMaPhim.setEditable(false);
+        txtNhaSX = tfs[1];
+        txtThoiLuong = tfs[2];
+        txtTenPhim = tfs[3];
+        txtQuocGia = tfs[4];
 
         cboTheLoai = new JComboBox<>(TheLoaiPhim.values());
-        cboTheLoai.setBounds(540, 100, 200, 30);
+        cboTheLoai.setBackground(orangeColor);
+        cboTheLoai.setForeground(Color.BLACK);
+        cboTheLoai.setBorder(null);
         cboTheLoai.setFont(FONT_TXT);
-        pnInput.add(cboTheLoai);
+
+        int y1 = 45, y2 = 95, y3 = 145;
+        int wLbl = 130, hComp = 35, wFld = 350;
+
+        JLabel lblMaPhim = new JLabel("Mã phim:");
+        lblMaPhim.setFont(FONT_LBL);
+        lblMaPhim.setBounds(80, y1, wLbl, hComp);
+        pnInput.add(lblMaPhim);
+        txtMaPhim.setBounds(210, y1, wFld, hComp);
+        pnInput.add(txtMaPhim);
+
+        JLabel lblNhaSX = new JLabel("Nhà sản xuất:");
+        lblNhaSX.setFont(FONT_LBL);
+        lblNhaSX.setBounds(80, y2, wLbl, hComp);
+        pnInput.add(lblNhaSX);
+        txtNhaSX.setBounds(210, y2, wFld, hComp);
+        pnInput.add(txtNhaSX);
 
         JLabel lblThoiLuong = new JLabel("Thời lượng:");
-        lblThoiLuong.setBounds(40, 160, 120, 30);
         lblThoiLuong.setFont(FONT_LBL);
+        lblThoiLuong.setBounds(80, y3, wLbl, hComp);
         pnInput.add(lblThoiLuong);
-
-        txtThoiLuong = new JTextField();
-        txtThoiLuong.setBounds(170, 160, 200, 30);
-        styleTextField(txtThoiLuong);
+        txtThoiLuong.setBounds(210, y3, wFld, hComp);
         pnInput.add(txtThoiLuong);
-        
-        JLabel lblQuocGia = new JLabel("Quốc gia:");
-        lblQuocGia.setBounds(410, 160, 120, 30);
-        lblQuocGia.setFont(FONT_LBL);
-        pnInput.add(lblQuocGia);
 
-        txtQuocGia = new JTextField();
-        txtQuocGia.setBounds(540, 160, 200, 30);
-        styleTextField(txtQuocGia);
+        JLabel lblTenPhim = new JLabel("Tên phim:");
+        lblTenPhim.setFont(FONT_LBL);
+        lblTenPhim.setBounds(650, y1, wLbl, hComp);
+        pnInput.add(lblTenPhim);
+        txtTenPhim.setBounds(780, y1, wFld, hComp);
+        pnInput.add(txtTenPhim);
+
+        JLabel lblTheLoai = new JLabel("Thể loại:");
+        lblTheLoai.setFont(FONT_LBL);
+        lblTheLoai.setBounds(650, y2, wLbl, hComp);
+        pnInput.add(lblTheLoai);
+        cboTheLoai.setBounds(780, y2, wFld, hComp);
+        pnInput.add(cboTheLoai);
+
+        JLabel lblQuocGia = new JLabel("Quốc gia:");
+        lblQuocGia.setFont(FONT_LBL);
+        lblQuocGia.setBounds(650, y3, wLbl, hComp);
+        pnInput.add(lblQuocGia);
+        txtQuocGia.setBounds(780, y3, wFld, hComp);
         pnInput.add(txtQuocGia);
 
-        JPanel pnActions = new JPanel();
-        pnActions.setLayout(null);
-        pnActions.setBackground(Color.WHITE);
-        
-        pnActions.setBounds(840, 60, 320, 240);
-        add(pnActions);
-
-        JLabel lblTim = new JLabel("Nhập mã phim cần tìm:");
-        lblTim.setFont(FONT_LBL);
-        lblTim.setBounds(20, 10, 180, 30);
-        pnActions.add(lblTim);
-
-        txtTimPhim = new JTextField();
-        txtTimPhim.setBounds(20, 45, 180, 30);
-        styleTextField(txtTimPhim);
-        pnActions.add(txtTimPhim);
-
-        btnTim = new JButton("Tìm");
-        btnTim.setIcon(new ImageIcon("icon/search.png"));
-        styleButton(btnTim, new Color(108, 117, 125));
-        btnTim.setBounds(210, 45, 90, 30);
-        pnActions.add(btnTim);
-
-        btnThem = new JButton("Thêm");
-        btnThem.setIcon(new ImageIcon("icon/add.png"));
-        styleButton(btnThem, new Color(0, 123, 255));
-        btnThem.setBounds(20, 90, 135, 45); 
-        pnActions.add(btnThem);
-
-        btnSua = new JButton("Sửa");
-        btnSua.setIcon(new ImageIcon("icon/edit.png"));
-        styleButton(btnSua, new Color(23, 162, 184));
-        btnSua.setBounds(165, 90, 135, 45); 
-        pnActions.add(btnSua);
-
-        btnXoa = new JButton("Xóa");
-        btnXoa.setIcon(new ImageIcon("icon/delete.png"));
-        styleButton(btnXoa, new Color(220, 53, 69));
-        btnXoa.setBounds(20, 145, 135, 45); 
-        pnActions.add(btnXoa);
-        
-        btnXoaRong = new JButton("Xóa rỗng");
-        btnXoaRong.setIcon(new ImageIcon("icon/clear.png"));
-        styleButton(btnXoaRong, new Color(255, 193, 7));
-        btnXoaRong.setBounds(165, 145, 135, 45); 
-        pnActions.add(btnXoaRong);
-        
-        btnLamMoi = new JButton("Làm mới Table");
-        btnLamMoi.setIcon(new ImageIcon("icon/refresh.png"));
-        styleButton(btnLamMoi, new Color(108, 117, 125));
-        btnLamMoi.setBounds(20, 200, 280, 35); 
-        pnActions.add(btnLamMoi);
-        
         model = new DefaultTableModel(new String[] {
-                "Mã phim", "Tên phim", "Nhà SX", "Thể loại", "Thời lượng", "Quốc gia"
+                "Mã phim", "Tên phim", "Nhà sản xuất", "Thể loại", "Thời lượng", "Quốc gia"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        
+
         table = new JTable(model);
-        table.setRowHeight(26);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
+        table.setRowHeight(35);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setBackground(redColor);
+        table.getTableHeader().setForeground(Color.WHITE);
 
         JScrollPane scroll = new JScrollPane(table);
-        
-        scroll.setBounds(40, 320, 1120, 400); 
+        scroll.setBounds(40, 380, 1220, 400);
+        scroll.getViewport().setBackground(Color.WHITE);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
         add(scroll);
 
         btnThem.addActionListener(this);
@@ -197,34 +230,37 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         btnXoaRong.addActionListener(this);
         btnLamMoi.addActionListener(this);
         btnTim.addActionListener(this);
-        
+
         table.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) { 
+            if (!e.getValueIsAdjusting()) {
                 hienThiLenForm();
             }
         });
-        
+
         loadDataToTable();
         xoaRong();
     }
-    
-    private void styleTextField(JTextField txt) {
-        txt.setFont(FONT_TXT);
-        txt.setMargin(new Insets(2, 6, 2, 6));
-        txt.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-    }
-
-    private void styleButton(JButton btn, Color bgColor) {
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        btn.setBackground(bgColor);
-        btn.setForeground(Color.WHITE);
+    private JButton taoNutBoGoc(String text, Color bgColor) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
-        btn.setBorder(BORDER_BTN);
+        btn.setBorderPainted(false);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btn.setPreferredSize(new Dimension(130, 50));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
-    
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -357,11 +393,11 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
                     txtQuocGia.getText().trim());
 
             if (phimDAO.themPhim(p)) {
-                JOptionPane.showMessageDialog(this, "✅ Thêm phim thành công!");
+                JOptionPane.showMessageDialog(this, "Thêm phim thành công!");
                 loadDataToTable();
                 xoaRong();
             } else {
-                JOptionPane.showMessageDialog(this, "❌ Thêm thất bại!");
+                JOptionPane.showMessageDialog(this, "Thêm thất bại!");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi không xác định khi thêm: " + e.getMessage());
@@ -388,11 +424,11 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
                     txtQuocGia.getText().trim());
 
             if (phimDAO.capNhatPhim(p)) {
-                JOptionPane.showMessageDialog(this, "✅ Cập nhật thành công!");
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
                 loadDataToTable();
                 xoaRong();
             } else {
-                JOptionPane.showMessageDialog(this, "❌ Không tìm thấy phim cần sửa!");
+                JOptionPane.showMessageDialog(this, "Không tìm thấy phim cần sửa!");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi sửa phim: " + e.getMessage());
@@ -420,11 +456,11 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         
         if (confirm == JOptionPane.YES_OPTION) {
             if (phimDAO.xoaPhim(ma)) {
-                JOptionPane.showMessageDialog(this, "✅ Xóa thành công!");
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
                 loadDataToTable();
                 xoaRong();
             } else {
-                JOptionPane.showMessageDialog(this, "❌ Xóa thất bại!");
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!");
             }
         }
     }
@@ -459,7 +495,7 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
             }
 
         } else {
-            JOptionPane.showMessageDialog(this, "❌ Không tìm thấy phim có mã " + ma);
+            JOptionPane.showMessageDialog(this, "Không tìm thấy phim có mã " + ma);
             xoaRong(); 
         }
     }

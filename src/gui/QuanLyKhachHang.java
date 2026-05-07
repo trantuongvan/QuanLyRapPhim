@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,6 +10,7 @@ import java.util.List;
 import dao.QuanLyKhachHang_DAO;
 import entity.KhachHang;
 import entity.LoadData;
+import entity.TheLoaiPhim;
 
 public class QuanLyKhachHang extends JPanel implements ActionListener, MouseListener, LoadData {
 
@@ -19,9 +21,8 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
     private JComboBox<String> cboGioiTinh;
     private JButton btnThem, btnXoaTrang, btnXoa1Dong, btnLamMoi, btnSua, btnTimKiem;
 
-    private final Font FONT_LBL = new Font("Segoe UI", Font.BOLD, 16);
-    private final Font FONT_TXT = new Font("Segoe UI", Font.PLAIN, 16);
-    private final Border BORDER_BTN = BorderFactory.createLineBorder(new Color(0, 123, 255), 1);
+    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 16);
+    private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
 
     @Override
     public void loadData() {
@@ -30,128 +31,162 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
     }
 
     public QuanLyKhachHang() {
-        setLayout(null); 
-        
-        Color bgColor = new Color(235, 245, 255);
-        setBackground(bgColor);
+        setLayout(null);
+
+        Color darkBg = new Color(34, 34, 34);
+        setBackground(darkBg);
 
         kh_dao = new QuanLyKhachHang_DAO();
 
+        Color orangeColor = new Color(245, 140, 0);
+
         JLabel lblTieuDe = new JLabel("Quản lý khách hàng");
-        lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
+        lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTieuDe.setBounds(0, 15, 1180, 35);
+        lblTieuDe.setBounds(0, 15, 1300, 40);
         add(lblTieuDe);
 
-        JPanel pnInput = new JPanel();
+        JPanel pnTop = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+            }
+        };
+        pnTop.setOpaque(false);
+        pnTop.setLayout(null);
+        pnTop.setBounds(40, 70, 1220, 60);
+        add(pnTop);
+
+        txtTimKiem = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(orangeColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                super.paintComponent(g);
+            }
+        };
+        txtTimKiem.setOpaque(false);
+        txtTimKiem.setBorder(new EmptyBorder(0, 15, 0, 15));
+        txtTimKiem.setFont(FONT_TXT);
+        txtTimKiem.setForeground(Color.BLACK);
+        txtTimKiem.setCaretColor(Color.BLACK);
+        txtTimKiem.setBounds(20, 15, 450, 30);
+        pnTop.add(txtTimKiem);
+
+        btnTimKiem = taoNutBoGoc("Tìm", new Color(160, 82, 45));
+        btnThem = taoNutBoGoc("Thêm", orangeColor);
+        btnSua = taoNutBoGoc("Sửa", orangeColor);
+        btnXoa1Dong = taoNutBoGoc("Xóa", orangeColor);
+        btnXoaTrang = taoNutBoGoc("Xóa rỗng", orangeColor);
+        btnLamMoi = taoNutBoGoc("Làm mới", orangeColor);
+
+        btnTimKiem.setBounds(500, 15, 80, 30);
+        pnTop.add(btnTimKiem);
+        btnThem.setBounds(600, 15, 90, 30);
+        pnTop.add(btnThem);
+        btnSua.setBounds(710, 15, 90, 30);
+        pnTop.add(btnSua);
+        btnXoa1Dong.setBounds(820, 15, 90, 30);
+        pnTop.add(btnXoa1Dong);
+        btnXoaTrang.setBounds(930, 15, 110, 30);
+        pnTop.add(btnXoaTrang);
+        btnLamMoi.setBounds(1060, 15, 110, 30);
+        pnTop.add(btnLamMoi);
+
+        JPanel pnInput = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.white);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+            }
+        };
+        pnInput.setOpaque(false);
         pnInput.setLayout(null);
-        pnInput.setBackground(Color.WHITE);
-        pnInput.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
-        pnInput.setBounds(40, 60, 780, 240); 
+        pnInput.setBounds(40, 150, 1220, 200);
         add(pnInput);
 
-        JLabel lblMaKH = new JLabel("Mã khách hàng:");
-        lblMaKH.setBounds(40, 40, 120, 30);
-        lblMaKH.setFont(FONT_LBL);
-        pnInput.add(lblMaKH);
+        JLabel lblThongTin = new JLabel("THÔNG TIN KHÁCH HÀNG");
+        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
+        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 20));
+        lblThongTin.setForeground(Color.BLACK);
+        lblThongTin.setBounds(0, 10, 1220, 30);
+        pnInput.add(lblThongTin);
 
-        txtMaKH = new JTextField();
-        txtMaKH.setBounds(170, 40, 200, 30);
+        JTextField[] tfs = new JTextField[4];
+        for (int i = 0; i < 4; i++) {
+            tfs[i] = new JTextField() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setColor(orangeColor);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    super.paintComponent(g);
+                }
+            };
+            tfs[i].setOpaque(false);
+            tfs[i].setBorder(new EmptyBorder(0, 10, 0, 10));
+            tfs[i].setForeground(Color.BLACK);
+            tfs[i].setFont(FONT_TXT);
+            tfs[i].setCaretColor(Color.BLACK);
+        }
+
+        txtMaKH = tfs[0];
         txtMaKH.setEditable(false);
-        styleTextField(txtMaKH);
+        txtHoTen = tfs[1];
+        txtSoDT = tfs[2];
+        txtDiaChi = tfs[3];
+
+        cboGioiTinh = new JComboBox<>(new String[] {"Nam", "Nữ"});
+        cboGioiTinh.setBackground(orangeColor);
+        cboGioiTinh.setForeground(Color.BLACK);
+        cboGioiTinh.setBorder(null);
+        cboGioiTinh.setFont(FONT_TXT);
+
+        int y1 = 45, y2 = 95, y3 = 145;
+        int wLbl = 130, hComp = 35, wFld = 350;
+
+        JLabel lblMaKH = new JLabel("Mã khách hàng:");
+        lblMaKH.setFont(FONT_LBL);
+        lblMaKH.setBounds(80, y1, wLbl, hComp);
+        pnInput.add(lblMaKH);
+        txtMaKH.setBounds(210, y1, wFld, hComp);
         pnInput.add(txtMaKH);
 
-        JLabel lblHoTen = new JLabel("Họ tên:");
-        lblHoTen.setBounds(410, 40, 120, 30);
-        lblHoTen.setFont(FONT_LBL);
-        pnInput.add(lblHoTen);
-
-        txtHoTen = new JTextField();
-        txtHoTen.setBounds(540, 40, 200, 30);
-        styleTextField(txtHoTen);
-        pnInput.add(txtHoTen);
-
         JLabel lblGioiTinh = new JLabel("Giới tính:");
-        lblGioiTinh.setBounds(40, 100, 120, 30);
         lblGioiTinh.setFont(FONT_LBL);
+        lblGioiTinh.setBounds(80, y2, wLbl, hComp);
         pnInput.add(lblGioiTinh);
-
-        cboGioiTinh = new JComboBox<>(new String[] { "Nam", "Nữ" });
-        cboGioiTinh.setBounds(170, 100, 200, 30);
-        cboGioiTinh.setFont(FONT_TXT);
+        cboGioiTinh.setBounds(210, y2, wFld, hComp);
         pnInput.add(cboGioiTinh);
 
-        JLabel lblSoDT = new JLabel("Số điện thoại:");
-        lblSoDT.setBounds(410, 100, 120, 30);
-        lblSoDT.setFont(FONT_LBL);
-        pnInput.add(lblSoDT);
-
-        txtSoDT = new JTextField();
-        txtSoDT.setBounds(540, 100, 200, 30);
-        styleTextField(txtSoDT);
-        pnInput.add(txtSoDT);
-
         JLabel lblDiaChi = new JLabel("Địa chỉ:");
-        lblDiaChi.setBounds(40, 160, 120, 30);
         lblDiaChi.setFont(FONT_LBL);
+        lblDiaChi.setBounds(80, y3, wLbl, hComp);
         pnInput.add(lblDiaChi);
-
-        txtDiaChi = new JTextField();
-        txtDiaChi.setBounds(170, 160, 570, 30);
-        styleTextField(txtDiaChi);
+        txtDiaChi.setBounds(210, y3, 920, hComp);
         pnInput.add(txtDiaChi);
 
-        JPanel pnActions = new JPanel();
-        pnActions.setLayout(null);
-        pnActions.setBackground(Color.WHITE);
-        pnActions.setBounds(840, 60, 320, 240); 
-        add(pnActions);
+        JLabel lblHoTen = new JLabel("Họ tên:");
+        lblHoTen.setFont(FONT_LBL);
+        lblHoTen.setBounds(650, y1, wLbl, hComp);
+        pnInput.add(lblHoTen);
+        txtHoTen.setBounds(780, y1, wFld, hComp);
+        pnInput.add(txtHoTen);
 
-        JLabel lblTim = new JLabel("Nhập mã KH cần tìm:");
-        lblTim.setFont(FONT_LBL);
-        lblTim.setBounds(20, 10, 180, 30);
-        pnActions.add(lblTim);
-
-        txtTimKiem = new JTextField();
-        txtTimKiem.setBounds(20, 45, 180, 30);
-        styleTextField(txtTimKiem);
-        pnActions.add(txtTimKiem);
-
-        btnTimKiem = new JButton("Tìm");
-        btnTimKiem.setIcon(new ImageIcon("icon/search.png"));
-        styleButton(btnTimKiem, new Color(108, 117, 125));
-        btnTimKiem.setBounds(210, 45, 90, 30);
-        pnActions.add(btnTimKiem);
-
-        btnThem = new JButton("Thêm");
-        btnThem.setIcon(new ImageIcon("icon/add.png"));
-        styleButton(btnThem, new Color(0, 123, 255));
-        btnThem.setBounds(20, 90, 135, 45); 
-        pnActions.add(btnThem);
-
-        btnSua = new JButton("Sửa");
-        btnSua.setIcon(new ImageIcon("icon/edit.png"));
-        styleButton(btnSua, new Color(23, 162, 184));
-        btnSua.setBounds(165, 90, 135, 45); 
-        pnActions.add(btnSua);
-
-        btnXoa1Dong = new JButton("Xóa");
-        btnXoa1Dong.setIcon(new ImageIcon("icon/delete.png"));
-        styleButton(btnXoa1Dong, new Color(220, 53, 69));
-        btnXoa1Dong.setBounds(20, 145, 135, 45); 
-        pnActions.add(btnXoa1Dong);
-        
-        btnXoaTrang = new JButton("Xóa rỗng");
-        btnXoaTrang.setIcon(new ImageIcon("icon/clear.png"));
-        styleButton(btnXoaTrang, new Color(255, 193, 7));
-        btnXoaTrang.setBounds(165, 145, 135, 45); 
-        pnActions.add(btnXoaTrang);
-        
-        btnLamMoi = new JButton("Làm mới Table");
-        btnLamMoi.setIcon(new ImageIcon("icon/refresh.png"));
-        styleButton(btnLamMoi, new Color(108, 117, 125));
-        btnLamMoi.setBounds(20, 200, 280, 35);
-        pnActions.add(btnLamMoi);
+        JLabel lblSdt = new JLabel("Số điện thoại:");
+        lblSdt.setFont(FONT_LBL);
+        lblSdt.setBounds(650, y2, wLbl, hComp);
+        pnInput.add(lblSdt);
+        txtSoDT.setBounds(780, y2, wFld, hComp);
+        pnInput.add(txtSoDT);
 
         String[] headers = "Mã KH;Họ tên;Giới tính;Số ĐT;Địa chỉ".split(";");
         tableModel = new DefaultTableModel(headers, 0) {
@@ -161,13 +196,15 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
             }
         };
         table = new JTable(tableModel);
-        table.setRowHeight(26);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
+        table.setRowHeight(35);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+        table.getTableHeader().setBackground(new Color(175, 25, 25));
+        table.getTableHeader().setForeground(Color.WHITE);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(table);
  
-        scroll.setBounds(40, 320, 1120, 400); 
+        scroll.setBounds(40, 380, 1220, 400);
         add(scroll);
 
         table.addMouseListener(this);
@@ -178,30 +215,33 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         btnSua.addActionListener(this);
         btnTimKiem.addActionListener(this);
 
-        btnSua.setEnabled(false);
-        btnXoa1Dong.setEnabled(false);
+//        btnSua.setEnabled(false);
+//        btnXoa1Dong.setEnabled(false);
         DocDuLieuVaoTable();
     }
 
-    // === CÁC HÀM STYLING ===
-    private void styleTextField(JTextField txt) {
-        txt.setFont(FONT_TXT);
-        txt.setMargin(new Insets(2, 6, 2, 6));
-        txt.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-    }
-
-    private void styleButton(JButton btn, Color bgColor) {
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        btn.setBackground(bgColor);
-        btn.setForeground(Color.WHITE);
+    private JButton taoNutBoGoc(String text, Color bgColor) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
-        btn.setBorder(BORDER_BTN);
+        btn.setBorderPainted(false);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btn.setPreferredSize(new Dimension(130, 50));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
-    // === CÁC HÀM LOGIC (GIỮ NGUYÊN) ===
 
     private void DocDuLieuVaoTable() {
         tableModel.setRowCount(0);
@@ -227,8 +267,8 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         txtTimKiem.setText("");
         table.clearSelection();
 
-        btnSua.setEnabled(false);
-        btnXoa1Dong.setEnabled(false);
+//        btnSua.setEnabled(false);
+//        btnXoa1Dong.setEnabled(false);
         txtHoTen.requestFocus();
     }
 
@@ -422,8 +462,6 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
             txtSoDT.setText(tableModel.getValueAt(row, 3).toString());
             txtDiaChi.setText(tableModel.getValueAt(row, 4).toString());
 
-            btnSua.setEnabled(true);
-            btnXoa1Dong.setEnabled(true);
         }
     }
 

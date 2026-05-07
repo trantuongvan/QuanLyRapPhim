@@ -53,7 +53,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
         // ===== NORTH: Tiêu đề =====
         JLabel lblTitle = new JLabel("QUẢN LÝ BÁN VÉ", JLabel.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(Color.RED);
         add(lblTitle, BorderLayout.NORTH);
 

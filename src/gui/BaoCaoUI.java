@@ -1,6 +1,8 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import dao.QuanLyHoaDon_DAO;
 import dao.QuanLyPhim_DAO;
@@ -8,10 +10,10 @@ import dao.QuanLySuatChieu_DAO;
 import entity.Phim;
 import entity.SuatChieu;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.Dialog.ModalExclusionType;
-import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,67 +47,154 @@ public class BaoCaoUI extends JFrame {
         quanLyPhim_Dao = new QuanLyPhim_DAO();
         quanLyHoaDon_DAO = new QuanLyHoaDon_DAO();
         quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
-        setTitle("Báo Cáo");
-        setSize(800, 600);
+
+        tinhTongThongKe(thang);
+
+        setTitle("Chi Tiết Báo Cáo");
+        setSize(800, 680);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
-        JPanel pNorth = new JPanel(new BorderLayout());
-        JLabel lblTieuDe = new JLabel("BÁO CÁO", SwingConstants.CENTER);
-        lblTieuDe.setForeground(new Color(220, 20, 60));
+        setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+        setResizable(false);
 
-        lblTieuDe.setFont(lblTieuDe.getFont().deriveFont(24.0f));
-        pNorth.add(lblTieuDe, BorderLayout.NORTH);
-        tinhTongThongKe(thang);
-        JPanel pNoidung = new JPanel(new GridLayout(4, 1));
-        JLabel lblNgayBaoCao = new JLabel(
-                "Ngày Báo cáo    : " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        lblNgayBaoCao.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNgayBaoCao.setFont(lblNgayBaoCao.getFont().deriveFont(16.0f));
-        pNoidung.add(lblNgayBaoCao);
+        Color darkBg = new Color(34, 34, 34);
+        Color orangeColor = new Color(245, 140, 0);
+        Color redColor = new Color(175, 25, 25);
+        Color borderColor = new Color(200, 200, 200);
 
-        JLabel lblTongSoPhim = new JLabel("Tổng số Phim    : " + totalPhim);
-        lblTongSoPhim.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTongSoPhim.setFont(lblTongSoPhim.getFont().deriveFont(16.0f));
-        pNoidung.add(lblTongSoPhim);
+        JPanel contentPane = new JPanel(null);
+        contentPane.setBackground(darkBg);
+        setContentPane(contentPane);
 
-        JLabel lblTongSoVe = new JLabel("Tổng số vé        : " + totalVe);
-        lblTongSoVe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTongSoVe.setFont(lblTongSoVe.getFont().deriveFont(16.0f));
-        pNoidung.add(lblTongSoVe);
+        JLabel lblTieuDe = new JLabel("BÁO CÁO THÁNG " + thang);
+        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
+        lblTieuDe.setForeground(orangeColor);
+        lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTieuDe.setBounds(0, 15, 800, 40);
+        contentPane.add(lblTieuDe);
+
+        JPanel pnSummary = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+            }
+        };
+        pnSummary.setLayout(null);
+        pnSummary.setOpaque(false);
+        pnSummary.setBounds(25, 70, 735, 120);
+        contentPane.add(pnSummary);
+
+        Font fontLbl = new Font("Tahoma", Font.BOLD, 16);
+        Font fontVal = new Font("Tahoma", Font.BOLD, 18);
+
+        JLabel lblNgay = new JLabel("Ngày lập báo cáo:");
+        lblNgay.setFont(fontLbl);
+        lblNgay.setBounds(40, 20, 160, 30);
+        pnSummary.add(lblNgay);
+
+        JLabel valNgay = new JLabel(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        valNgay.setFont(fontVal);
+        valNgay.setForeground(orangeColor);
+        valNgay.setBounds(210, 20, 180, 30);
+        pnSummary.add(valNgay);
+
+        JLabel lblPhim = new JLabel("Tổng số phim:");
+        lblPhim.setFont(fontLbl); lblPhim.setBounds(40, 65, 160, 30);
+        pnSummary.add(lblPhim);
+
+        JLabel valPhim = new JLabel(String.valueOf(totalPhim));
+        valPhim.setFont(fontVal); valPhim.setForeground(orangeColor);
+        valPhim.setBounds(210, 65, 180, 30);
+        pnSummary.add(valPhim);
+
+        JLabel lblVe = new JLabel("Tổng số vé đã bán:");
+        lblVe.setFont(fontLbl); lblVe.setBounds(380, 20, 160, 30);
+        pnSummary.add(lblVe);
+
+        JLabel valVe = new JLabel(String.valueOf(totalVe));
+        valVe.setFont(fontVal); valVe.setForeground(orangeColor);
+        valVe.setBounds(550, 20, 180, 30);
+        pnSummary.add(valVe);
+
+        JLabel lblDoanhThu = new JLabel("Tổng doanh thu:");
+        lblDoanhThu.setFont(fontLbl);
+        lblDoanhThu.setBounds(380, 65, 160, 30);
+        pnSummary.add(lblDoanhThu);
 
         NumberFormat nf = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
         nf.setMinimumFractionDigits(2);
         nf.setMaximumFractionDigits(2);
         doanhThu = nf.format(totalDoanhThu);
 
-        JLabel lblTongDoanhThu = new JLabel("Tổng doanh thu : " + doanhThu);
-        lblTongDoanhThu.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTongDoanhThu.setFont(lblTongDoanhThu.getFont().deriveFont(16.0f));
-        pNoidung.add(lblTongDoanhThu);
-        pNorth.add(pNoidung, BorderLayout.CENTER);
-        add(pNorth, BorderLayout.NORTH);
+        JLabel valDoanhThu = new JLabel(doanhThu + " đ");
+        valDoanhThu.setFont(fontVal);
+        valDoanhThu.setForeground(redColor);
+        valDoanhThu.setBounds(550, 65, 180, 30);
+        pnSummary.add(valDoanhThu);
 
-        JPanel pCenter = new JPanel(new BorderLayout());
-        JTable table = new JTable();
-        model = new DefaultTableModel();
-        model.setColumnIdentifiers(new Object[] { "Mã phim", "Tên Phim", "Số Lượng Vé", "Doanh Thu" });
-        table.setModel(model);
+        model = new DefaultTableModel(new Object[] { "Mã phim", "Tên Phim", "Số Lượng Vé", "Doanh Thu (vnđ)" }, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) { return false; }
+        };
+        JTable table = new JTable(model);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 15));
+        table.setRowHeight(35);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for(int i=0; i<table.getColumnCount(); i++){
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
         capNhatBang(thang);
-        JScrollPane scrollPane = new JScrollPane(table);
-        pCenter.add(scrollPane, BorderLayout.CENTER);
-        add(pCenter, BorderLayout.CENTER);
 
-        JPanel pSouth = new JPanel();
-        JButton btnDong = new JButton("Đóng");
-        JButton inBaoCao = new JButton("In Báo Cáo");
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(25, 210, 735, 330);
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        contentPane.add(scrollPane);
+
+        JButton btnDong = taoNutBoGoc("Đóng", redColor);
+        JButton btnInBaoCao = taoNutBoGoc("In Báo Cáo PDF", orangeColor);
+        btnDong.setBounds(240, 565, 140, 45);
+        btnInBaoCao.setBounds(400, 565, 170, 45);
+
         btnDong.addActionListener(e -> close());
-        inBaoCao.addActionListener(e -> handleInHoaDon());
-        pSouth.add(btnDong);
-        pSouth.add(inBaoCao);
-        add(pSouth, BorderLayout.SOUTH);
-        setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+        btnInBaoCao.addActionListener(e -> handleInHoaDon());
+
+        contentPane.add(btnDong);
+        contentPane.add(btnInBaoCao);
+
         setVisible(true);
+    }
+
+    private JButton taoNutBoGoc(String text, Color bgColor) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btn.setBackground(bgColor);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        return btn;
     }
 
     private void tinhTongThongKe(String thang) {
@@ -129,10 +218,7 @@ public class BaoCaoUI extends JFrame {
         nf.setMinimumFractionDigits(2);
         nf.setMaximumFractionDigits(2);
 
-        // For each month, aggregate films, tickets and revenue
-
         for (Phim phim : quanLyPhim_Dao.getAllPhim()) {
-
             if (ktPhimTrongThang(phim.getMaPhim(), Integer.parseInt(thang))) {
                 model.addRow(new Object[] {
                         phim.getMaPhim(),
@@ -140,14 +226,10 @@ public class BaoCaoUI extends JFrame {
                         quanLyHoaDon_DAO.tinhTongSoLuongVeTheoPhim(phim.getMaPhim()),
                         nf.format(quanLyHoaDon_DAO.tinhDoanhThuTheoPhim(phim.getMaPhim())) });
             }
-
         }
-
     }
 
-    // return true if the film has any SuatChieu in the given month
     private boolean ktPhimTrongThang(String maPhim, int month) {
-
         if (quanLySuatChieu_DAO == null)
             quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
         for (SuatChieu suat : quanLySuatChieu_DAO.getAllSuatChieu()) {
@@ -187,8 +269,6 @@ public class BaoCaoUI extends JFrame {
         PdfWriter.getInstance(doc, new FileOutputStream(outFile));
         doc.open();
 
-        // try to find a Unicode-capable TTF to embed so Vietnamese characters render
-        // correctly
         String fontPath = null;
         String[] candidates = new String[] { "fonts/Unicode8.ttf", "fonts/arialuni.ttf",
                 "C:/Windows/Fonts/ARIALUNI.TTF", "C:/Windows/Fonts/ARIAL.TTF" };
@@ -215,21 +295,17 @@ public class BaoCaoUI extends JFrame {
         doc.add(title);
         doc.add(new Paragraph(" ", fontNormal));
 
-        // add meta
         doc.add(new Paragraph("Ngày xuất: " + java.time.LocalDateTime.now()
                 .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")), fontNormal));
         doc.add(new Paragraph(" ", fontNormal));
 
-        // table: month, films, tickets, revenue
         PdfPTable table = new PdfPTable(model.getColumnCount());
         table.setWidthPercentage(100);
-        // headers
         for (int c = 0; c < model.getColumnCount(); c++) {
             PdfPCell h = new PdfPCell(new Paragraph(model.getColumnName(c), fontHeader));
             h.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(h);
         }
-        // rows
         for (int r = 0; r < model.getRowCount(); r++) {
             for (int c = 0; c < model.getColumnCount(); c++) {
                 Object v = model.getValueAt(r, c);
@@ -239,7 +315,6 @@ public class BaoCaoUI extends JFrame {
         }
         doc.add(table);
 
-        // totals
         doc.add(new Paragraph(" ", fontNormal));
         NumberFormat nf = NumberFormat.getNumberInstance(java.util.Locale.forLanguageTag("vi-VN"));
         nf.setMinimumFractionDigits(2);
@@ -252,7 +327,5 @@ public class BaoCaoUI extends JFrame {
 
     private void close() {
         this.dispose();
-        return;
     }
-
 }

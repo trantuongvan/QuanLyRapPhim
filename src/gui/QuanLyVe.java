@@ -63,7 +63,7 @@ public class QuanLyVe extends JPanel implements LoadData, ResetForm {
                 BorderFactory.createLineBorder(Color.GRAY, 1, true),
                 "Thông tin vé phim",
                 TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("Segoe UI", Font.BOLD, 20),
+                new Font("Tahoma", Font.BOLD, 20),
                 Color.DARK_GRAY));
         pnNorth.setBackground(Color.WHITE);
 
@@ -77,7 +77,7 @@ public class QuanLyVe extends JPanel implements LoadData, ResetForm {
         JLabel lblMaSuatChieu = new JLabel("Mã suất chiếu:");
         JLabel lblDaThanhToan = new JLabel("Trạng thái:");
 
-        Font lblFont = new Font("Segoe UI", Font.BOLD, 18);
+        Font lblFont = new Font("Tahoma", Font.BOLD, 18);
         for (JLabel lbl : new JLabel[] { lblMaVe, lblGhe, lblNgayBan, lblMaSuatChieu, lblDaThanhToan })
             lbl.setFont(lblFont);
 

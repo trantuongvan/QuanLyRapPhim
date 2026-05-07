@@ -12,13 +12,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import entity.LoadData;
-import entity.VaiTro;
 
 public class QuanLyNhanVien extends JPanel implements LoadData {
     private QuanLyNhanVien_DAO daoNV;
     private JTable table;
     private DefaultTableModel model;
-    
+
     @Override
     public void loadData() {
         loadNhanVien();
@@ -31,23 +30,24 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
 
     private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 16);
     private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
+    private final Color orangeColor = new Color(245, 140, 0);
 
     public QuanLyNhanVien() {
         daoNV = new QuanLyNhanVien_DAO();
 
-        setLayout(null);
+        setLayout(new BorderLayout(20, 20));
+        setBorder(new EmptyBorder(20, 30, 20, 30));
+        setBackground(new Color(34, 34, 34));
 
-        Color darkBg = new Color(34, 34, 34);
-        setBackground(darkBg);
-
-        Color orangeColor = new Color(245, 140, 0);
-
-        JLabel lblTieuDe = new JLabel("Quản lý nhân viên");
-        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
+        JLabel lblTieuDe = new JLabel("QUẢN LÝ NHÂN VIÊN");
+        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 32));
         lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTieuDe.setBounds(0, 15, 1300, 40);
-        add(lblTieuDe);
+        add(lblTieuDe, BorderLayout.NORTH);
+
+        JPanel pnCenterTop = new JPanel();
+        pnCenterTop.setLayout(new BoxLayout(pnCenterTop, BoxLayout.Y_AXIS));
+        pnCenterTop.setOpaque(false);
 
         JPanel pnTop = new JPanel() {
             @Override
@@ -59,9 +59,9 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
             }
         };
         pnTop.setOpaque(false);
-        pnTop.setLayout(null);
-        pnTop.setBounds(40, 70, 1220, 60);
-        add(pnTop);
+        pnTop.setLayout(new BoxLayout(pnTop, BoxLayout.X_AXIS));
+        pnTop.setBorder(new EmptyBorder(10, 20, 10, 20));
+        pnTop.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60)); // Giữ chiều cao cố định
 
         txtTim = new JTextField() {
             @Override
@@ -78,8 +78,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         txtTim.setFont(FONT_TXT);
         txtTim.setForeground(Color.BLACK);
         txtTim.setCaretColor(Color.BLACK);
-        txtTim.setBounds(20, 15, 450, 30);
-        pnTop.add(txtTim);
+        txtTim.setMaximumSize(new Dimension(500, 35));
 
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);
@@ -88,18 +87,17 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btnXoaTrang = taoNutBoGoc("Xóa rỗng", orangeColor);
         btnTaiLai = taoNutBoGoc("Làm mới", orangeColor);
 
-        btnTim.setBounds(500, 15, 80, 30);
-        pnTop.add(btnTim);
-        btnThem.setBounds(600, 15, 90, 30);
-        pnTop.add(btnThem);
-        btnSua.setBounds(710, 15, 90, 30);
-        pnTop.add(btnSua);
-        btnXoa.setBounds(820, 15, 90, 30);
-        pnTop.add(btnXoa);
-        btnXoaTrang.setBounds(930, 15, 110, 30);
-        pnTop.add(btnXoaTrang);
-        btnTaiLai.setBounds(1060, 15, 110, 30);
+        pnTop.add(txtTim);
+        pnTop.add(Box.createHorizontalGlue());
+        pnTop.add(btnTim); pnTop.add(Box.createHorizontalStrut(10));
+        pnTop.add(btnThem); pnTop.add(Box.createHorizontalStrut(10));
+        pnTop.add(btnSua); pnTop.add(Box.createHorizontalStrut(10));
+        pnTop.add(btnXoa); pnTop.add(Box.createHorizontalStrut(10));
+        pnTop.add(btnXoaTrang); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnTaiLai);
+
+        pnCenterTop.add(pnTop);
+        pnCenterTop.add(Box.createVerticalStrut(20));
 
         JPanel pnInput = new JPanel() {
             @Override
@@ -111,16 +109,19 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
             }
         };
         pnInput.setOpaque(false);
-        pnInput.setLayout(null);
-        pnInput.setBounds(40, 150, 1220, 250);
-        add(pnInput);
+        pnInput.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel lblThongTin = new JLabel("THÔNG TIN NHÂN VIÊN");
         lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
-        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 20));
+        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 22));
         lblThongTin.setForeground(Color.BLACK);
-        lblThongTin.setBounds(0, 10, 1220, 30);
-        pnInput.add(lblThongTin);
+
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
+        pnInput.add(lblThongTin, gbc);
 
         JTextField[] tfs = new JTextField[6];
         for (int i = 0; i < 6; i++) {
@@ -138,80 +139,68 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
             tfs[i].setForeground(Color.BLACK);
             tfs[i].setFont(FONT_TXT);
             tfs[i].setCaretColor(Color.BLACK);
+            tfs[i].setPreferredSize(new Dimension(200, 35));
         }
 
-        txtMa = tfs[0];
-        txtTen = tfs[1];
-        txtDiaChi = tfs[2];
-        txtEmail = tfs[3];
-        txtNgaySinh = tfs[4];
-        txtSdt = tfs[5];
+        txtMa = tfs[0]; txtTen = tfs[1]; txtDiaChi = tfs[2];
+        txtEmail = tfs[3]; txtNgaySinh = tfs[4]; txtSdt = tfs[5];
 
         cboGioiTinh = new JComboBox<>(new String[] {"Nam", "Nữ"});
         cboGioiTinh.setBackground(orangeColor);
         cboGioiTinh.setForeground(Color.BLACK);
-        cboGioiTinh.setBorder(null);
         cboGioiTinh.setFont(FONT_TXT);
+        cboGioiTinh.setPreferredSize(new Dimension(200, 35));
 
-        int y1 = 45, y2 = 95, y3 = 145;
-        int wLbl = 130, hComp = 35, wFld = 350;
+        gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0;
+        pnInput.add(taoLabel("Mã nhân viên:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 0.5;
+        pnInput.add(txtMa, gbc);
+        gbc.gridx = 2; gbc.gridy = 1; gbc.weightx = 0;
+        pnInput.add(taoLabel("Họ tên:"), gbc);
+        gbc.gridx = 3; gbc.gridy = 1; gbc.weightx = 0.5;
+        pnInput.add(txtTen, gbc);
 
-        JLabel lblMaNV = new JLabel("Mã nhân viên:");
-        lblMaNV.setFont(FONT_LBL);
-        lblMaNV.setBounds(80, y1, wLbl, hComp);
-        pnInput.add(lblMaNV);
-        txtMa.setBounds(210, y1, wFld, hComp);
-        pnInput.add(txtMa);
+        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0;
+        pnInput.add(taoLabel("Giới tính:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 2; gbc.weightx = 0.5;
+        pnInput.add(cboGioiTinh, gbc);
+        gbc.gridx = 2; gbc.gridy = 2; gbc.weightx = 0;
+        pnInput.add(taoLabel("Ngày sinh:"), gbc);
+        gbc.gridx = 3; gbc.gridy = 2; gbc.weightx = 0.5;
+        pnInput.add(txtNgaySinh, gbc);
 
-        JLabel lblGioiTinh = new JLabel("Giới tính:");
-        lblGioiTinh.setFont(FONT_LBL);
-        lblGioiTinh.setBounds(80, y2, wLbl, hComp);
-        pnInput.add(lblGioiTinh);
-        cboGioiTinh.setBounds(210, y2, wFld, hComp);
-        pnInput.add(cboGioiTinh);
+        gbc.gridx = 0; gbc.gridy = 3; gbc.weightx = 0;
+        pnInput.add(taoLabel("Sđt:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 3; gbc.weightx = 0.5;
+        pnInput.add(txtSdt, gbc);
+        gbc.gridx = 2; gbc.gridy = 3; gbc.weightx = 0;
+        pnInput.add(taoLabel("Email:"), gbc);
+        gbc.gridx = 3; gbc.gridy = 3; gbc.weightx = 0.5;
+        pnInput.add(txtEmail, gbc);
 
-        JLabel lblSdt = new JLabel("Sđt:");
-        lblSdt.setFont(FONT_LBL);
-        lblSdt.setBounds(80, y3, wLbl, hComp);
-        pnInput.add(lblSdt);
-        txtSdt.setBounds(210, y3, wFld, hComp);
-        pnInput.add(txtSdt);
+        gbc.gridx = 0; gbc.gridy = 4; gbc.weightx = 0;
+        pnInput.add(taoLabel("Địa chỉ:"), gbc);
+        gbc.gridx = 1; gbc.gridy = 4; gbc.weightx = 1.0; gbc.gridwidth = 3;
+        pnInput.add(txtDiaChi, gbc);
 
-        JLabel lblDiaChi = new JLabel("Địa chỉ:");
-        lblDiaChi.setFont(FONT_LBL);
-        lblDiaChi.setBounds(80, 195, wLbl, hComp);
-        pnInput.add(lblDiaChi);
-        txtDiaChi.setBounds(210, 195, 920, hComp);
-        pnInput.add(txtDiaChi);
+        pnCenterTop.add(pnInput);
 
-        JLabel lblHoTen = new JLabel("Họ tên:");
-        lblHoTen.setFont(FONT_LBL);
-        lblHoTen.setBounds(650, y1, wLbl, hComp);
-        pnInput.add(lblHoTen);
-        txtTen.setBounds(780, y1, wFld, hComp);
-        pnInput.add(txtTen);
+        add(pnCenterTop, BorderLayout.NORTH);
 
-        JLabel lblNs = new JLabel("Ngày sinh:");
-        lblNs.setFont(FONT_LBL);
-        lblNs.setBounds(650, y2, wLbl, hComp);
-        pnInput.add(lblNs);
-        txtNgaySinh.setBounds(780, y2, wFld, hComp);
-        pnInput.add(txtNgaySinh);
-
-        JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setFont(FONT_LBL);
-        lblEmail.setBounds(650, y3, wLbl, hComp);
-        pnInput.add(lblEmail);
-        txtEmail.setBounds(780, y3, wFld, hComp);
-        pnInput.add(txtEmail);
-
-        // bảng dữ liệu
         JScrollPane scrollTable = createTable();
-        add(scrollTable);
+        add(scrollTable, BorderLayout.CENTER);
 
         // sự kiện
         attachEvents();
         loadNhanVien();
+    }
+
+    private JLabel taoLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(FONT_LBL);
+        lbl.setForeground(Color.BLACK);
+        return lbl;
     }
 
     private JButton taoNutBoGoc(String text, Color bgColor) {
@@ -230,8 +219,9 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btn.setPreferredSize(new Dimension(130, 50));
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setMaximumSize(new Dimension(110, 35));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
@@ -244,7 +234,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
                 return false;
             }
         };
-        
+
         table = new JTable(model);
         table.setRowHeight(35);
         table.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -255,7 +245,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setBounds(40, 420, 1220, 360);
+        scroll.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); // Tạo khoảng cách với khối form ở trên
         return scroll;
     }
 
@@ -266,14 +256,13 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btnXoa.addActionListener(e -> xoaNhanVien());
         btnTim.addActionListener(e -> timNhanVien());
         btnXoaTrang.addActionListener(e -> clearForm());
-        
+
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 hienThiLenForm();
             }
         });
 
-        // Double click để sửa
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -363,10 +352,10 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         }
         String maNV = model.getValueAt(row, 0).toString();
         String tenNV = model.getValueAt(row, 1).toString();
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Bạn có chắc muốn xóa nhân viên:\n" + tenNV + " (" + maNV + ")?", 
-            "Xác nhận xóa", 
-            JOptionPane.YES_NO_OPTION
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc muốn xóa nhân viên:\n" + tenNV + " (" + maNV + ")?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION
         );
         if (confirm == JOptionPane.YES_OPTION) {
             if (daoNV.xoaNhanVien(maNV)) {

@@ -120,7 +120,7 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         lblThongTin.setBounds(0, 10, 1220, 30);
         pnInput.add(lblThongTin);
 
-        JTextField[] tfs = new JTextField[5];
+        JTextField[] tfs = new JTextField[4];
         for (int i = 0; i < 4; i++) {
             tfs[i] = new JTextField() {
                 @Override
@@ -305,6 +305,8 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         table.setRowHeight(35);
         table.setFont(new Font("Tahoma", Font.PLAIN, 15));
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+        table.getTableHeader().setBackground(new Color(175, 25, 25));
+        table.getTableHeader().setForeground(Color.WHITE);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(table);
  

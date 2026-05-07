@@ -107,7 +107,7 @@ public class Start extends JFrame implements ActionListener {
         btnDangXuat.setIconTextGap(5);
         btnDangXuat.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
         btnDangXuat.setBackground(bgMenu);
-        btnDangXuat.setForeground(Color.RED);
+        btnDangXuat.setForeground(new Color(175, 25, 25));
         btnDangXuat.setFont(fontButton);
         btnDangXuat.setHorizontalAlignment(SwingConstants.LEFT);
         btnDangXuat.setAlignmentX(Component.CENTER_ALIGNMENT);

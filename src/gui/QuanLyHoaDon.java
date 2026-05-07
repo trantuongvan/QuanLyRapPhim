@@ -57,7 +57,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
                 BorderFactory.createLineBorder(Color.GRAY, 1, true),
                 "Thông tin hóa đơn",
                 TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("Tamoha", Font.BOLD, 20),
+                new Font("Tahoma", Font.BOLD, 20),
                 Color.DARK_GRAY));
         pnNorth.setBackground(Color.WHITE);
 
@@ -72,7 +72,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
         JLabel lblSoLuongVe = new JLabel("Số lượng vé:");
         JLabel lblTongTien = new JLabel("Tổng tiền:");
 
-        Font lblFont = new Font("Tamoha", Font.BOLD, 18);
+        Font lblFont = new Font("Tahoma", Font.BOLD, 18);
         for (JLabel lbl : new JLabel[] { lblMaHD, lblNgayLap, lblMaNV, lblMaKH, lblSoLuongVe, lblTongTien })
             lbl.setFont(lblFont);
 

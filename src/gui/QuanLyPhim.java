@@ -28,7 +28,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
 
     private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 16);
     private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
-    private final Border BORDER_BTN = BorderFactory.createLineBorder(new Color(0, 123, 255), 1);
 
     public QuanLyPhim() {
         setLayout(null);
@@ -259,23 +258,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
-    private void styleTextField(JTextField txt) {
-        txt.setFont(FONT_TXT);
-        txt.setMargin(new Insets(2, 6, 2, 6));
-        txt.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-    }
-
-    private void styleButton(JButton btn, Color bgColor) {
-        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btn.setBackground(bgColor);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorder(BORDER_BTN);
-    }
-    
     
     @Override
     public void actionPerformed(ActionEvent e) {

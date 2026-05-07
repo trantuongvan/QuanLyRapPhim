@@ -255,7 +255,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setBounds(40, 420, 1220, 380);
+        scroll.setBounds(40, 420, 1220, 360);
         return scroll;
     }
 

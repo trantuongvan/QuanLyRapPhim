@@ -1,14 +1,17 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+
+import ConnectDB.ConnectDB;
 import dao.QuanLyPhim_DAO;
 import dao.QuanLySuatChieu_DAO;
 import dao.QuanLyRap_DAO;
-import entity.SuatChieu;
+import entity.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,16 +22,13 @@ import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import entity.LoadData;
-import entity.Phim;
-import entity.Rap;
 
 public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData {
     private QuanLySuatChieu_DAO quanLySuatChieu_DAO;
     private JTable tblSuatChieu;
     private JTextField txtMaSuat, txtNgayChieu, txtThoiGian, txtGiaVe, txtTimSuat, txtMaPhim;
     private JComboBox<String> cbPhong, cbTenPhim;
-    private JButton btnThem, btnSua, btnXoa, btnXoaRong, btnTim;
+    private JButton btnThem, btnSua, btnXoa, btnXoaRong, btnTim, btnLamMoi;
     private DefaultTableModel model;
     private JTree treeNgayChieu;
     protected QuanLyPhim_DAO dataPhim;
@@ -37,152 +37,268 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
     @Override
     public void loadData() {
         quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
-        // Thêm tên phim vào cb
         layTenPhim();
-        // Hiển thị dữ liệu lên bảng
         capNhatBang();
     }
 
     public QuanLySuatChieu() {
-        // ===== Cấu hình =====
-        setBackground(Color.WHITE);
-        setLayout(new BorderLayout());
+        setLayout(null);
 
-        // ===== Khởi tạo DAO =====
+        Color darkBg = new Color(34, 34, 34);
+        setBackground(darkBg);
+        Color orangeColor = new Color(245, 140, 0);
+
         quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
 
-        // ===== Tiêu đề =====
-        JLabel lblTitle = new JLabel("QUẢN LÝ SUẤT CHIẾU", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Tamoha", Font.BOLD, 26));
-        lblTitle.setForeground(new Color(220, 20, 60));
-        lblTitle.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
-        add(lblTitle, BorderLayout.NORTH);
+        JLabel lblTitle = new JLabel("QUẢN LÝ SUẤT CHIẾU");
+        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
+        lblTitle.setForeground(orangeColor);
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitle.setBounds(30, 15, 1210, 40);
+        add(lblTitle);
 
-        // ===== Panel trái: Cây tháng =====
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Danh sách Tháng chiếu");
-        String[] thangList = {
-                "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+        JPanel pnTop = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
         };
+        pnTop.setOpaque(false);
+        pnTop.setLayout(null);
+        pnTop.setBounds(20, 70, 940, 60);
+        add(pnTop);
+
+        txtTimSuat = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(orangeColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        txtTimSuat.setOpaque(false);
+        txtTimSuat.setBorder(new EmptyBorder(0, 15, 0, 15));
+        txtTimSuat.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        txtTimSuat.setForeground(Color.BLACK);
+        txtTimSuat.setCaretColor(Color.BLACK);
+        txtTimSuat.setBounds(20, 15, 200, 30);
+        pnTop.add(txtTimSuat);
+
+        btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
+        btnThem = taoNutBoGoc("Thêm", orangeColor);
+        btnSua = taoNutBoGoc("Sửa", orangeColor);
+        btnXoa = taoNutBoGoc("Xóa", orangeColor);
+        btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);
+        btnLamMoi = taoNutBoGoc("Làm mới", orangeColor);
+
+        btnTim.setBounds(240, 15, 80, 30);
+        pnTop.add(btnTim);
+        btnThem.setBounds(340, 15, 90, 30);
+        pnTop.add(btnThem);
+        btnSua.setBounds(450, 15, 90, 30);
+        pnTop.add(btnSua);
+        btnXoa.setBounds(560, 15, 90, 30);
+        pnTop.add(btnXoa);
+        btnXoaRong.setBounds(670, 15, 110, 30);
+        pnTop.add(btnXoaRong);
+        btnLamMoi.setBounds(805, 15, 110, 30);
+        pnTop.add(btnLamMoi);
+
+        JPanel pnInput = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.dispose();
+            }
+        };
+        pnInput.setOpaque(false);
+        pnInput.setLayout(null);
+        pnInput.setBounds(20, 150, 940, 240);
+        add(pnInput);
+
+        JLabel lblThongTin = new JLabel("THÔNG TIN SUẤT CHIẾU");
+        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
+        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 18));
+        lblThongTin.setBounds(0, 10, 980, 30);
+        pnInput.add(lblThongTin);
+
+        JTextField[] tfs = new JTextField[5];
+        for (int i = 0; i < 5; i++) {
+            tfs[i] = new JTextField() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setColor(orangeColor);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    g2.dispose();
+                    super.paintComponent(g);
+                }
+            };
+            tfs[i].setOpaque(false);
+            tfs[i].setBorder(new EmptyBorder(0, 10, 0, 10));
+            tfs[i].setForeground(Color.BLACK);
+            tfs[i].setFont(new Font("Tahoma", Font.PLAIN, 16));
+            tfs[i].setCaretColor(Color.BLACK);
+        }
+
+        txtMaSuat = tfs[0];
+        txtMaPhim = tfs[1]; txtMaPhim.setEditable(false);
+        txtNgayChieu = tfs[2];
+        txtThoiGian = tfs[3];
+        txtGiaVe = tfs[4];
+
+        cbTenPhim = new JComboBox<>();
+        layTenPhim();
+        cbTenPhim.setBackground(orangeColor);
+        cbTenPhim.setForeground(Color.BLACK);
+        cbTenPhim.setBorder(null);
+        cbTenPhim.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+        cbPhong = new JComboBox<>();
+        layPhong();
+        cbPhong.setBackground(orangeColor);
+        cbPhong.setForeground(Color.BLACK);
+        cbPhong.setBorder(null);
+        cbPhong.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+        Font fontLbl = new Font("Tahoma", Font.BOLD, 15);
+        int y1 = 50, y2 = 95, y3 = 140, y4 = 185;
+        int wLbl = 120, hComp = 35, wFld = 280;
+
+        JLabel lblMaSuat = new JLabel("Mã suất:");
+        lblMaSuat.setFont(fontLbl);
+        lblMaSuat.setBounds(60, y1, wLbl, hComp);
+        pnInput.add(lblMaSuat);
+        txtMaSuat.setBounds(180, y1, wFld, hComp);
+        pnInput.add(txtMaSuat);
+
+        JLabel lblTenPhim = new JLabel("Tên phim:");
+        lblTenPhim.setFont(fontLbl);
+        lblTenPhim.setBounds(60, y2, wLbl, hComp);
+        pnInput.add(lblTenPhim);
+        cbTenPhim.setBounds(180, y2, wFld, hComp);
+        pnInput.add(cbTenPhim);
+
+        JLabel lblNgay = new JLabel("Ngày chiếu:");
+        lblNgay.setFont(fontLbl);
+        lblNgay.setBounds(60, y3, wLbl, hComp);
+        pnInput.add(lblNgay);
+        txtNgayChieu.setBounds(180, y3, wFld, hComp);
+        pnInput.add(txtNgayChieu);
+
+        JLabel lblGia = new JLabel("Giá vé:");
+        lblGia.setFont(fontLbl);
+        lblGia.setBounds(60, y4, wLbl, hComp);
+        pnInput.add(lblGia);
+        txtGiaVe.setBounds(180, y4, wFld, hComp);
+        pnInput.add(txtGiaVe);
+
+        JLabel lblMaPhim = new JLabel("Mã phim:");
+        lblMaPhim.setFont(fontLbl);
+        lblMaPhim.setBounds(520, y1, wLbl, hComp);
+        pnInput.add(lblMaPhim);
+        txtMaPhim.setBounds(640, y1, wFld, hComp);
+        pnInput.add(txtMaPhim);
+
+        JLabel lblPhong = new JLabel("Phòng chiếu:");
+        lblPhong.setFont(fontLbl);
+        lblPhong.setBounds(520, y2, wLbl, hComp);
+        pnInput.add(lblPhong);
+        cbPhong.setBounds(640, y2, wFld, hComp);
+        pnInput.add(cbPhong);
+
+        JLabel lblGio = new JLabel("Thời gian:");
+        lblGio.setFont(fontLbl);
+        lblGio.setBounds(520, y3, wLbl, hComp);
+        pnInput.add(lblGio);
+        txtThoiGian.setBounds(640, y3, wFld, hComp);
+        pnInput.add(txtThoiGian);
+
+        model = new DefaultTableModel(new String[] { "Mã Suất", "Mã Phim", "Tên Phim", "Phòng", "Ngày chiếu", "Thời gian", "Giá vé" }, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) { return false; }
+        };
+        tblSuatChieu = new JTable(model);
+        tblSuatChieu.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        tblSuatChieu.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+        tblSuatChieu.setRowHeight(35);
+        tblSuatChieu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for(int i=0; i<tblSuatChieu.getColumnCount(); i++){
+            tblSuatChieu.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        JScrollPane scrollTable = new JScrollPane(tblSuatChieu);
+        scrollTable.setBounds(20, 420, 940, 360);
+        scrollTable.getViewport().setBackground(Color.WHITE);
+        scrollTable.setBorder(BorderFactory.createEmptyBorder());
+        add(scrollTable);
+
+        JPanel pnRight = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
+            }
+        };
+        pnRight.setLayout(null);
+        pnRight.setOpaque(false);
+        pnRight.setBounds(1000, 70, 270, 710);
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Danh sách Tháng chiếu");
+        String[] thangList = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
         for (String thang : thangList) {
             root.add(new DefaultMutableTreeNode("Tháng: " + thang));
         }
 
         treeNgayChieu = new JTree(new DefaultTreeModel(root));
+        treeNgayChieu.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        treeNgayChieu.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        //render lại list tháng
+        treeNgayChieu.setRowHeight(35);
+        treeNgayChieu.putClientProperty("JTree.lineStyle", "Angled");
+        javax.swing.tree.DefaultTreeCellRenderer renderer = new javax.swing.tree.DefaultTreeCellRenderer();
+        renderer.setBackgroundSelectionColor(orangeColor);
+        renderer.setTextSelectionColor(Color.WHITE);
+        renderer.setBackgroundNonSelectionColor(Color.WHITE);
+        renderer.setTextNonSelectionColor(Color.BLACK);
+        renderer.setLeafIcon(null);
+        renderer.setClosedIcon(null);
+        renderer.setOpenIcon(null);
+        renderer.setBorderSelectionColor(null);
+        treeNgayChieu.setCellRenderer(renderer);
+
         JScrollPane scrollTree = new JScrollPane(treeNgayChieu);
-        scrollTree.setPreferredSize(new Dimension(220, 0));
-        add(scrollTree, BorderLayout.WEST);
+        scrollTree.setBounds(10 , 10, 230, 690);
+        scrollTree.setBorder(BorderFactory.createEmptyBorder());
+        pnRight.add(scrollTree);
 
-        // ===== Panel trung tâm =====
-        JPanel pnBody = new JPanel(new BorderLayout());
-        pnBody.setBackground(Color.WHITE);
-        pnBody.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        add(pnBody, BorderLayout.CENTER);
+        add(pnRight);
 
-        // ===== Form nhập liệu =====
-        JPanel pnForm = new JPanel(new GridLayout(4, 4, 10, 10));
-        pnForm.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        pnForm.setBackground(Color.WHITE);
+        btnThem.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnXoa.addActionListener(this);
+        btnXoaRong.addActionListener(this);
+        btnTim.addActionListener(this);
+        btnLamMoi.addActionListener(this);
 
-        pnForm.add(new JLabel("Mã Suất Chiếu:"));
-        txtMaSuat = new JTextField();
-        pnForm.add(txtMaSuat);
-
-        pnForm.add(new JLabel("Mã Phim:"));
-        txtMaPhim = new JTextField();
-        txtMaPhim.setEditable(false);
-        pnForm.add(txtMaPhim);
-
-        pnForm.add(new JLabel("Tên Phim:"));
-        cbTenPhim = new JComboBox<>();
-        layTenPhim();
-        pnForm.add(cbTenPhim);
-
-        pnForm.add(new JLabel("Giá vé:"));
-        txtGiaVe = new JTextField();
-        pnForm.add(txtGiaVe);
-
-        pnForm.add(new JLabel("Ngày Chiếu (dd/MM/yyyy):"));
-        txtNgayChieu = new JTextField();
-        pnForm.add(txtNgayChieu);
-
-        pnForm.add(new JLabel("Thời Gian (HH:mm):"));
-        txtThoiGian = new JTextField();
-        pnForm.add(txtThoiGian);
-
-        pnForm.add(new JLabel("Phòng chiếu:"));
-        cbPhong = new JComboBox<>();
-        // Load phòng (rạp) từ database
-        layPhong();
-        pnForm.add(cbPhong);
-
-        pnBody.add(pnForm, BorderLayout.NORTH);
-
-        // ===== Bảng suất chiếu =====
-        model = new DefaultTableModel(
-                new String[] { "Mã Suất", "Mã Phim", "Tên Phim", "Phòng", "Ngày chiếu", "Thời gian", "Giá vé" }, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
-        tblSuatChieu = new JTable(model);
-        tblSuatChieu.setFont(new Font("Tamoha", Font.PLAIN, 16));
-        tblSuatChieu.getTableHeader().setFont(new Font("Tamoha", Font.BOLD, 17));
-        tblSuatChieu.setRowHeight(26);
-
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        tblSuatChieu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         chonSuatChieu();
-        pnBody.add(new JScrollPane(tblSuatChieu), BorderLayout.CENTER);
-
-        // ===== Panel dưới: nút chức năng =====
-        JPanel pnSouth = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        pnSouth.setBackground(Color.WHITE);
-
-        JLabel lblTim = new JLabel("Tìm mã suất:");
-        lblTim.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        txtTimSuat = new JTextField(15);
-        txtTimSuat.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-
-        btnTim = new JButton("Tìm");
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnXoaRong = new JButton("Xóa rỗng");
-
-        JButton[] arrBtns = { btnThem, btnSua, btnXoa, btnXoaRong, btnTim };
-        Color[] colors = {
-                new Color(46, 204, 113), // xanh lá
-                new Color(52, 152, 219), // xanh dương
-                new Color(231, 76, 60), // đỏ
-                new Color(155, 89, 182), // tím
-                new Color(241, 196, 15), // vàng
-                new Color(255, 140, 0) // cam
-        };
-
-        Font btnFont = new Font("Segoe UI", Font.BOLD, 18);
-        for (int i = 0; i < arrBtns.length; i++) {
-            arrBtns[i].setFont(btnFont);
-            arrBtns[i].setBackground(colors[i]);
-            arrBtns[i].setForeground(Color.WHITE);
-            arrBtns[i].setFocusPainted(false);
-            arrBtns[i].setPreferredSize(new Dimension(130, 45));
-            // Đăng ký listener cho các nút để actionPerformed được gọi
-            arrBtns[i].addActionListener(this);
-        }
-
-        pnSouth.add(lblTim);
-        pnSouth.add(txtTimSuat);
-        pnSouth.add(btnTim);
-        pnSouth.add(btnThem);
-        pnSouth.add(btnSua);
-        pnSouth.add(btnXoa);
-        pnSouth.add(btnXoaRong);
-
-        add(pnSouth, BorderLayout.SOUTH);
-
-        // ===== Gọi hàm hiển thị dữ liệu =====
         capNhatBang();
         chonNut();
     }
@@ -201,7 +317,12 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         } else if (src == btnTim) {
             tim();
         }
+        else if (src.equals(btnLamMoi)) {
+            loadData();
+            xoaRong();
+        }
     }
+
 
     private void chonNut() {
         // ===== Sự kiện chọn node trên cây =====
@@ -225,6 +346,27 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
     }
 
     // ================= Các hàm xử lý ====================
+    private JButton taoNutBoGoc(String text, Color bgColor) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setContentAreaFilled(false);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btn.setPreferredSize(new Dimension(130, 50));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
+    }
     private String tenPhim(String maPhim) {
         dataPhim = new QuanLyPhim_DAO();
         Phim phim = dataPhim.timPhimTheoMa(maPhim);

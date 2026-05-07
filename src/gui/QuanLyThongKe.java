@@ -108,17 +108,16 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
                 g2.dispose();
             }
         };
         pnInput.setOpaque(false);
         pnInput.setLayout(null);
-        pnInput.setBounds(20, 150, 940, 240);
+        pnInput.setBounds(20, 140, 940, 120);
         add(pnInput);
 
-        JLabel lblThongTin = new JLabel("THỐNG KÊ TỔNG QUAN");
-        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel lblThongTin = new JLabel("THỐNG KÊ TỔNG QUAN", SwingConstants.CENTER);
         lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 18));
         lblThongTin.setBounds(0, 10, 940, 30);
         pnInput.add(lblThongTin);
@@ -128,10 +127,10 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
             tfs[i] = new JTextField("0");
             tfs[i].setOpaque(true);
             tfs[i].setBackground(Color.WHITE);
-            tfs[i].setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
+            tfs[i].setBorder(null);
             tfs[i].setForeground(Color.BLACK);
             tfs[i].setFont(new Font("Tahoma", Font.BOLD, 18));
-            tfs[i].setHorizontalAlignment(JTextField.LEFT);
+            tfs[i].setHorizontalAlignment(JTextField.CENTER);
             tfs[i].setEditable(false);
         }
 
@@ -139,34 +138,37 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         txtTotalVe = tfs[1];
         txtTotalDoanhThu = tfs[2];
 
-        Font fontLbl = new Font("Tahoma", Font.BOLD, 16);
-        int y1 = 70, y2 = 140;
-        int wLbl = 200, hComp = 35, wFld = 240;
+        Font fontLbl = new Font("Tahoma", Font.BOLD, 15);
 
-        JLabel lblTotalPhimTitle = new JLabel("Tổng số phim:");
+        int col1 = 0, col2 = 313, col3 = 626;
+        int wCol = 313;
+        int yTitle = 45;
+        int yVal = 75;
+
+        JLabel lblTotalPhimTitle = new JLabel("Tổng số phim", SwingConstants.CENTER);
         lblTotalPhimTitle.setFont(fontLbl);
-        lblTotalPhimTitle.setBounds(60, y1, wLbl, hComp);
+        lblTotalPhimTitle.setBounds(col1, yTitle, wCol, 30);
         pnInput.add(lblTotalPhimTitle);
-        txtTotalPhim.setBounds(250, y1, wFld, hComp);
+
+        txtTotalPhim.setBounds(col1, yVal, wCol, 30);
         pnInput.add(txtTotalPhim);
 
-        JLabel lblTotalVeTitle = new JLabel("Tổng số vé đã bán:");
+        JLabel lblTotalVeTitle = new JLabel("Tổng số vé đã bán", SwingConstants.CENTER);
         lblTotalVeTitle.setFont(fontLbl);
-        lblTotalVeTitle.setBounds(530, y1, 180, hComp);
+        lblTotalVeTitle.setBounds(col2, yTitle, wCol, 30);
         pnInput.add(lblTotalVeTitle);
-        txtTotalVe.setBounds(710, y1, 190, hComp);
+
+        txtTotalVe.setBounds(col2, yVal, wCol, 30);
         pnInput.add(txtTotalVe);
 
-        JLabel lblTotalDoanhThuTitle = new JLabel("Tổng doanh thu (vnđ):");
+        JLabel lblTotalDoanhThuTitle = new JLabel("Tổng doanh thu (vnđ)", SwingConstants.CENTER);
         lblTotalDoanhThuTitle.setFont(fontLbl);
-        lblTotalDoanhThuTitle.setBounds(60, y2, wLbl, hComp);
+        lblTotalDoanhThuTitle.setBounds(col3, yTitle, wCol, 30);
         pnInput.add(lblTotalDoanhThuTitle);
-        txtTotalDoanhThu.setBounds(250, y2, wFld, hComp);
+
+        txtTotalDoanhThu.setBounds(col3, yVal, wCol, 30);
         txtTotalDoanhThu.setForeground(redColor);
         pnInput.add(txtTotalDoanhThu);
-
-
-
 
         String[] columns = { "Mã phim", "Tên phim", "Ngày", "Số vé đã bán", "Tổng doanh thu (vnđ)" };
         model = new DefaultTableModel(columns, 0) {
@@ -182,7 +184,6 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         tblThongKe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblThongKe.getTableHeader().setBackground(redColor);
         tblThongKe.getTableHeader().setForeground(Color.WHITE);
-
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for(int i=0; i<tblThongKe.getColumnCount(); i++){
@@ -190,7 +191,7 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         }
 
         JScrollPane scrollTable = new JScrollPane(tblThongKe);
-        scrollTable.setBounds(20, 420, 940, 360);
+        scrollTable.setBounds(20, 280, 940, 500);
         scrollTable.getViewport().setBackground(Color.WHITE);
         scrollTable.setBorder(BorderFactory.createEmptyBorder());
         add(scrollTable);

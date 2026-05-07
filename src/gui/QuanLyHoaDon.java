@@ -1,240 +1,232 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.util.ArrayList;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import ConnectDB.ConnectDB;
 import dao.QuanLyHoaDon_DAO;
 import entity.HoaDon;
 import entity.LoadData;
+import entity.ResetForm;
 
-public class QuanLyHoaDon extends JPanel implements LoadData {
-    private QuanLyHoaDon_DAO billManager = new QuanLyHoaDon_DAO();
+public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
+    private QuanLyHoaDon_DAO billManager;
 
     private JTable table;
     private DefaultTableModel model;
     private JTextField txtMaHD, txtNgayLap, txtMaNV, txtMaKH, txtSoLuongVe, txtTongTien, txtTimHD;
     private JButton btnXoa, btnXoaRong, btnLuu, btnTim;
 
-    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 16);
-    private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
+    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 18);
+    private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 18);
+    private final Color orangeColor = new Color(245, 140, 0);
+    private final Color panelDarkTone = new Color(50, 50, 50);
+    private final Color tableBackground = new Color(40, 40, 40);
 
     private ArrayList<HoaDon> danhSach = new ArrayList<>();
 
     public QuanLyHoaDon() {
-        setLayout(null);
-
-        Color darkBg = new Color(34, 34, 34);
-        setBackground(darkBg);
+        this.billManager = new QuanLyHoaDon_DAO();
 
         // ======= KẾT NỐI DATABASE =======
         try {
             ConnectDB.getInstance().connect();
-            Connection con = ConnectDB.getConnection();
-            if (con != null)
-                System.out.println("Kết nối SQL Server thành công!");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Không thể kết nối CSDL: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        billManager = new QuanLyHoaDon_DAO();
+        setLayout(new GridBagLayout());
+        setBackground(new Color(34, 34, 34));
 
-        Color orangeColor = new Color(245, 140, 0);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 40, 10, 40);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        JLabel lblTieuDe = new JLabel("Quản lý hóa đơn");
-        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
+        // --- TIÊU ĐỀ ---
+        gbc.gridy = 0;
+        JLabel lblTieuDe = new JLabel("QUẢN LÝ HÓA ĐƠN");
+        lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 32));
         lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTieuDe.setBounds(0, 15, 1300, 40);
-        add(lblTieuDe);
+        add(lblTieuDe, gbc);
 
+        // --- THANH CÔNG CỤ (TOP) ---
+        gbc.gridy = 1;
         JPanel pnTop = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.WHITE);
+                g2.setColor(panelDarkTone);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
         };
         pnTop.setOpaque(false);
-        pnTop.setLayout(null);
-        pnTop.setBounds(40, 70, 1220, 60);
-        add(pnTop);
+        pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
+        pnTop.setPreferredSize(new Dimension(0, 70));
 
-        txtTimHD = new JTextField() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(orangeColor);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-                super.paintComponent(g);
-            }
-        };
-        txtTimHD.setOpaque(false);
-        txtTimHD.setBorder(new EmptyBorder(0, 15, 0, 15));
-        txtTimHD.setFont(FONT_TXT);
-        txtTimHD.setForeground(Color.BLACK);
-        txtTimHD.setCaretColor(Color.BLACK);
-        txtTimHD.setBounds(140, 15, 450, 30);
-        pnTop.add(txtTimHD);
-
+        txtTimHD = createStyledTextField(300);
         btnTim = taoNutBoGoc("Xem", new Color(160, 82, 45));
         btnXoa = taoNutBoGoc("Xóa", orangeColor);
         btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);
         btnLuu = taoNutBoGoc("Lưu", orangeColor);
 
-        btnTim.setBounds(620, 15, 80, 30);
-        pnTop.add(btnTim);
-        btnXoa.setBounds(720, 15, 90, 30);
-        pnTop.add(btnXoa);
-        btnXoaRong.setBounds(830, 15, 110, 30);
-        pnTop.add(btnXoaRong);
-        btnLuu.setBounds(960, 15, 90, 30);
-        pnTop.add(btnLuu);
+        JLabel lblTim = new JLabel("Tìm hóa đơn: ");
+        lblTim.setForeground(Color.WHITE);
+        lblTim.setFont(new Font("Tahoma", Font.BOLD, 16));
 
+        pnTop.add(lblTim);
+        pnTop.add(txtTimHD);
+        pnTop.add(btnTim);
+        pnTop.add(btnXoa);
+        pnTop.add(btnXoaRong);
+        pnTop.add(btnLuu);
+        add(pnTop, gbc);
+
+        // --- NHẬP LIỆU (CENTER) ---
+        gbc.gridy = 2;
         JPanel pnInput = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.white);
+                g2.setColor(panelDarkTone);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
         };
         pnInput.setOpaque(false);
-        pnInput.setLayout(null);
-        pnInput.setBounds(40, 150, 1220, 200);
-        add(pnInput);
+        pnInput.setLayout(new GridBagLayout());
 
-        JLabel lblThongTin = new JLabel("THÔNG TIN HÓA ĐƠN");
-        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
-        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 20));
-        lblThongTin.setForeground(Color.BLACK);
-        lblThongTin.setBounds(0, 10, 1220, 30);
-        pnInput.add(lblThongTin);
+        GridBagConstraints innerGbc = new GridBagConstraints();
+        innerGbc.insets = new Insets(10, 20, 10, 20);
+        innerGbc.anchor = GridBagConstraints.WEST;
 
-        JTextField[] tfs = new JTextField[6];
-        for (int i = 0; i < 6; i++) {
-            tfs[i] = new JTextField() {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setColor(orangeColor);
-                    g2.fillRect(0, 0, getWidth(), getHeight());
-                    super.paintComponent(g);
-                }
-            };
-            tfs[i].setOpaque(false);
-            tfs[i].setBorder(new EmptyBorder(0, 10, 0, 10));
-            tfs[i].setForeground(Color.BLACK);
-            tfs[i].setFont(FONT_TXT);
-            tfs[i].setCaretColor(Color.BLACK);
+        txtMaHD = createStyledTextField(200);
+        txtNgayLap = createStyledTextField(200);
+        txtMaNV = createStyledTextField(200);
+        txtMaKH = createStyledTextField(200);
+        txtSoLuongVe = createStyledTextField(200);
+        txtTongTien = createStyledTextField(200);
+
+        innerGbc.gridx = 0;
+        innerGbc.gridy = 0;
+        innerGbc.gridwidth = 4;
+        innerGbc.anchor = GridBagConstraints.CENTER;
+        JLabel lblHeader = new JLabel("THÔNG TIN CHI TIẾT");
+        lblHeader.setFont(new Font("Tahoma", Font.BOLD, 20));
+        lblHeader.setForeground(Color.WHITE);
+        pnInput.add(lblHeader, innerGbc);
+
+        innerGbc.gridwidth = 1;
+        innerGbc.anchor = GridBagConstraints.WEST;
+
+        String[] labels = {"Mã hóa đơn:", "Ngày lập:", "Mã nhân viên:", "Mã khách hàng:", "Số lượng vé:", "Tổng tiền:"};
+        JLabel[] jLabels = new JLabel[labels.length];
+        for (int i = 0; i < labels.length; i++) {
+            jLabels[i] = new JLabel(labels[i]);
+            jLabels[i].setForeground(Color.WHITE);
+            jLabels[i].setFont(new Font("Tahoma", Font.BOLD, 14));
         }
 
-        txtMaKH = tfs[0];
-        txtMaKH.setEditable(false);
-        txtMaHD = tfs[1];
-        txtMaHD.setEditable(false);
-        txtMaNV = tfs[2];
-        txtMaNV.setEditable(false);
-        txtNgayLap = tfs[3];
-        txtNgayLap.setEditable(false);
-        txtSoLuongVe = tfs[4];
-        txtSoLuongVe.setEditable(false);
-        txtTongTien = tfs[5];
-        txtTongTien.setEditable(false);
+        // Hàng 1
+        innerGbc.gridy = 1;
+        innerGbc.gridx = 0; pnInput.add(jLabels[0], innerGbc);
+        innerGbc.gridx = 1; innerGbc.fill = GridBagConstraints.HORIZONTAL; innerGbc.weightx = 0.5; pnInput.add(txtMaHD, innerGbc);
+        innerGbc.gridx = 2; innerGbc.fill = GridBagConstraints.NONE; innerGbc.weightx = 0; pnInput.add(jLabels[1], innerGbc);
+        innerGbc.gridx = 3; innerGbc.fill = GridBagConstraints.HORIZONTAL; innerGbc.weightx = 0.5; pnInput.add(txtNgayLap, innerGbc);
 
-        int y1 = 45, y2 = 95, y3 = 145;
-        int wLbl = 130, hComp = 35, wFld = 350;
+        // Hàng 2
+        innerGbc.gridy = 2;
+        innerGbc.gridx = 0; innerGbc.fill = GridBagConstraints.NONE; innerGbc.weightx = 0; pnInput.add(jLabels[2], innerGbc);
+        innerGbc.gridx = 1; innerGbc.fill = GridBagConstraints.HORIZONTAL; innerGbc.weightx = 0.5; pnInput.add(txtMaNV, innerGbc);
+        innerGbc.gridx = 2; innerGbc.fill = GridBagConstraints.NONE; innerGbc.weightx = 0; pnInput.add(jLabels[3], innerGbc);
+        innerGbc.gridx = 3; innerGbc.fill = GridBagConstraints.HORIZONTAL; innerGbc.weightx = 0.5; pnInput.add(txtMaKH, innerGbc);
 
-        JLabel lblMaPhim = new JLabel("Mã hóa đơn:");
-        lblMaPhim.setFont(FONT_LBL);
-        lblMaPhim.setBounds(80, y1, wLbl, hComp);
-        pnInput.add(lblMaPhim);
-        txtMaHD.setBounds(210, y1, wFld, hComp);
-        pnInput.add(txtMaHD);
+        // Hàng 3
+        innerGbc.gridy = 3;
+        innerGbc.gridx = 0; innerGbc.fill = GridBagConstraints.NONE; innerGbc.weightx = 0; pnInput.add(jLabels[4], innerGbc);
+        innerGbc.gridx = 1; innerGbc.fill = GridBagConstraints.HORIZONTAL; innerGbc.weightx = 0.5; pnInput.add(txtSoLuongVe, innerGbc);
+        innerGbc.gridx = 2; innerGbc.fill = GridBagConstraints.NONE; innerGbc.weightx = 0; pnInput.add(jLabels[5], innerGbc);
+        innerGbc.gridx = 3; innerGbc.fill = GridBagConstraints.HORIZONTAL; innerGbc.weightx = 0.5; pnInput.add(txtTongTien, innerGbc);
 
-        JLabel lblNhaSX = new JLabel("Mã nhân viên:");
-        lblNhaSX.setFont(FONT_LBL);
-        lblNhaSX.setBounds(80, y2, wLbl, hComp);
-        pnInput.add(lblNhaSX);
-        txtMaNV.setBounds(210, y2, wFld, hComp);
-        pnInput.add(txtMaNV);
+        add(pnInput, gbc);
 
-        JLabel lblThoiLuong = new JLabel("Mã khách hàng:");
-        lblThoiLuong.setFont(FONT_LBL);
-        lblThoiLuong.setBounds(80, y3, wLbl, hComp);
-        pnInput.add(lblThoiLuong);
-        txtMaKH.setBounds(210, y3, wFld, hComp);
-        pnInput.add(txtMaKH);
+        // --- BẢNG DỮ LIỆU (BOTTOM) ---
+        gbc.gridy = 3;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
 
-        JLabel lblTenPhim = new JLabel("Ngày lập:");
-        lblTenPhim.setFont(FONT_LBL);
-        lblTenPhim.setBounds(650, y1, wLbl, hComp);
-        pnInput.add(lblTenPhim);
-        txtNgayLap.setBounds(780, y1, wFld, hComp);
-        pnInput.add(txtNgayLap);
-
-        JLabel lblTheLoai = new JLabel("Số lượng vé:");
-        lblTheLoai.setFont(FONT_LBL);
-        lblTheLoai.setBounds(650, y2, wLbl, hComp);
-        pnInput.add(lblTheLoai);
-        txtSoLuongVe.setBounds(780, y2, wFld, hComp);
-        pnInput.add(txtSoLuongVe);
-
-        JLabel lblQuocGia = new JLabel("Tổng tiền:");
-        lblQuocGia.setFont(FONT_LBL);
-        lblQuocGia.setBounds(650, y3, wLbl, hComp);
-        pnInput.add(lblQuocGia);
-        txtTongTien.setBounds(780, y3, wFld, hComp);
-        pnInput.add(txtTongTien);
-
-        model = new DefaultTableModel(new String[] {
-                "Mã hóa đơn", "Ngày lập", "Mã NV", "Mã KH", "Số lượng vé", "Tổng tiền"
-        }, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        model = new DefaultTableModel(new String[]{"Mã hóa đơn", "Ngày lập", "Mã NV", "Mã KH", "Số lượng vé", "Tổng tiền"}, 0);
         table = new JTable(model);
-        table.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        table.setFont(new Font("Tahoma", Font.PLAIN, 16));
         table.setRowHeight(35);
-        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+
+        table.setBackground(tableBackground);
+        table.setForeground(Color.WHITE);
+        table.setGridColor(new Color(70, 70, 70));
+        table.setSelectionBackground(new Color(80, 80, 80));
+        table.setSelectionForeground(orangeColor);
+
         table.getTableHeader().setBackground(new Color(175, 25, 25));
         table.getTableHeader().setForeground(Color.WHITE);
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setBounds(40, 380, 1220, 400);
-        scroll.getViewport().setBackground(Color.WHITE);
         scroll.setBorder(BorderFactory.createEmptyBorder());
-        add(scroll);
+        scroll.getViewport().setBackground(tableBackground);
+        add(scroll, gbc);
 
-        //  SỰ KIỆN
-        loadData();
-
+        // SỰ KIỆN
         btnXoa.addActionListener(e -> xoaHoaDon());
-        btnXoaRong.addActionListener(e -> xoaRong());
+        btnXoaRong.addActionListener(e -> resetForm());
         btnLuu.addActionListener(e -> luu());
         btnTim.addActionListener(e -> timHoaDon());
         table.getSelectionModel().addListSelectionListener(e -> hienThiLenForm());
+
+        loadData();
+    }
+
+    private JTextField createStyledTextField(int width) {
+        JTextField tf = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(orangeColor);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        tf.setOpaque(false);
+        tf.setBorder(new EmptyBorder(0, 10, 0, 10));
+        tf.setFont(FONT_TXT);
+        tf.setForeground(Color.BLACK);
+        tf.setCaretColor(Color.BLACK);
+        tf.setPreferredSize(new Dimension(width, 35));
+        return tf;
     }
 
     private JButton taoNutBoGoc(String text, Color bgColor) {
         JButton btn = new JButton(text) {
+            private boolean isHovered = false;
+            {
+                addMouseListener(new MouseAdapter() {
+                    @Override public void mouseEntered(MouseEvent e) { isHovered = true; repaint(); }
+                    @Override public void mouseExited(MouseEvent e) { isHovered = false; repaint(); }
+                });
+            }
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(bgColor);
+                g2.setColor(isHovered ? bgColor.darker() : bgColor);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
                 g2.dispose();
                 super.paintComponent(g);
@@ -245,8 +237,8 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
         btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btn.setPreferredSize(new Dimension(130, 50));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setPreferredSize(new Dimension(110, 35));
         return btn;
     }
 
@@ -257,94 +249,70 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
     }
 
     private void refreshTable() {
-        this.model.setRowCount(0);
-        if (danhSach == null)
-            return;
+        model.setRowCount(0);
         for (HoaDon hd : danhSach) {
-            String ma = hd.getMaHoaDon();
-            String ngay = hd.getNgayLap() != null ? hd.getNgayLap().toString() : "";
-            String maNV = hd.getNhanVien() != null ? hd.getNhanVien().getMaNV() : "";
-            String maKH = hd.getKhachHang() != null ? hd.getKhachHang().getMaKH() : "";
-
-            int sl = this.billManager.getTongSoLuongVeCuaHoaDon(ma);
-
-            float tt = hd.getTongTien();
-
-            this.model.addRow(new Object[] { ma, ngay, maNV, maKH, sl, tt });
+            int sl = billManager.getTongSoLuongVeCuaHoaDon(hd.getMaHoaDon());
+            model.addRow(new Object[]{
+                    hd.getMaHoaDon(),
+                    hd.getNgayLap(),
+                    hd.getNhanVien().getMaNV(),
+                    hd.getKhachHang().getMaKH(),
+                    sl,
+                    hd.getTongTien()
+            });
         }
     }
 
     private void xoaHoaDon() {
-        String ma = this.txtMaHD.getText().trim();
+        String ma = txtMaHD.getText().trim();
         if (ma.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nhập mã hóa đơn cần xóa!");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(this, "Xóa hóa đơn " + ma + "?", "Xác nhận",
-                JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, "Xóa hóa đơn " + ma + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            if (this.billManager.XoaHoaDonTheoMa(ma)) {
+            if (billManager.XoaHoaDonTheoMa(ma)) {
                 JOptionPane.showMessageDialog(this, "Xóa thành công!");
                 loadData();
-                xoaRong();
-            } else {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn cần xóa!");
+                resetForm();
             }
         }
     }
 
-    private void setFormEditable(boolean editable) {
-        this.txtMaHD.setEditable(editable);
-        this.txtNgayLap.setEditable(editable);
-        this.txtMaNV.setEditable(editable);
-        this.txtMaKH.setEditable(editable);
-        this.txtSoLuongVe.setEditable(editable);
-        this.txtTongTien.setEditable(editable);
-    }
-
     private void timHoaDon() {
-        String ma = this.txtTimHD.getText().trim();
-        if (ma.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nhập mã hóa đơn cần tìm!");
-            return;
-        }
-        HoaDon hoaDon = this.billManager.findHoaDonByID(ma);
-        if (hoaDon != null) {
-            new HoaDonModal(hoaDon, this);
-        } else {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn có mã " + ma);
-        }
+        String ma = txtTimHD.getText().trim();
+        if (ma.isEmpty()) return;
+        HoaDon hd = billManager.findHoaDonByID(ma);
+        if (hd != null) new HoaDonModal(hd, this);
+        else JOptionPane.showMessageDialog(this, "Không tìm thấy!");
     }
 
     private void hienThiLenForm() {
         int i = table.getSelectedRow();
-        if (i >= 0 && i < this.danhSach.size()) {
-            HoaDon p = this.danhSach.get(i);
-            this.txtMaHD.setText(p.getMaHoaDon());
-            this.txtTimHD.setText(p.getMaHoaDon());
-            this.txtNgayLap.setText(p.getNgayLap().toString());
-            this.txtMaNV.setText(p.getNhanVien().getMaNV());
-            this.txtMaKH.setText(p.getKhachHang().getMaKH());
-
-            String soLuongVeTxt = table.getValueAt(i, 4).toString();
-            this.txtSoLuongVe.setText(soLuongVeTxt);
-
-            this.txtTongTien.setText(Float.toString(p.getTongTien()));
+        if (i >= 0 && i < danhSach.size()) {
+            HoaDon p = danhSach.get(i);
+            txtMaHD.setText(p.getMaHoaDon());
+            txtTimHD.setText(p.getMaHoaDon());
+            txtNgayLap.setText(p.getNgayLap().toString());
+            txtMaNV.setText(p.getNhanVien().getMaNV());
+            txtMaKH.setText(p.getKhachHang().getMaKH());
+            txtSoLuongVe.setText(table.getValueAt(i, 4).toString());
+            txtTongTien.setText(String.valueOf(p.getTongTien()));
         }
     }
 
-    private void xoaRong() {
+    @Override
+    public void resetForm() {
         txtMaHD.setText("");
         txtNgayLap.setText("");
         txtMaNV.setText("");
         txtMaKH.setText("");
         txtSoLuongVe.setText("");
         txtTongTien.setText("");
-        this.txtTimHD.setText("");
+        txtTimHD.setText("");
     }
 
     private void luu() {
-        JOptionPane.showMessageDialog(this, "Dữ liệu đã được lưu vào CSDL!");
+        JOptionPane.showMessageDialog(this, "Dữ liệu đã được lưu!");
     }
-
 }

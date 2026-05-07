@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import dao.QuanLyHoaDon_DAO;
@@ -59,6 +60,7 @@ public class BaoCaoUI extends JFrame {
         Color darkBg = new Color(34, 34, 34);
         Color orangeColor = new Color(245, 140, 0);
         Color redColor = new Color(175, 25, 25);
+        Color borderColor = new Color(200, 200, 200);
 
         JPanel contentPane = new JPanel(null);
         contentPane.setBackground(darkBg);
@@ -90,11 +92,14 @@ public class BaoCaoUI extends JFrame {
         Font fontVal = new Font("Tahoma", Font.BOLD, 18);
 
         JLabel lblNgay = new JLabel("Ngày lập báo cáo:");
-        lblNgay.setFont(fontLbl); lblNgay.setBounds(40, 20, 160, 30);
+        lblNgay.setFont(fontLbl);
+        lblNgay.setBounds(40, 20, 160, 30);
         pnSummary.add(lblNgay);
 
         JLabel valNgay = new JLabel(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        valNgay.setFont(fontVal); valNgay.setForeground(orangeColor); valNgay.setBounds(210, 20, 150, 30);
+        valNgay.setFont(fontVal);
+        valNgay.setForeground(orangeColor);
+        valNgay.setBounds(210, 20, 180, 30);
         pnSummary.add(valNgay);
 
         JLabel lblPhim = new JLabel("Tổng số phim:");
@@ -102,7 +107,8 @@ public class BaoCaoUI extends JFrame {
         pnSummary.add(lblPhim);
 
         JLabel valPhim = new JLabel(String.valueOf(totalPhim));
-        valPhim.setFont(fontVal); valPhim.setForeground(orangeColor); valPhim.setBounds(210, 65, 150, 30);
+        valPhim.setFont(fontVal); valPhim.setForeground(orangeColor);
+        valPhim.setBounds(210, 65, 180, 30);
         pnSummary.add(valPhim);
 
         JLabel lblVe = new JLabel("Tổng số vé đã bán:");
@@ -110,7 +116,8 @@ public class BaoCaoUI extends JFrame {
         pnSummary.add(lblVe);
 
         JLabel valVe = new JLabel(String.valueOf(totalVe));
-        valVe.setFont(fontVal); valVe.setForeground(orangeColor); valVe.setBounds(550, 20, 150, 30);
+        valVe.setFont(fontVal); valVe.setForeground(orangeColor);
+        valVe.setBounds(550, 20, 180, 30);
         pnSummary.add(valVe);
 
         JLabel lblDoanhThu = new JLabel("Tổng doanh thu:");

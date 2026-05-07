@@ -44,6 +44,7 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         phimDAO = new QuanLyPhim_DAO();
 
         Color orangeColor = new Color(245, 140, 0);
+        Color redColor = new Color(175, 25, 25);
 
         JLabel lblTieuDe = new JLabel("Quản lý phim");
         lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
@@ -214,6 +215,8 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         table.setFont(new Font("Tahoma", Font.PLAIN, 15));
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setBackground(redColor);
+        table.getTableHeader().setForeground(Color.WHITE);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBounds(40, 380, 1220, 400);

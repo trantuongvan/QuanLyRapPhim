@@ -41,10 +41,14 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     private ArrayList<Phim> movieList;
 
     public QuanLyBanVe() {
+        Color bgMain = new Color(30, 30, 30);
+        Color bgSecondary = new Color(45, 45, 45);
+        Color textColor = Color.WHITE;
+
         setLayout(new BorderLayout(10, 10));
-        // Load database
+        setBackground(bgMain);
+
         loadData();
-        // ===== NORTH: Tiêu đề =====
         JLabel lblTitle = new JLabel("QUẢN LÝ BÁN VÉ", JLabel.CENTER);
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(Color.RED);
@@ -52,172 +56,103 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
         JPanel pCenter = new JPanel();
         pCenter.setLayout(new BoxLayout(pCenter, BoxLayout.Y_AXIS));
+        pCenter.setBackground(bgMain);
 
         this.cbPhong = new JComboBox<>(new String[] { "---Chọn phòng---" });
         this.cbSuatChieu = new JComboBox<>(new String[] { "---Chọn suất chiếu---" });
-        this.cbPhong.setEnabled(false);
-        this.cbSuatChieu.setEnabled(false);
+        styleComboBox(cbPhong);
+        styleComboBox(cbSuatChieu);
 
-        JPanel pChonPhim = new JPanel();
-        pChonPhim.setLayout(new BoxLayout(pChonPhim, BoxLayout.Y_AXIS));
-        pChonPhim.setBorder(BorderFactory.createTitledBorder("CHỌN VÉ XEM PHIM"));
+        JPanel pChonPhim = createStyledSection("CHỌN VÉ XEM PHIM", bgSecondary, textColor);
 
-        JPanel pPhim = new JPanel();
-        pPhim.setLayout(new BoxLayout(pPhim, BoxLayout.X_AXIS));
-        pPhim.add(new JLabel("     Chọn phim:              "));
-        pPhim.add(this.cbPhim);
-        pChonPhim.add(Box.createVerticalStrut(20));
-        pChonPhim.add(pPhim);
-
-        JPanel pPhong = new JPanel();
-        pPhong.setLayout(new BoxLayout(pPhong, BoxLayout.X_AXIS));
-        pPhong.add(new JLabel("     Chọn phòng:            "));
-        pPhong.add(this.cbPhong);
-        pChonPhim.add(Box.createVerticalStrut(20));
-        pChonPhim.add(pPhong);
-
-        JPanel pSuat = new JPanel();
-        pSuat.setLayout(new BoxLayout(pSuat, BoxLayout.X_AXIS));
-        pSuat.add(new JLabel("     Chọn suất chiếu:    "));
-        pSuat.add(cbSuatChieu);
-        this.fChonGhe = new Font("Tahoma", Font.BOLD, 16);
+        JPanel pPhim = createRow(new JLabel("Chọn phim:"), cbPhim = new JComboBox<>(), bgSecondary, textColor);
+        styleComboBox(cbPhim);
+        JPanel pPhong = createRow(new JLabel("Chọn phòng:"), cbPhong, bgSecondary, textColor);
         btnChonGhe = new JButton("Chọn ghế");
-        btnChonGhe.setEnabled(false);
+        JPanel suatComboAndButton = new JPanel(new BorderLayout(5, 0));
+        suatComboAndButton.setOpaque(false);
+        suatComboAndButton.add(cbSuatChieu, BorderLayout.CENTER);
+        suatComboAndButton.add(btnChonGhe, BorderLayout.EAST);
+        JPanel pSuatRow = createRow(new JLabel("Chọn suất chiếu:"), suatComboAndButton, bgSecondary, textColor);
+
+        this.fChonGhe = new Font("Tahoma", Font.BOLD, 16);
         btnChonGhe.setBackground(Color.RED);
         btnChonGhe.setForeground(Color.WHITE);
         btnChonGhe.setFont(fChonGhe);
 
-        pSuat.add(Box.createHorizontalStrut(5));
-        pSuat.add(btnChonGhe);
-        pSuat.add(Box.createHorizontalStrut(30));
-
         pChonPhim.add(Box.createVerticalStrut(20));
-        pChonPhim.add(pSuat);
+        pChonPhim.add(pPhim);
         pChonPhim.add(Box.createVerticalStrut(20));
+        pChonPhim.add(pPhong);
+        pChonPhim.add(Box.createVerticalStrut(20));
+        pChonPhim.add(pSuatRow);
+        pChonPhim.add(Box.createVerticalStrut(20));
+        JPanel pGridContainer = new JPanel(new GridLayout(3, 1, 0, 10));
+        pGridContainer.setBackground(bgMain);
+        pGridContainer.add(pChonPhim);
 
-        pCenter.add(pChonPhim);
+        JPanel infoPanel = createStyledSection("THÔNG TIN KHÁCH HÀNG", bgSecondary, textColor);
 
         txtHoTen = new JTextField();
-
-        txtDiaChi = new JTextField();
-
         txtSDT = new JTextField();
-
+        txtDiaChi = new JTextField();
         cbGioiTinh = new JComboBox<>(new String[] { "Nam", "Nữ" });
 
-        txtSoGhe = new JTextField();
-        txtSoGhe.setEditable(false);
+        styleTextField(txtHoTen);
+        styleTextField(txtSDT);
+        styleTextField(txtDiaChi);
+        styleComboBox(cbGioiTinh);
 
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBorder(BorderFactory.createTitledBorder("THÔNG TIN KHÁCH HÀNG"));
+        infoPanel.add(createRow(new JLabel("      Họ tên:                "), txtHoTen, bgSecondary, textColor));
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(createRow(new JLabel("      Số điện thoại:   "), txtSDT, bgSecondary, textColor));
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(createRow(new JLabel("      Địa chỉ:               "), txtDiaChi, bgSecondary, textColor));
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(createRow(new JLabel("      Giới tính:             "), cbGioiTinh, bgSecondary, textColor));
 
-        JPanel pRow1 = new JPanel();
-        pRow1.setLayout(new BoxLayout(pRow1, BoxLayout.X_AXIS));
-        pRow1.add(new JLabel("     Họ tên:               "));
-        pRow1.add(txtHoTen);
-
-        JPanel pRow2 = new JPanel();
-        pRow2.setLayout(new BoxLayout(pRow2, BoxLayout.X_AXIS));
-        pRow2.add(new JLabel("     Số điện thoại:   "));
-        pRow2.add(txtSDT);
-
-        JPanel pRow3 = new JPanel();
-        pRow3.setLayout(new BoxLayout(pRow3, BoxLayout.X_AXIS));
-        pRow3.add(new JLabel("     Địa chỉ:              "));
-        pRow3.add(txtDiaChi);
-
-        JPanel pRow4 = new JPanel();
-        pRow4.setLayout(new BoxLayout(pRow4, BoxLayout.X_AXIS));
-        pRow4.add(new JLabel("     Giới tính:            "));
-        pRow4.add(cbGioiTinh);
-
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(pRow1);
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(pRow2);
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(pRow3);
-        infoPanel.add(Box.createVerticalStrut(20));
-        infoPanel.add(pRow4);
-        infoPanel.add(Box.createVerticalStrut(20));
+        JPanel pInfoMovie = createStyledSection("THÔNG TIN VÉ XEM PHIM", bgSecondary, textColor);
 
         txtTenPhim = new JTextField();
-        txtTenPhim.setEditable(false);
-
         txtTenPhong = new JTextField();
-        txtTenPhong.setEditable(false);
-
         txtThoiLuong = new JTextField();
-        txtThoiLuong.setEditable(false);
-
         txtTheLoai = new JTextField();
-        txtTheLoai.setEditable(false);
-
         txtSuatChieu = new JTextField();
-        txtSuatChieu.setEditable(false);
-        JPanel pInfoMovie = new JPanel();
-        pInfoMovie.setLayout(new BoxLayout(pInfoMovie, BoxLayout.Y_AXIS));
-        pInfoMovie.setBorder(BorderFactory.createTitledBorder("THÔNG TIN VÉ XEM PHIM"));
+        txtSoGhe = new JTextField();
 
-        JPanel pTenPhim = new JPanel();
-        pTenPhim.setLayout(new BoxLayout(pTenPhim, BoxLayout.X_AXIS));
-        pTenPhim.add(new JLabel("     Tên phim:      "));
-        pTenPhim.add(txtTenPhim);
+        JTextField[] ticketFields = {txtTenPhim, txtTenPhong, txtThoiLuong, txtTheLoai, txtSuatChieu, txtSoGhe};
+        for(JTextField tf : ticketFields) {
+            tf.setEditable(false);
+            styleTextField(tf);
+        }
 
-        JPanel pTenPhong = new JPanel();
-        pTenPhong.setLayout(new BoxLayout(pTenPhong, BoxLayout.X_AXIS));
-        pTenPhong.add(new JLabel("     Phòng:           "));
-        pTenPhong.add(txtTenPhong);
+        pInfoMovie.add(createRow(new JLabel("      Tên phim:      "), txtTenPhim, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("      Phòng:            "), txtTenPhong, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("      Thời lượng:  "), txtThoiLuong, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("      Thể loại:          "), txtTheLoai, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("      Suất chiếu:    "), txtSuatChieu, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("      Ghế:                  "), txtSoGhe, bgSecondary, textColor));
 
-        JPanel pThoiLuong = new JPanel();
-        pThoiLuong.setLayout(new BoxLayout(pThoiLuong, BoxLayout.X_AXIS));
-        pThoiLuong.add(new JLabel("     Thời lượng:  "));
-        pThoiLuong.add(txtThoiLuong);
-
-        JPanel pTheLoai = new JPanel();
-        pTheLoai.setLayout(new BoxLayout(pTheLoai, BoxLayout.X_AXIS));
-        pTheLoai.add(new JLabel("     Thể loại:         "));
-        pTheLoai.add(txtTheLoai);
-
-        JPanel pSuatChieu = new JPanel();
-        pSuatChieu.setLayout(new BoxLayout(pSuatChieu, BoxLayout.X_AXIS));
-        pSuatChieu.add(new JLabel("     Suất chiếu:    "));
-        pSuatChieu.add(txtSuatChieu);
-
-        JPanel pSoGhe = new JPanel();
-        pSoGhe.setLayout(new BoxLayout(pSoGhe, BoxLayout.X_AXIS));
-        pSoGhe.add(new JLabel("     Ghế:                 "));
-        pSoGhe.add(txtSoGhe);
-
-        pInfoMovie.add(Box.createVerticalStrut(20));
-        pInfoMovie.add(pTenPhim);
-        pInfoMovie.add(Box.createVerticalStrut(20));
-        pInfoMovie.add(pTenPhong);
-        pInfoMovie.add(Box.createVerticalStrut(20));
-        pInfoMovie.add(pThoiLuong);
-        pInfoMovie.add(Box.createVerticalStrut(20));
-        pInfoMovie.add(pTheLoai);
-        pInfoMovie.add(Box.createVerticalStrut(20));
-        pInfoMovie.add(pSuatChieu);
-        pInfoMovie.add(Box.createVerticalStrut(20));
-        pInfoMovie.add(pSoGhe);
-        pInfoMovie.add(Box.createVerticalStrut(20));
-
-        JPanel pInfoBorder = new JPanel(new BorderLayout());
-        pInfoBorder.add(infoPanel, BorderLayout.NORTH);
-        pInfoBorder.add(Box.createVerticalStrut(5), BorderLayout.CENTER);
-        pInfoBorder.add(pInfoMovie, BorderLayout.SOUTH);
-
-        pCenter.add(pInfoBorder);
+        pGridContainer.add(infoPanel);
+        pGridContainer.add(pInfoMovie);
+        pCenter.add(pGridContainer);
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnPanel.setBackground(bgMain);
         btnXoaChon = new JButton("Xóa lựa chọn");
         btnXoaChon.setFont(fChonGhe);
+        btnXoaChon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnXoaChon.setFocusPainted(false);
+        btnXoaChon.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnXoaChon.setPreferredSize(new Dimension(200, 45));
         btnDatVe = new JButton("Xác nhận đặt vé");
-        btnDatVe.setBackground(Color.green);
-        btnDatVe.setEnabled(false);
-        btnDatVe.setFont(fChonGhe);
+        btnDatVe.setBackground(Color.ORANGE);
+        btnDatVe.setForeground(Color.WHITE);
+        btnDatVe.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnDatVe.setFocusPainted(false);
+        btnDatVe.setFont(new Font("Tahoma", Font.BOLD, 18));
+        btnDatVe.setPreferredSize(new Dimension(200, 45));
+
         btnPanel.add(btnXoaChon);
         btnPanel.add(btnDatVe);
         pCenter.add(btnPanel);
@@ -233,7 +168,53 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtSDT.addActionListener(e -> AutoFillCustomer());
     }
 
-    @Override
+    private void styleComboBox(JComboBox cb) {
+        cb.setBackground(new Color(60, 60, 60));
+        cb.setForeground(Color.WHITE);
+        cb.setFont(new Font("Tahoma", Font.PLAIN, 16));
+    }
+
+    private void styleTextField(JTextField tf) {
+        tf.setBackground(new Color(60, 60, 60));
+        tf.setForeground(Color.WHITE);
+        tf.setCaretColor(Color.WHITE);
+        tf.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        tf.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(80, 80, 80)),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+    }
+
+    private JPanel createStyledSection(String title, Color bg, Color text) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(bg);
+        javax.swing.border.TitledBorder border = BorderFactory.createTitledBorder(title);
+        border.setTitleColor(text);
+        panel.setBorder(border);
+        return panel;
+    }
+
+    private JPanel createRow(JLabel label, JComponent comp, Color bg, Color text) {
+        JPanel row = new JPanel(new GridBagLayout());
+        row.setBackground(bg);
+        label.setForeground(text);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.insets = new Insets(0, 20, 0, 10);
+        label.setPreferredSize(new Dimension(120, 30));
+        row.add(label, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        gbc.insets = new Insets(0, 0, 0, 20);
+        row.add(comp, gbc);
+
+        return row;
+    }    @Override
     public void resetForm() {
         cbPhim.setSelectedIndex(0);
         cbPhong.setSelectedIndex(0);
@@ -265,8 +246,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
                     JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        String regexHoten = "^([A-ZÀ-Ỹ][a-zà-ỹ]+)(\\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$"; // Gồm Họ và tên - chữ cái đầu phải viết hoa
-        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$"; // số điện thoại - có 10 số
+        String regexHoten = "^([A-ZÀ-Ỹ][a-zà-ỹ]+)(\\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$";
+        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$";
         String regexDiaChi = "^[A-Ỹa-ỹ0-9/,\\s]+$";
         if (!hoten.matches(regexHoten)) {
             JOptionPane.showMessageDialog(this, "Gồm phần họ và tên, chữ cái đầu phải viết hoa", "Lỗi cú pháp Họ tên",
@@ -287,10 +268,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         }
         String maKH = this.customerManager.taoMaKHTuDong();
         KhachHang khachHang = new KhachHang(maKH, hoten, gioiTinh, sdt, diaChi);
-        // lưu khách hàng
         customerManager.add(khachHang);
 
-        // chuyển danh sách ghế đã chọn sang tình trạng đã đặt
         if (this.selectedChairs == null || this.suatChieuDuocChon == null) {
             JOptionPane.showMessageDialog(this, "Chưa chọn ghế !", "Lỗi đặt vé", JOptionPane.WARNING_MESSAGE);
             return;
@@ -299,12 +278,10 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         float giaVe = this.suatChieuDuocChon.getGiaVe();
         HoaDon hoaDon = xuLyTaoHoaDon(khachHang, this.selectedChairs.size(), giaVe);
 
-        // Show thong tin ve
         new ThongTinVeModal(hoaDon, ve, this, this.selectedChairs);
     }
 
     private HoaDon xuLyTaoHoaDon(KhachHang khachHang, int soLuongVe, float giaVe) {
-        // Get NhanVien đang đăng nhập vào hệ thống - giả sử có mã là NV01
         NhanVien nhanVien = DangNhap.nhanVienDangNhap;
         float tongTien = giaVe * soLuongVe;
         HoaDon hoaDon = new HoaDon(this.billManager.taoMaHoaDonTuDong(), LocalDate.now(), nhanVien, khachHang, tongTien);
@@ -355,7 +332,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtThoiLuong.setText(Integer.toString(phim.getThoiLuong()) + " phút");
         this.suatChieuDuocChon = new SuatChieu("AUTO_GENERATE");
         this.suatChieuDuocChon.setMaPhim(phim.getMaPhim());
-        // Mở khóa bước chọn phòng
         UnlockChooseRoom();
     }
 
@@ -364,10 +340,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         cbPhong.setEnabled(true);
         cbPhong.removeAllItems();
         cbPhong.addItem("---Chọn phòng---");
-        // lưu danh sách mã rạp
         roomIDSelectList = new ArrayList<>();
         roomIDSelectList.add("");
-        // Lấy mã phòng không trùng lặp
         HashSet<String> dsMaRap = new HashSet<>();
         for (SuatChieu suatChieu : dsSuatChieu) {
             dsMaRap.add(suatChieu.getMaRap());
@@ -375,7 +349,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         for (String maRap : dsMaRap) {
             Rap rap = rapManager.findRapByID(maRap);
             if (rap != null) {
-                // lưu danh sách tên rạp
                 cbPhong.addItem(rap.getTenRap());
                 roomIDSelectList.add(maRap);
             }
@@ -404,7 +377,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         cbSuatChieu.setEnabled(true);
         cbSuatChieu.removeAllItems();
         cbSuatChieu.addItem("---Chọn suất chiếu---");
-        // Lưu danh sách mã suất chiếu
         showtimeSelectList = new ArrayList<>();
         showtimeSelectList.add("");
         for (SuatChieu suatChieu : dsSuatChieu) {
@@ -429,7 +401,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtSuatChieu.setText(cbSuatChieu.getSelectedItem().toString());
         int index = cbSuatChieu.getSelectedIndex();
         this.suatChieuDuocChon = this.suatChieuManager.timSuatChieu(showtimeSelectList.get(index));
-        // Tới phần chọn ghế
         btnChonGhe.setEnabled(true);
     }
 
@@ -444,7 +415,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         int numRows = (int) Math.ceil((double) soGhe / numCols);
 
         JFrame chairFrame = new JFrame("Chọn ghế");
-        chairFrame.getContentPane().setBackground(new Color(10, 10, 10)); // Dark background
+        chairFrame.getContentPane().setBackground(new Color(10, 10, 10));
         chairFrame.setSize(800, 600);
         chairFrame.setLocationRelativeTo(this);
         chairFrame.setLayout(new BorderLayout(10, 10));
@@ -614,7 +585,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
     private void AutoFillCustomer() {
         String sdt = this.txtSDT.getText().trim();
-        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$"; // số điện thoại - có 10 số
+        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$";
         if (!sdt.matches(regexSDT)) {
             JOptionPane.showMessageDialog(this,
                     "số điện thoại phải có 10 số và 2 số đầu phải khớp với nhà mạng Việt Nam (03, 05, 07,...)",
@@ -635,7 +606,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         this.cbGioiTinh.setSelectedItem(khachHang.getGioiTinh());
     }
 
-    // Tìm trong danh sách vé có tồn tại mã ghế này không
     private boolean isGheDaDat(Ghe ghe, ArrayList<Ve> ticketList) {
         for (Ve ve : ticketList) {
             if (ve.getGhe().getMaGhe().equalsIgnoreCase(ghe.getMaGhe())) {

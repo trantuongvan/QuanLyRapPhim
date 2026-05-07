@@ -47,6 +47,7 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         Color darkBg = new Color(34, 34, 34);
         setBackground(darkBg);
         Color orangeColor = new Color(245, 140, 0);
+        Color redColor = new Color(175, 25, 25);
 
         quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
 
@@ -233,6 +234,8 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         tblSuatChieu.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
         tblSuatChieu.setRowHeight(35);
         tblSuatChieu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblSuatChieu.getTableHeader().setBackground(redColor);
+        tblSuatChieu.getTableHeader().setForeground(Color.WHITE);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);

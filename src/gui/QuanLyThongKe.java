@@ -45,12 +45,13 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         Color darkBg = new Color(34, 34, 34);
         setBackground(darkBg);
         Color orangeColor = new Color(245, 140, 0);
+        Color redColor = new Color(175, 25, 25);
 
         quanLyPhim_Dao = new QuanLyPhim_DAO();
         quanLyHoaDon_DAO = new QuanLyHoaDon_DAO();
         quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
 
-        JLabel lblTitle = new JLabel("BÁO CÁO THỐNG KÊ");
+        JLabel lblTitle = new JLabel("Báo cáo thống kê");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(orangeColor);
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -124,21 +125,13 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
 
         JTextField[] tfs = new JTextField[3];
         for (int i = 0; i < 3; i++) {
-            tfs[i] = new JTextField("0") {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setColor(orangeColor);
-                    g2.fillRect(0, 0, getWidth(), getHeight());
-                    g2.dispose();
-                    super.paintComponent(g);
-                }
-            };
-            tfs[i].setOpaque(false);
-            tfs[i].setBorder(new EmptyBorder(0, 15, 0, 15));
+            tfs[i] = new JTextField("0");
+            tfs[i].setOpaque(true);
+            tfs[i].setBackground(Color.WHITE);
+            tfs[i].setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
             tfs[i].setForeground(Color.BLACK);
             tfs[i].setFont(new Font("Tahoma", Font.BOLD, 18));
-            tfs[i].setHorizontalAlignment(JTextField.CENTER);
+            tfs[i].setHorizontalAlignment(JTextField.LEFT);
             tfs[i].setEditable(false);
         }
 
@@ -169,7 +162,7 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         lblTotalDoanhThuTitle.setBounds(60, y2, wLbl, hComp);
         pnInput.add(lblTotalDoanhThuTitle);
         txtTotalDoanhThu.setBounds(250, y2, wFld, hComp);
-        txtTotalDoanhThu.setForeground(new Color(178, 34, 34));
+        txtTotalDoanhThu.setForeground(redColor);
         pnInput.add(txtTotalDoanhThu);
 
 
@@ -187,6 +180,8 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         tblThongKe.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
         tblThongKe.setRowHeight(35);
         tblThongKe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblThongKe.getTableHeader().setBackground(redColor);
+        tblThongKe.getTableHeader().setForeground(Color.WHITE);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);

@@ -53,7 +53,7 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
 
         // ===== Tiêu đề =====
         JLabel lblTitle = new JLabel("QUẢN LÝ SUẤT CHIẾU", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Tamoha", Font.BOLD, 26));
+        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 26));
         lblTitle.setForeground(new Color(220, 20, 60));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         add(lblTitle, BorderLayout.NORTH);
@@ -126,8 +126,8 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
             }
         };
         tblSuatChieu = new JTable(model);
-        tblSuatChieu.setFont(new Font("Tamoha", Font.PLAIN, 16));
-        tblSuatChieu.getTableHeader().setFont(new Font("Tamoha", Font.BOLD, 17));
+        tblSuatChieu.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        tblSuatChieu.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 17));
         tblSuatChieu.setRowHeight(26);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

@@ -59,7 +59,7 @@ public class HoaDonModal extends JFrame {
 
         JPanel pNorth = new JPanel(new BorderLayout());
         JLabel lblHoaDon = new JLabel("HÓA ĐƠN BÁN VÉ");
-        Font fTitleHoaDon = new Font("Tamoha", Font.BOLD, 20);
+        Font fTitleHoaDon = new Font("Tahoma", Font.BOLD, 20);
         lblHoaDon.setFont(fTitleHoaDon);
         lblHoaDon.setForeground(Color.RED);
         JPanel pTitle = new JPanel();
@@ -155,12 +155,12 @@ public class HoaDonModal extends JFrame {
         JPanel pCenter = new JPanel(new BorderLayout());
         JPanel pCen_title = new JPanel();
         JLabel lblChiTietHoaDon = new JLabel("CHI TIẾT HÓA ĐƠN");
-        lblChiTietHoaDon.setFont(new Font("Tamoha", Font.BOLD, 18));
+        lblChiTietHoaDon.setFont(new Font("Tahoma", Font.BOLD, 18));
         pCen_title.add(lblChiTietHoaDon);
         pCenter.add(pCen_title, BorderLayout.NORTH);
         pCenter.add(scrollTable, BorderLayout.CENTER);
         JPanel pSouth = new JPanel();
-        Font fButton = new Font("Tamoha", Font.BOLD, 16);
+        Font fButton = new Font("Tahoma", Font.BOLD, 16);
 
         JButton btnDone = new JButton("Xong");
         btnDone.setFont(fButton);

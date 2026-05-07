@@ -48,7 +48,7 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
 
         // ===== NORTH =====
         JLabel lblTitle = new JLabel("BÁO CÁO THỐNG KÊ", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Tamoha", Font.BOLD, 28));
+        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(new Color(220, 20, 60));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         add(lblTitle, BorderLayout.NORTH);
@@ -77,8 +77,8 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         pnThongKe.setBackground(Color.WHITE);
         pnThongKe.setBorder(BorderFactory.createTitledBorder("Thống kê tổng quan"));
 
-        Font fTitle = new Font("Tamoha", Font.BOLD, 15);
-        Font fValue = new Font("Tamoha", Font.BOLD, 20);
+        Font fTitle = new Font("Tahoma", Font.BOLD, 15);
+        Font fValue = new Font("Tahoma", Font.BOLD, 20);
         // -- Tổng phim --
         JPanel pnTotalPhim = new JPanel(new BorderLayout());
         pnTotalPhim.setBackground(Color.WHITE);

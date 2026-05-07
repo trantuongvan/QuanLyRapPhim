@@ -218,4 +218,24 @@ public class QuanLyHoaDon_DAO {
             e.printStackTrace();
         }
     }
+    // số lượng vé của 1 Hóa Đơn
+    public int getTongSoLuongVeCuaHoaDon(String maHoaDon) {
+        int tongSoVe = 0;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT SUM(soLuong) AS TongVe FROM ChiTietHoaDon WHERE maHoaDon = ?";
+            stmt = this.conn.prepareStatement(sql);
+            stmt.setString(1, maHoaDon);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                tongSoVe = rs.getInt("TongVe");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(rs, stmt);
+        }
+        return tongSoVe;
+    }
 }

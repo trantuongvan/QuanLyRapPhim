@@ -50,22 +50,51 @@ public class QuanLyNhanVien_DAO {
     }
 
     public boolean themNhanVien(NhanVien nv) {
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmtNV = null;
+        PreparedStatement stmtTK = null;
         try {
-            Connection con = ConnectDB.getConnection();
-            String sql = "INSERT INTO NhanVien VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, nv.getMaNV());
-            stmt.setString(2, nv.getTenNV());
-            stmt.setString(3, nv.getDiaChi());
-            stmt.setString(4, nv.getSoDienThoai());
-            stmt.setDate(5, java.sql.Date.valueOf(nv.getNgaySinh()));
-            stmt.setString(6, nv.getEmail());
-            stmt.setString(7, nv.getGioiTinh());
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
+            con.setAutoCommit(false);
+
+            String sqlNV = "INSERT INTO NhanVien (maNV, tenNV, diaChi, soDienThoai, ngaySinh, email, gioiTinh) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            stmtNV = con.prepareStatement(sqlNV);
+            stmtNV.setString(1, nv.getMaNV());
+            stmtNV.setString(2, nv.getTenNV());
+            stmtNV.setString(3, nv.getDiaChi());
+            stmtNV.setString(4, nv.getSoDienThoai());
+            stmtNV.setDate(5, java.sql.Date.valueOf(nv.getNgaySinh()));
+            stmtNV.setString(6, nv.getEmail());
+            stmtNV.setString(7, nv.getGioiTinh());
+            stmtNV.executeUpdate();
+
+            String sqlTK = "INSERT INTO TaiKhoan (maNV, taiKhoan, matKhau, vaiTro) VALUES (?, ?, ?, ?)";
+            stmtTK = con.prepareStatement(sqlTK);
+            stmtTK.setString(1, nv.getMaNV());
+            stmtTK.setString(2, nv.getMaNV());
+            stmtTK.setString(3, "123456");
+            stmtTK.setString(4, "NHAN_VIEN");
+            stmtTK.executeUpdate();
+
+            con.commit();
+            return true;
+
+        } catch (Exception e) {
+            try {
+                con.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                if (stmtNV != null) stmtNV.close();
+                if (stmtTK != null) stmtTK.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        return false;
     }
 
     public boolean capNhatNhanVien(NhanVien nv) {

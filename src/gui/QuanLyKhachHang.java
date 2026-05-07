@@ -87,7 +87,7 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         btnLamMoi = taoNutBoGoc("Làm mới", orangeColor);
 
         pnTop.add(txtTimKiem);
-        pnTop.add(Box.createHorizontalGlue());
+        pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnTimKiem); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnThem); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnSua); pnTop.add(Box.createHorizontalStrut(10));

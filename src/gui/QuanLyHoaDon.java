@@ -90,7 +90,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData {
         btnLuu = taoNutBoGoc("Lưu", orangeColor);
 
         pnTop.add(txtTimHD);
-        pnTop.add(Box.createHorizontalGlue());
+        pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnTim); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnXoa); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnXoaRong); pnTop.add(Box.createHorizontalStrut(10));

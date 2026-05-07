@@ -88,7 +88,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btnTaiLai = taoNutBoGoc("Làm mới", orangeColor);
 
         pnTop.add(txtTim);
-        pnTop.add(Box.createHorizontalGlue());
+        pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnTim); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnThem); pnTop.add(Box.createHorizontalStrut(10));
         pnTop.add(btnSua); pnTop.add(Box.createHorizontalStrut(10));

@@ -41,19 +41,16 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     private ArrayList<Phim> movieList;
 
     public QuanLyBanVe() {
-        // Define the Dark Palette
-        Color bgMain = new Color(30, 30, 30);      // Dark background
-        Color bgSecondary = new Color(45, 45, 45); // Slightly lighter for panels
+        Color bgMain = new Color(30, 30, 30);
+        Color bgSecondary = new Color(45, 45, 45);
         Color textColor = Color.WHITE;
 
         setLayout(new BorderLayout(10, 10));
-        setBackground(bgMain); // Set main panel background
+        setBackground(bgMain);
 
         loadData();
-
-        // ===== NORTH: Tiêu đề =====
         JLabel lblTitle = new JLabel("QUẢN LÝ BÁN VÉ", JLabel.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(Color.RED);
         add(lblTitle, BorderLayout.NORTH);
 
@@ -66,7 +63,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         styleComboBox(cbPhong);
         styleComboBox(cbSuatChieu);
 
-        // Section: CHỌN VÉ
         JPanel pChonPhim = createStyledSection("CHỌN VÉ XEM PHIM", bgSecondary, textColor);
 
         JPanel pPhim = createRow(new JLabel("Chọn phim:"), cbPhim = new JComboBox<>(), bgSecondary, textColor);
@@ -79,7 +75,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         suatComboAndButton.add(btnChonGhe, BorderLayout.EAST);
         JPanel pSuatRow = createRow(new JLabel("Chọn suất chiếu:"), suatComboAndButton, bgSecondary, textColor);
 
-        this.fChonGhe = new Font("Arial", Font.BOLD, 16);
+        this.fChonGhe = new Font("Tahoma", Font.BOLD, 16);
         btnChonGhe.setBackground(Color.RED);
         btnChonGhe.setForeground(Color.WHITE);
         btnChonGhe.setFont(fChonGhe);
@@ -95,7 +91,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         pGridContainer.setBackground(bgMain);
         pGridContainer.add(pChonPhim);
 
-        // Section: THÔNG TIN KHÁCH HÀNG
         JPanel infoPanel = createStyledSection("THÔNG TIN KHÁCH HÀNG", bgSecondary, textColor);
 
         txtHoTen = new JTextField();
@@ -116,7 +111,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         infoPanel.add(Box.createVerticalStrut(10));
         infoPanel.add(createRow(new JLabel("      Giới tính:             "), cbGioiTinh, bgSecondary, textColor));
 
-        // Section: THÔNG TIN VÉ (Bottom)
         JPanel pInfoMovie = createStyledSection("THÔNG TIN VÉ XEM PHIM", bgSecondary, textColor);
 
         txtTenPhim = new JTextField();
@@ -143,7 +137,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         pGridContainer.add(pInfoMovie);
         pCenter.add(pGridContainer);
 
-        // Buttons
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.setBackground(bgMain);
         btnXoaChon = new JButton("Xóa lựa chọn");
@@ -166,7 +159,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
         add(pCenter, BorderLayout.CENTER);
 
-        // Listeners (Keep as they are in your code)
         btnXoaChon.addActionListener(e -> resetForm());
         btnDatVe.addActionListener(e -> acceptTicket());
         btnChonGhe.addActionListener(e -> selectChair());
@@ -176,18 +168,17 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtSDT.addActionListener(e -> AutoFillCustomer());
     }
 
-    // Helper Methods for clean styling
     private void styleComboBox(JComboBox cb) {
         cb.setBackground(new Color(60, 60, 60));
         cb.setForeground(Color.WHITE);
-        cb.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        cb.setFont(new Font("Tahoma", Font.PLAIN, 16));
     }
 
     private void styleTextField(JTextField tf) {
         tf.setBackground(new Color(60, 60, 60));
         tf.setForeground(Color.WHITE);
         tf.setCaretColor(Color.WHITE);
-        tf.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        tf.setFont(new Font("Tahoma", Font.PLAIN, 16));
         tf.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(80, 80, 80)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
@@ -255,8 +246,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
                     JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        String regexHoten = "^([A-ZÀ-Ỹ][a-zà-ỹ]+)(\\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$"; // Gồm Họ và tên - chữ cái đầu phải viết hoa
-        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$"; // số điện thoại - có 10 số
+        String regexHoten = "^([A-ZÀ-Ỹ][a-zà-ỹ]+)(\\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$";
+        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$";
         String regexDiaChi = "^[A-Ỹa-ỹ0-9/,\\s]+$";
         if (!hoten.matches(regexHoten)) {
             JOptionPane.showMessageDialog(this, "Gồm phần họ và tên, chữ cái đầu phải viết hoa", "Lỗi cú pháp Họ tên",
@@ -277,10 +268,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         }
         String maKH = this.customerManager.taoMaKHTuDong();
         KhachHang khachHang = new KhachHang(maKH, hoten, gioiTinh, sdt, diaChi);
-        // lưu khách hàng
         customerManager.add(khachHang);
 
-        // chuyển danh sách ghế đã chọn sang tình trạng đã đặt
         if (this.selectedChairs == null || this.suatChieuDuocChon == null) {
             JOptionPane.showMessageDialog(this, "Chưa chọn ghế !", "Lỗi đặt vé", JOptionPane.WARNING_MESSAGE);
             return;
@@ -289,12 +278,10 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         float giaVe = this.suatChieuDuocChon.getGiaVe();
         HoaDon hoaDon = xuLyTaoHoaDon(khachHang, this.selectedChairs.size(), giaVe);
 
-        // Show thong tin ve
         new ThongTinVeModal(hoaDon, ve, this, this.selectedChairs);
     }
 
     private HoaDon xuLyTaoHoaDon(KhachHang khachHang, int soLuongVe, float giaVe) {
-        // Get NhanVien đang đăng nhập vào hệ thống - giả sử có mã là NV01
         NhanVien nhanVien = DangNhap.nhanVienDangNhap;
         float tongTien = giaVe * soLuongVe;
         HoaDon hoaDon = new HoaDon(this.billManager.taoMaHoaDonTuDong(), LocalDate.now(), nhanVien, khachHang, tongTien);
@@ -345,7 +332,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtThoiLuong.setText(Integer.toString(phim.getThoiLuong()) + " phút");
         this.suatChieuDuocChon = new SuatChieu("AUTO_GENERATE");
         this.suatChieuDuocChon.setMaPhim(phim.getMaPhim());
-        // Mở khóa bước chọn phòng
         UnlockChooseRoom();
     }
 
@@ -354,10 +340,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         cbPhong.setEnabled(true);
         cbPhong.removeAllItems();
         cbPhong.addItem("---Chọn phòng---");
-        // lưu danh sách mã rạp
         roomIDSelectList = new ArrayList<>();
         roomIDSelectList.add("");
-        // Lấy mã phòng không trùng lặp
         HashSet<String> dsMaRap = new HashSet<>();
         for (SuatChieu suatChieu : dsSuatChieu) {
             dsMaRap.add(suatChieu.getMaRap());
@@ -365,7 +349,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         for (String maRap : dsMaRap) {
             Rap rap = rapManager.findRapByID(maRap);
             if (rap != null) {
-                // lưu danh sách tên rạp
                 cbPhong.addItem(rap.getTenRap());
                 roomIDSelectList.add(maRap);
             }
@@ -394,7 +377,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         cbSuatChieu.setEnabled(true);
         cbSuatChieu.removeAllItems();
         cbSuatChieu.addItem("---Chọn suất chiếu---");
-        // Lưu danh sách mã suất chiếu
         showtimeSelectList = new ArrayList<>();
         showtimeSelectList.add("");
         for (SuatChieu suatChieu : dsSuatChieu) {
@@ -419,7 +401,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtSuatChieu.setText(cbSuatChieu.getSelectedItem().toString());
         int index = cbSuatChieu.getSelectedIndex();
         this.suatChieuDuocChon = this.suatChieuManager.timSuatChieu(showtimeSelectList.get(index));
-        // Tới phần chọn ghế
         btnChonGhe.setEnabled(true);
     }
 
@@ -434,7 +415,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         int numRows = (int) Math.ceil((double) soGhe / numCols);
 
         JFrame chairFrame = new JFrame("Chọn ghế");
-        chairFrame.getContentPane().setBackground(new Color(10, 10, 10)); // Dark background
+        chairFrame.getContentPane().setBackground(new Color(10, 10, 10));
         chairFrame.setSize(800, 600);
         chairFrame.setLocationRelativeTo(this);
         chairFrame.setLayout(new BorderLayout(10, 10));
@@ -604,7 +585,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
     private void AutoFillCustomer() {
         String sdt = this.txtSDT.getText().trim();
-        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$"; // số điện thoại - có 10 số
+        String regexSDT = "^(03|05|07|08|09)[0-9]{8}$";
         if (!sdt.matches(regexSDT)) {
             JOptionPane.showMessageDialog(this,
                     "số điện thoại phải có 10 số và 2 số đầu phải khớp với nhà mạng Việt Nam (03, 05, 07,...)",
@@ -625,7 +606,6 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         this.cbGioiTinh.setSelectedItem(khachHang.getGioiTinh());
     }
 
-    // Tìm trong danh sách vé có tồn tại mã ghế này không
     private boolean isGheDaDat(Ghe ghe, ArrayList<Ve> ticketList) {
         for (Ve ve : ticketList) {
             if (ve.getGhe().getMaGhe().equalsIgnoreCase(ghe.getMaGhe())) {

@@ -242,6 +242,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     }
 
     private void acceptTicket() {
+        Rap rapHienTai = rapManager.findRapByID(suatChieuDuocChon.getMaRap());
+        ArrayList<Ghe> dsGheTrongRap = chairManager.getDanhSachGheTheoRap(rapHienTai);
         String hoten = txtHoTen.getText().trim();
         String sdt = txtSDT.getText().trim();
         String diaChi = txtDiaChi.getText().trim();
@@ -272,6 +274,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
             return;
         }
         String maKH = this.customerManager.taoMaKHTuDong();
+
         KhachHang khachHang = new KhachHang(maKH, hoten, gioiTinh, sdt, diaChi);
         customerManager.add(khachHang);
 
@@ -279,9 +282,43 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
             JOptionPane.showMessageDialog(this, "Chưa chọn ghế !", "Lỗi đặt vé", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         Ve ve = createTicket();
         float giaVe = this.suatChieuDuocChon.getGiaVe();
         HoaDon hoaDon = xuLyTaoHoaDon(khachHang, this.selectedChairs.size(), giaVe);
+        if (!billManager.add(hoaDon)) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!");
+            return;
+        }
+        ArrayList<Ve> listVeVuaTao = new ArrayList<>();
+        dao.QuanLyCTHD_DAO cthdDAO = new dao.QuanLyCTHD_DAO();
+        for (String idGheDuocChon : this.selectedChairs) {
+            // Find the full Ghe object from our list instead of creating a new one
+            Ghe gheThucTe = null;
+            for (Ghe g : dsGheTrongRap) {
+                if (g.getMaGhe().equals(idGheDuocChon)) {
+                    gheThucTe = g;
+                    break;
+                }
+            }
+
+            if (gheThucTe != null) {
+                ve.setMaSuatChieu(this.suatChieuDuocChon.getMaSuatChieu());
+                ve.setNgayBan(LocalDate.now());
+                ve.setDaThanhToan(false);
+                ve.setGhe(gheThucTe); // Now passing the full Ghe object
+
+                // Save Ticket to DB
+                if (ticketManager.add(ve)) {
+                    listVeVuaTao.add(ve);
+
+                    // Save Detail (CTHD)
+                    ChiTietHoaDon cthd = new ChiTietHoaDon(hoaDon, ve, 1, (double)giaVe);
+                    cthdDAO.add(cthd);
+                }
+            }
+        }
+        new HoaDonModal(hoaDon, this, listVeVuaTao);
 
         new ThongTinVeModal(hoaDon, ve, this, this.selectedChairs);
     }

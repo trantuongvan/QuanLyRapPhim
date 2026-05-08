@@ -66,7 +66,6 @@ public class QuanLyVe_DAO {
         }
         return ve;
     }
-    //Tìm danh sách vé theo mã suất chiếu
     public ArrayList<Ve> timVeTheoMaSuatChieu(String maSuatChieu) {
         if (this.conn == null || maSuatChieu == null || maSuatChieu.trim().isEmpty())
             return null;
@@ -137,15 +136,13 @@ public class QuanLyVe_DAO {
         int n = 0;
 
         try {
-            conn.setAutoCommit(false); // Bắt đầu transaction
+            conn.setAutoCommit(false);
 
-            // 1. Xóa trước trong ChiTietHoaDon
             String sqlCTHD = "DELETE FROM ChiTietHoaDon WHERE maVe = ?";
             stmtChiTiet = conn.prepareStatement(sqlCTHD);
             stmtChiTiet.setString(1, maVe);
             stmtChiTiet.executeUpdate();
 
-            // 2. Sau đó xóa trong Ve
             String sqlVe = "DELETE FROM Ve WHERE maVe = ?";
             stmtVe = conn.prepareStatement(sqlVe);
             stmtVe.setString(1, maVe);
@@ -172,7 +169,6 @@ public class QuanLyVe_DAO {
         return n > 0;
     }
 
-    // ====== HÀM TIỆN ÍCH ======
     private void close(ResultSet rs, Statement stmt) {
         try {
             if (rs != null)

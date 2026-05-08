@@ -9,12 +9,14 @@ import java.sql.*;
 import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
+import entity.Ve;
 
 public class QuanLyHoaDon_DAO {
     private Connection conn;
 
     public QuanLyHoaDon_DAO() {
         this.conn = ConnectDB.getConnection();
+
     }
 
     public boolean add(HoaDon hoaDon) {
@@ -23,7 +25,7 @@ public class QuanLyHoaDon_DAO {
         PreparedStatement stmt = null;
         int n = 0;
         try {
-            String sql = "Insert into HoaDon(maHoaDon, ngayLap, maNV, maKH, tongTien) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO HoaDon(maHoaDon, ngayLap, maNV, maKH, tongTien) VALUES (?,?,?,?,?)";
             stmt = this.conn.prepareStatement(sql);
             stmt.setString(1, hoaDon.getMaHoaDon());
             stmt.setDate(2, Date.valueOf(hoaDon.getNgayLap()));
@@ -117,26 +119,22 @@ public class QuanLyHoaDon_DAO {
         int n = 0;
 
         try {
-            // Bắt đầu transaction
             conn.setAutoCommit(false);
 
-            // 1️⃣ Xóa các chi tiết hóa đơn liên quan
             String sqlCTHD = "DELETE FROM ChiTietHoaDon WHERE maHoaDon = ?";
             stmtCTHD = conn.prepareStatement(sqlCTHD);
             stmtCTHD.setString(1, maHD);
             stmtCTHD.executeUpdate();
 
-            // 2️⃣ Xóa hóa đơn chính
             String sqlHD = "DELETE FROM HoaDon WHERE maHoaDon = ?";
             stmtHD = conn.prepareStatement(sqlHD);
             stmtHD.setString(1, maHD);
             n = stmtHD.executeUpdate();
 
-            // 3️⃣ Xác nhận (commit) nếu không có lỗi
             conn.commit();
         } catch (SQLException e) {
             try {
-                conn.rollback(); // Hoàn tác nếu có lỗi
+                conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -154,7 +152,6 @@ public class QuanLyHoaDon_DAO {
         return n > 0;
     }
 
-    // Tường thêm 2 hàm tính doanh thu & số lượng vé theo phim
     public double tinhDoanhThuTheoPhim(String maPhim) {
         if (this.conn == null || maPhim == null || maPhim.trim().isEmpty())
             return 0;
@@ -162,8 +159,6 @@ public class QuanLyHoaDon_DAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            // HoaDon không lưu trực tiếp maSuatChieu. Đi qua ChiTietHoaDon -> Ve ->
-            // SuatChieu
             String sql = "SELECT SUM(ct.soLuong * ct.giaVe) AS TongDoanhThu " +
                     "FROM ChiTietHoaDon ct " +
                     "JOIN Ve v ON ct.maVe = v.maVe " +
@@ -190,7 +185,6 @@ public class QuanLyHoaDon_DAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            // Đếm số vé từ bảng Ve liên kết qua SuatChieu
             String sql = "SELECT COUNT(v.maVe) AS TongSoLuongVe " +
                     "FROM Ve v JOIN SuatChieu sc ON v.maSuatChieu = sc.maSuatChieu " +
                     "WHERE sc.maPhim = ?";
@@ -207,7 +201,6 @@ public class QuanLyHoaDon_DAO {
         }
         return tongSoLuongVe;
     }
-    // ====== HÀM TIỆN ÍCH ======
     private void close(ResultSet rs, Statement stmt) {
         try {
             if (rs != null)
@@ -218,7 +211,6 @@ public class QuanLyHoaDon_DAO {
             e.printStackTrace();
         }
     }
-    // số lượng vé của 1 Hóa Đơn
     public int getTongSoLuongVeCuaHoaDon(String maHoaDon) {
         int tongSoVe = 0;
         PreparedStatement stmt = null;

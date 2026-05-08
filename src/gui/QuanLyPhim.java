@@ -42,7 +42,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // --- TITLE ---
         gbc.gridy = 0;
         JLabel lblTieuDe = new JLabel("QUẢN LÝ PHIM");
         lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 32));
@@ -50,7 +49,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
         add(lblTieuDe, gbc);
 
-        // --- SEARCH & TOOLBAR ---
         gbc.gridy = 1;
         JPanel pnTop = createStyledPanel();
         pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
@@ -77,7 +75,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         pnTop.add(btnLamMoi);
         add(pnTop, gbc);
 
-        // --- INPUT FORM ---
         gbc.gridy = 2;
         JPanel pnInput = createStyledPanel();
         pnInput.setLayout(new GridBagLayout());
@@ -85,7 +82,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         innerGbc.insets = new Insets(10, 20, 10, 20);
         innerGbc.anchor = GridBagConstraints.WEST;
 
-        // Header for form
         innerGbc.gridx = 0; innerGbc.gridy = 0; innerGbc.gridwidth = 4;
         innerGbc.anchor = GridBagConstraints.CENTER;
         JLabel lblHeader = new JLabel("THÔNG TIN CHI TIẾT PHIM");
@@ -95,7 +91,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
 
         innerGbc.gridwidth = 1; innerGbc.anchor = GridBagConstraints.WEST;
 
-        // Form Fields
         txtMaPhim = createStyledTextField(200);
         txtTenPhim = createStyledTextField(200);
         txtNhaSX = createStyledTextField(200);
@@ -106,16 +101,12 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         cboTheLoai.setPreferredSize(new Dimension(200, 35));
         cboTheLoai.setBackground(orangeColor);
 
-        // Row 1
         addRow(pnInput, innerGbc, 1, "Mã phim:", txtMaPhim, "Tên phim:", txtTenPhim);
-        // Row 2
         addRow(pnInput, innerGbc, 2, "Nhà sản xuất:", txtNhaSX, "Thể loại:", cboTheLoai);
-        // Row 3
         addRow(pnInput, innerGbc, 3, "Thời lượng:", txtThoiLuong, "Quốc gia:", txtQuocGia);
 
         add(pnInput, gbc);
 
-        // --- TABLE ---
         gbc.gridy = 3;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -144,7 +135,6 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         scroll.getViewport().setBackground(tableBackground);
         add(scroll, gbc);
 
-        // Listeners
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
         btnXoa.addActionListener(this);

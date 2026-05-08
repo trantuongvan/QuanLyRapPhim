@@ -10,7 +10,6 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import entity.LoadData;
 
 public class QuanLyNhanVien extends JPanel implements LoadData {
@@ -18,68 +17,41 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
     private JTable table;
     private DefaultTableModel model;
 
-    @Override
-    public void loadData() {
-        loadNhanVien();
-    }
-
     private JTextField txtMa, txtTen, txtDiaChi, txtSdt, txtEmail, txtNgaySinh, txtTim;
     private JComboBox<String> cboGioiTinh;
     private JButton btnThem, btnSua, btnXoa, btnTaiLai, btnTim, btnXoaTrang;
     private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 16);
-    private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
+    private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 18);
     private final Color orangeColor = new Color(245, 140, 0);
+    private final Color panelDarkTone = new Color(50, 50, 50);
+    private final Color tableBackground = new Color(40, 40, 40);
 
     public QuanLyNhanVien() {
         daoNV = new QuanLyNhanVien_DAO();
 
-        setLayout(new BorderLayout(20, 20));
-        setBorder(new EmptyBorder(20, 30, 20, 30));
+        setLayout(new GridBagLayout());
         setBackground(new Color(34, 34, 34));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 40, 10, 40);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        // --- Title ---
+        gbc.gridy = 0;
         JLabel lblTieuDe = new JLabel("QUẢN LÝ NHÂN VIÊN");
         lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 32));
         lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        add(lblTieuDe, BorderLayout.NORTH);
+        add(lblTieuDe, gbc);
 
-        JPanel pnCenterTop = new JPanel();
-        pnCenterTop.setLayout(new BoxLayout(pnCenterTop, BoxLayout.Y_AXIS));
-        pnCenterTop.setOpaque(false);
+        // --- Top Search & Control Panel ---
+        gbc.gridy = 1;
+        JPanel pnTop = createStyledPanel();
+        pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 15));
 
-        JPanel pnTop = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
-            }
-        };
-        pnTop.setOpaque(false);
-        pnTop.setLayout(new BoxLayout(pnTop, BoxLayout.X_AXIS));
-        pnTop.setBorder(new EmptyBorder(10, 20, 10, 20));
-        pnTop.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60)); // Giữ chiều cao cố định
-
-        txtTim = new JTextField() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(orangeColor);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-                super.paintComponent(g);
-            }
-        };
-        txtTim.setOpaque(false);
-        txtTim.setBorder(new EmptyBorder(0, 15, 0, 15));
-        txtTim.setFont(FONT_TXT);
-        txtTim.setForeground(Color.BLACK);
-        txtTim.setCaretColor(Color.BLACK);
-        txtTim.setMaximumSize(new Dimension(500, 35));
-
+        txtTim = createStyledTextField(300);
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);
         btnSua = taoNutBoGoc("Sửa", orangeColor);
@@ -87,113 +59,143 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btnXoaTrang = taoNutBoGoc("Xóa rỗng", orangeColor);
         btnTaiLai = taoNutBoGoc("Làm mới", orangeColor);
 
+        JLabel lblTim = new JLabel("Tìm tên: ");
+        lblTim.setForeground(Color.WHITE);
+        lblTim.setFont(new Font("Tahoma", Font.BOLD, 16));
+
+        pnTop.add(lblTim);
         pnTop.add(txtTim);
-        pnTop.add(Box.createHorizontalStrut(10));
-        pnTop.add(btnTim); pnTop.add(Box.createHorizontalStrut(10));
-        pnTop.add(btnThem); pnTop.add(Box.createHorizontalStrut(10));
-        pnTop.add(btnSua); pnTop.add(Box.createHorizontalStrut(10));
-        pnTop.add(btnXoa); pnTop.add(Box.createHorizontalStrut(10));
-        pnTop.add(btnXoaTrang); pnTop.add(Box.createHorizontalStrut(10));
+        pnTop.add(btnTim);
+        pnTop.add(btnThem);
+        pnTop.add(btnSua);
+        pnTop.add(btnXoa);
+        pnTop.add(btnXoaTrang);
         pnTop.add(btnTaiLai);
+        add(pnTop, gbc);
 
-        pnCenterTop.add(pnTop);
-        pnCenterTop.add(Box.createVerticalStrut(20));
+        // --- Input Panel ---
+        gbc.gridy = 2;
+        JPanel pnInput = createStyledPanel();
+        pnInput.setLayout(new GridBagLayout());
+        GridBagConstraints innerGbc = new GridBagConstraints();
+        innerGbc.insets = new Insets(8, 20, 8, 20);
+        innerGbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JPanel pnInput = new JPanel() {
+        // Header Label
+        innerGbc.gridx = 0; innerGbc.gridy = 0;
+        innerGbc.gridwidth = 4;
+        JLabel lblHeader = new JLabel("THÔNG TIN CHI TIẾT");
+        lblHeader.setFont(new Font("Tahoma", Font.BOLD, 20));
+        lblHeader.setForeground(Color.WHITE);
+        lblHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        pnInput.add(lblHeader, innerGbc);
+
+        // Reset width for inputs
+        innerGbc.gridwidth = 1;
+        innerGbc.weightx = 0.1;
+
+        // Fields
+        txtMa = createStyledTextField(200);
+        txtTen = createStyledTextField(200);
+        txtNgaySinh = createStyledTextField(200);
+        txtSdt = createStyledTextField(200);
+        txtEmail = createStyledTextField(200);
+        txtDiaChi = createStyledTextField(200);
+
+        cboGioiTinh = new JComboBox<>(new String[] {"Nam", "Nữ"});
+        cboGioiTinh.setBackground(orangeColor);
+        cboGioiTinh.setFont(FONT_TXT);
+
+        // Row 1: Ma NV & Ten NV
+        addRow(pnInput, innerGbc, 1, "Mã nhân viên:", txtMa, "Họ tên:", txtTen);
+        // Row 2: Gioi Tinh & Ngay Sinh
+        addRow(pnInput, innerGbc, 2, "Giới tính:", cboGioiTinh, "Ngày sinh:", txtNgaySinh);
+        // Row 3: SDT & Email
+        addRow(pnInput, innerGbc, 3, "Số điện thoại:", txtSdt, "Email:", txtEmail);
+        // Row 4: Dia Chi (Span)
+        innerGbc.gridy = 4; innerGbc.gridx = 0;
+        pnInput.add(createWhiteLabel("Địa chỉ:"), innerGbc);
+        innerGbc.gridx = 1; innerGbc.gridwidth = 3;
+        pnInput.add(txtDiaChi, innerGbc);
+
+        add(pnInput, gbc);
+
+        // --- Table ---
+        gbc.gridy = 3;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        String[] cols = {"Mã NV", "Tên NV", "Giới tính", "Ngày sinh", "SĐT", "Email", "Địa chỉ"};
+        model = new DefaultTableModel(cols, 0);
+        table = new JTable(model);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        table.setRowHeight(35);
+        table.setBackground(tableBackground);
+        table.setForeground(Color.WHITE);
+        table.setGridColor(new Color(70, 70, 70));
+        table.setSelectionBackground(new Color(80, 80, 80));
+        table.setSelectionForeground(orangeColor);
+
+        table.getTableHeader().setBackground(new Color(175, 25, 25));
+        table.getTableHeader().setForeground(Color.WHITE);
+        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
+
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.getViewport().setBackground(tableBackground);
+        add(scroll, gbc);
+
+        attachEvents();
+        loadData();
+    }
+
+    private JPanel createStyledPanel() {
+        JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.white);
+                g2.setColor(panelDarkTone);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
             }
         };
-        pnInput.setOpaque(false);
-        pnInput.setLayout(new GridBagLayout());
+        panel.setOpaque(false);
+        return panel;
+    }
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 15, 10, 15);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+    private JLabel createWhiteLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setForeground(Color.WHITE);
+        lbl.setFont(new Font("Tahoma", Font.BOLD, 14));
+        return lbl;
+    }
 
-        JLabel lblThongTin = new JLabel("THÔNG TIN NHÂN VIÊN");
-        lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
-        lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 22));
-        lblThongTin.setForeground(Color.BLACK);
+    private void addRow(JPanel p, GridBagConstraints c, int row, String l1, JComponent c1, String l2, JComponent c2) {
+        c.gridy = row;
+        c.gridx = 0; p.add(createWhiteLabel(l1), c);
+        c.gridx = 1; c.weightx = 0.5; p.add(c1, c);
+        c.gridx = 2; c.weightx = 0.1; p.add(createWhiteLabel(l2), c);
+        c.gridx = 3; c.weightx = 0.5; p.add(c2, c);
+    }
 
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 4;
-        pnInput.add(lblThongTin, gbc);
-
-        JTextField[] tfs = new JTextField[6];
-        for (int i = 0; i < 6; i++) {
-            tfs[i] = new JTextField() {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setColor(orangeColor);
-                    g2.fillRect(0, 0, getWidth(), getHeight());
-                    super.paintComponent(g);
-                }
-            };
-            tfs[i].setOpaque(false);
-            tfs[i].setBorder(new EmptyBorder(0, 10, 0, 10));
-            tfs[i].setForeground(Color.BLACK);
-            tfs[i].setFont(FONT_TXT);
-            tfs[i].setCaretColor(Color.BLACK);
-            tfs[i].setPreferredSize(new Dimension(200, 35));
-        }
-
-        txtMa = tfs[0]; txtTen = tfs[1]; txtDiaChi = tfs[2];
-        txtEmail = tfs[3]; txtNgaySinh = tfs[4]; txtSdt = tfs[5];
-
-        cboGioiTinh = new JComboBox<>(new String[] {"Nam", "Nữ"});
-        cboGioiTinh.setBackground(orangeColor);
-        cboGioiTinh.setForeground(Color.BLACK);
-        cboGioiTinh.setFont(FONT_TXT);
-        cboGioiTinh.setPreferredSize(new Dimension(200, 35));
-
-        gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0;
-        pnInput.add(taoLabel("Mã nhân viên:"), gbc);
-        gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 0.5;
-        pnInput.add(txtMa, gbc);
-        gbc.gridx = 2; gbc.gridy = 1; gbc.weightx = 0;
-        pnInput.add(taoLabel("Họ tên:"), gbc);
-        gbc.gridx = 3; gbc.gridy = 1; gbc.weightx = 0.5;
-        pnInput.add(txtTen, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0;
-        pnInput.add(taoLabel("Giới tính:"), gbc);
-        gbc.gridx = 1; gbc.gridy = 2; gbc.weightx = 0.5;
-        pnInput.add(cboGioiTinh, gbc);
-        gbc.gridx = 2; gbc.gridy = 2; gbc.weightx = 0;
-        pnInput.add(taoLabel("Ngày sinh:"), gbc);
-        gbc.gridx = 3; gbc.gridy = 2; gbc.weightx = 0.5;
-        pnInput.add(txtNgaySinh, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 3; gbc.weightx = 0;
-        pnInput.add(taoLabel("Sđt:"), gbc);
-        gbc.gridx = 1; gbc.gridy = 3; gbc.weightx = 0.5;
-        pnInput.add(txtSdt, gbc);
-        gbc.gridx = 2; gbc.gridy = 3; gbc.weightx = 0;
-        pnInput.add(taoLabel("Email:"), gbc);
-        gbc.gridx = 3; gbc.gridy = 3; gbc.weightx = 0.5;
-        pnInput.add(txtEmail, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 4; gbc.weightx = 0;
-        pnInput.add(taoLabel("Địa chỉ:"), gbc);
-        gbc.gridx = 1; gbc.gridy = 4; gbc.weightx = 1.0; gbc.gridwidth = 3;
-        pnInput.add(txtDiaChi, gbc);
-
-        pnCenterTop.add(pnInput);
-
-        add(pnCenterTop, BorderLayout.NORTH);
-
-        JScrollPane scrollTable = createTable();
-        add(scrollTable, BorderLayout.CENTER);
-
-        // sự kiện
-        attachEvents();
-        loadNhanVien();
+    private JTextField createStyledTextField(int width) {
+        JTextField tf = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(orangeColor);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        tf.setOpaque(false);
+        tf.setBorder(new EmptyBorder(0, 10, 0, 10));
+        tf.setFont(FONT_TXT);
+        tf.setForeground(Color.BLACK);
+        tf.setCaretColor(Color.BLACK);
+        tf.setPreferredSize(new Dimension(width, 35));
+        return tf;
     }
 
     private JLabel taoLabel(String text) {
@@ -205,11 +207,18 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
 
     private JButton taoNutBoGoc(String text, Color bgColor) {
         JButton btn = new JButton(text) {
+            private boolean isHovered = false;
+            {
+                addMouseListener(new MouseAdapter() {
+                    public void mouseEntered(MouseEvent e) { isHovered = true; repaint(); }
+                    public void mouseExited(MouseEvent e) { isHovered = false; repaint(); }
+                });
+            }
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(bgColor);
+                g2.setColor(isHovered ? bgColor.darker() : bgColor);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
                 g2.dispose();
                 super.paintComponent(g);
@@ -220,59 +229,13 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Tahoma", Font.BOLD, 15));
-        btn.setPreferredSize(new Dimension(110, 35));
-        btn.setMaximumSize(new Dimension(110, 35));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setPreferredSize(new Dimension(100, 35));
         return btn;
     }
 
-    private JScrollPane createTable() {
-        String[] cols = {"Mã NV", "Tên NV", "Giới tính", "Ngày sinh", "SĐT", "Email", "Địa chỉ"};
-        model = new DefaultTableModel(cols, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        table = new JTable(model);
-        table.setRowHeight(35);
-        table.setFont(new Font("Tahoma", Font.PLAIN, 15));
-
-        table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 16));
-        table.getTableHeader().setBackground(new Color(175, 25, 25));
-        table.getTableHeader().setForeground(Color.WHITE);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); // Tạo khoảng cách với khối form ở trên
-        return scroll;
-    }
-
-    private void attachEvents() {
-        btnTaiLai.addActionListener(e -> loadNhanVien());
-        btnThem.addActionListener(e -> themNhanVien());
-        btnSua.addActionListener(e -> suaNhanVien());
-        btnXoa.addActionListener(e -> xoaNhanVien());
-        btnTim.addActionListener(e -> timNhanVien());
-        btnXoaTrang.addActionListener(e -> clearForm());
-
-        table.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                hienThiLenForm();
-            }
-        });
-
-        table.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    hienThiLenForm();
-                }
-            }
-        });
-    }
-
-    private void loadNhanVien() {
+    @Override
+    public void loadData() {
         model.setRowCount(0);
         ArrayList<NhanVien> ds = daoNV.getAllNhanVien();
         for (NhanVien nv : ds) {
@@ -282,6 +245,18 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
                     nv.getEmail(), nv.getDiaChi()
             });
         }
+    }
+
+    private void attachEvents() {
+        btnTaiLai.addActionListener(e -> loadData());
+        btnThem.addActionListener(e -> themNhanVien());
+        btnSua.addActionListener(e -> suaNhanVien());
+        btnXoa.addActionListener(e -> xoaNhanVien());
+        btnTim.addActionListener(e -> timNhanVien());
+        btnXoaTrang.addActionListener(e -> clearForm());
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) { hienThiLenForm(); }
+        });
     }
 
     private void hienThiLenForm() {
@@ -294,6 +269,18 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
             txtSdt.setText(model.getValueAt(row, 4).toString());
             txtEmail.setText(model.getValueAt(row, 5).toString());
             txtDiaChi.setText(model.getValueAt(row, 6).toString());
+        }
+    }
+
+    private void loadNhanVien() {
+        model.setRowCount(0);
+        ArrayList<NhanVien> ds = daoNV.getAllNhanVien();
+        for (NhanVien nv : ds) {
+            model.addRow(new Object[]{
+                    nv.getMaNV(), nv.getTenNV(), nv.getGioiTinh(),
+                    nv.getNgaySinh().format(fmt), nv.getSoDienThoai(),
+                    nv.getEmail(), nv.getDiaChi()
+            });
         }
     }
 
@@ -353,9 +340,9 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         String maNV = model.getValueAt(row, 0).toString();
         String tenNV = model.getValueAt(row, 1).toString();
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc muốn xóa nhân viên:\n" + tenNV + " (" + maNV + ")?",
-                "Xác nhận xóa",
-                JOptionPane.YES_NO_OPTION
+            "Bạn có chắc muốn xóa nhân viên:\n" + tenNV + " (" + maNV + ")?",
+            "Xác nhận xóa",
+            JOptionPane.YES_NO_OPTION
         );
         if (confirm == JOptionPane.YES_OPTION) {
             if (daoNV.xoaNhanVien(maNV)) {
@@ -390,15 +377,12 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         }
     }
 
+
+
     private void clearForm() {
-        txtMa.setText("");
-        txtTen.setText("");
-        txtDiaChi.setText("");
-        txtSdt.setText("");
-        txtEmail.setText("");
-        txtNgaySinh.setText("");
+        txtMa.setText(""); txtTen.setText(""); txtDiaChi.setText("");
+        txtSdt.setText(""); txtEmail.setText(""); txtNgaySinh.setText("");
         cboGioiTinh.setSelectedIndex(0);
-        txtMa.requestFocus();
     }
 
     private NhanVien layDuLieuForm() {

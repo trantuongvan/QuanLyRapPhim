@@ -64,6 +64,7 @@ public class ThongTinVeModal extends JFrame {
     private Ve ticketOrigin;
     private SuatChieu suatChieu;
     private ArrayList<String> soGheDuocChon;
+    private ArrayList<Ve> danhSachVeMoiThanhToan;
 
     public ThongTinVeModal(HoaDon hoaDon, Ve ve, JPanel parentForm, ArrayList<String> soGheDuocChon) {
 
@@ -161,11 +162,17 @@ public class ThongTinVeModal extends JFrame {
 
         btnInVe = new JButton("In vé");
         btnInVe.setFont(fChonGhe);
-        btnInVe.setEnabled(this.ticketOrigin.isDaThanhToan());
+        btnInVe.setEnabled(false);
 
         btnXemHoaDon = new JButton("Xem hóa đơn");
         btnXemHoaDon.setFont(fChonGhe);
-        btnXemHoaDon.setEnabled(this.ticketOrigin.isDaThanhToan());
+        btnXemHoaDon.setEnabled(false);
+
+        if (this.ticketOrigin.isDaThanhToan()) {
+            btnInVe.setEnabled(true);
+            btnXemHoaDon.setEnabled(true);
+            btnThanhToan.setEnabled(false);
+        }
 
         pSouth.add(btnHuy);
         pSouth.add(btnThanhToan);
@@ -275,39 +282,32 @@ public class ThongTinVeModal extends JFrame {
 
     private void thanhToan() {
         if (this.ticketOrigin.isDaThanhToan()) {
-            JOptionPane.showMessageDialog(this, "Vé đã được thanh toán trước đó rồi !", "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vé đã được thanh toán!");
             return;
         }
-        ArrayList<Ve> danhSachVeDaDat = new ArrayList<>();
-        for (int i = 0; i < this.soGheDuocChon.size(); i++) {
 
-            String tenGhe = this.soGheDuocChon.get(i);
+        this.danhSachVeMoiThanhToan = new ArrayList<>();
+        for (String tenGhe : this.soGheDuocChon) {
             Ghe ghe = this.chairManager.TimGheTheoTen(tenGhe, this.suatChieu.getMaRap());
-
-            Ve ve = xuLyTaoVeTheoGhe(ghe);
-            if (ve != null) {
-                danhSachVeDaDat.add(ve);
-                this.ticketManager.add(ve);
+            Ve veMoi = xuLyTaoVeTheoGhe(ghe);
+            if (veMoi != null) {
+                this.danhSachVeMoiThanhToan.add(veMoi);
+                this.ticketManager.add(veMoi);
             }
         }
 
-        // Thêm hóa đơn
         this.billManager.add(this.hoaDon);
-        xuLyTaoChiTietHoaDon(this.hoaDon, danhSachVeDaDat, this.suatChieu.getGiaVe());
+        xuLyTaoChiTietHoaDon(this.hoaDon, this.danhSachVeMoiThanhToan, this.suatChieu.getGiaVe());
 
-        JOptionPane.showMessageDialog(this, "Thanh toán thành công !",
-                "Hệ thống thông báo",
-                JOptionPane.INFORMATION_MESSAGE);
+        this.ticketOrigin.setDaThanhToan(true);
+        this.lblTrangThai.setText("  Trạng thái:             Đã thanh toán");
 
+        this.btnThanhToan.setEnabled(false);
         this.btnInVe.setEnabled(true);
         this.btnXemHoaDon.setEnabled(true);
-        this.btnThanhToan.setEnabled(false);
-        String trangThai = "Đã thanh toán";
-        this.lblTrangThai.setText("  Trạng thái:             " + trangThai);
-        this.ticketOrigin.setDaThanhToan(true);
-    }
 
+        JOptionPane.showMessageDialog(this, "Thanh toán thành công! Bạn có thể xem hóa đơn ngay bây giờ.");
+    }
     private Ve xuLyTaoVeTheoGhe(Ghe ghe) {
         if (ghe == null) {
             return null;
@@ -332,9 +332,9 @@ public class ThongTinVeModal extends JFrame {
     }
 
     private void xemHoaDon(HoaDon hoaDon) {
-        if (this.hoaDon == null)
-            return;
-        new HoaDonModal(hoaDon, this.parentform);
+        if (this.hoaDon == null) return;
+        // Đảm bảo danhSachVeMoiThanhToan đã được khởi tạo trong hàm thanhToan()
+        new HoaDonModal(this.hoaDon, this.parentform, this.danhSachVeMoiThanhToan);
     }
 
     private void xuLyTaoChiTietHoaDon(HoaDon hoaDon, ArrayList<Ve> danhSachVeDaDat, double giaVe) {

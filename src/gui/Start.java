@@ -29,11 +29,9 @@ public class Start extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        // ==== PANEL MENU BÊN TRÁI ====
         JPanel pnWest = new JPanel(new BorderLayout());
         pnWest.setPreferredSize(new Dimension(220, 1000));
         pnWest.setBackground(new Color(17, 17, 17));
-//        pnWest.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 
         Box boxMenu = Box.createVerticalBox();
         pnWest.add(boxMenu);
@@ -72,6 +70,9 @@ public class Start extends JFrame implements ActionListener {
             btn.setBorderPainted(false);
             btn.setFocusPainted(false);
             btn.setIconTextGap(5);
+
+            btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
             btn.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     btn.setBackground(hoverBgColor);
@@ -89,6 +90,8 @@ public class Start extends JFrame implements ActionListener {
                 }
             });
         }
+
+        btnDangXuat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnDangXuat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnDangXuat.setBackground(hoverBgColor);
@@ -117,11 +120,7 @@ public class Start extends JFrame implements ActionListener {
         boxMenu.add(Box.createVerticalStrut(10));
         for (JButton btn : menuButtons) {
             boxMenu.add(btn);
-//            boxMenu.add(Box.createVerticalStrut(10));
         }
-
-//        boxMenu.add(createSeparatorLine(3));
-//        boxMenu.add(Box.createVerticalStrut(8));
         boxMenu.add(btnDangXuat);
 
         add(pnWest, BorderLayout.WEST);

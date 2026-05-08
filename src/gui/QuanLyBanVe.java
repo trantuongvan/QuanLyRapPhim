@@ -11,7 +11,6 @@ import dao.QuanLySuatChieu_DAO;
 import dao.QuanLyVe_DAO;
 
 import java.awt.*;
-import java.awt.Dialog.ModalExclusionType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,11 +38,13 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     private Dimension modalDimension = new Dimension(500, 600);
     private Font fChonGhe;
     private ArrayList<Phim> movieList;
+    private final Color orangeColor = new Color(245, 140, 0);
 
     public QuanLyBanVe() {
         Color bgMain = new Color(30, 30, 30);
         Color bgSecondary = new Color(45, 45, 45);
         Color textColor = Color.WHITE;
+
 
         setLayout(new BorderLayout(10, 10));
         setBackground(bgMain);
@@ -51,7 +52,9 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         loadData();
         JLabel lblTitle = new JLabel("QUẢN LÝ BÁN VÉ", JLabel.CENTER);
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
-        lblTitle.setForeground(Color.RED);
+
+        lblTitle.setForeground(orangeColor);
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         add(lblTitle, BorderLayout.NORTH);
 
         JPanel pCenter = new JPanel();
@@ -103,13 +106,13 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         styleTextField(txtDiaChi);
         styleComboBox(cbGioiTinh);
 
-        infoPanel.add(createRow(new JLabel("      Họ tên:                "), txtHoTen, bgSecondary, textColor));
+        infoPanel.add(createRow(new JLabel("Họ tên:"), txtHoTen, bgSecondary, textColor));
         infoPanel.add(Box.createVerticalStrut(10));
-        infoPanel.add(createRow(new JLabel("      Số điện thoại:   "), txtSDT, bgSecondary, textColor));
+        infoPanel.add(createRow(new JLabel("Số điện thoại:"), txtSDT, bgSecondary, textColor));
         infoPanel.add(Box.createVerticalStrut(10));
-        infoPanel.add(createRow(new JLabel("      Địa chỉ:               "), txtDiaChi, bgSecondary, textColor));
+        infoPanel.add(createRow(new JLabel("Địa chỉ:"), txtDiaChi, bgSecondary, textColor));
         infoPanel.add(Box.createVerticalStrut(10));
-        infoPanel.add(createRow(new JLabel("      Giới tính:             "), cbGioiTinh, bgSecondary, textColor));
+        infoPanel.add(createRow(new JLabel("Giới tính:"), cbGioiTinh, bgSecondary, textColor));
 
         JPanel pInfoMovie = createStyledSection("THÔNG TIN VÉ XEM PHIM", bgSecondary, textColor);
 
@@ -126,12 +129,12 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
             styleTextField(tf);
         }
 
-        pInfoMovie.add(createRow(new JLabel("      Tên phim:      "), txtTenPhim, bgSecondary, textColor));
-        pInfoMovie.add(createRow(new JLabel("      Phòng:            "), txtTenPhong, bgSecondary, textColor));
-        pInfoMovie.add(createRow(new JLabel("      Thời lượng:  "), txtThoiLuong, bgSecondary, textColor));
-        pInfoMovie.add(createRow(new JLabel("      Thể loại:          "), txtTheLoai, bgSecondary, textColor));
-        pInfoMovie.add(createRow(new JLabel("      Suất chiếu:    "), txtSuatChieu, bgSecondary, textColor));
-        pInfoMovie.add(createRow(new JLabel("      Ghế:                  "), txtSoGhe, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("Tên phim:"), txtTenPhim, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("Phòng:"), txtTenPhong, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("Thời lượng:"), txtThoiLuong, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("Thể loại:"), txtTheLoai, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("Suất chiếu:"), txtSuatChieu, bgSecondary, textColor));
+        pInfoMovie.add(createRow(new JLabel("Ghế:"), txtSoGhe, bgSecondary, textColor));
 
         pGridContainer.add(infoPanel);
         pGridContainer.add(pInfoMovie);
@@ -146,7 +149,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         btnXoaChon.setFont(new Font("Tahoma", Font.BOLD, 18));
         btnXoaChon.setPreferredSize(new Dimension(200, 45));
         btnDatVe = new JButton("Xác nhận đặt vé");
-        btnDatVe.setBackground(Color.ORANGE);
+        btnDatVe.setBackground(orangeColor);
         btnDatVe.setForeground(Color.WHITE);
         btnDatVe.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnDatVe.setFocusPainted(false);
@@ -170,15 +173,15 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
 
     private void styleComboBox(JComboBox cb) {
-        cb.setBackground(new Color(60, 60, 60));
-        cb.setForeground(Color.WHITE);
+        cb.setBackground(orangeColor);
+        cb.setForeground(Color.black);
         cb.setFont(new Font("Tahoma", Font.PLAIN, 16));
     }
 
     private void styleTextField(JTextField tf) {
-        tf.setBackground(new Color(60, 60, 60));
-        tf.setForeground(Color.WHITE);
-        tf.setCaretColor(Color.WHITE);
+        tf.setBackground(orangeColor);
+        tf.setForeground(Color.BLACK);
+        tf.setCaretColor(Color.BLACK);
         tf.setFont(new Font("Tahoma", Font.PLAIN, 16));
         tf.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(80, 80, 80)),
@@ -215,7 +218,9 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         row.add(comp, gbc);
 
         return row;
-    }    @Override
+    }
+
+    @Override
     public void resetForm() {
         cbPhim.setSelectedIndex(0);
         cbPhong.setSelectedIndex(0);
@@ -238,6 +243,8 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     }
 
     private void acceptTicket() {
+        Rap rapHienTai = rapManager.findRapByID(suatChieuDuocChon.getMaRap());
+        ArrayList<Ghe> dsGheTrongRap = chairManager.getDanhSachGheTheoRap(rapHienTai);
         String hoten = txtHoTen.getText().trim();
         String sdt = txtSDT.getText().trim();
         String diaChi = txtDiaChi.getText().trim();
@@ -268,6 +275,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
             return;
         }
         String maKH = this.customerManager.taoMaKHTuDong();
+
         KhachHang khachHang = new KhachHang(maKH, hoten, gioiTinh, sdt, diaChi);
         customerManager.add(khachHang);
 
@@ -275,9 +283,43 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
             JOptionPane.showMessageDialog(this, "Chưa chọn ghế !", "Lỗi đặt vé", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         Ve ve = createTicket();
         float giaVe = this.suatChieuDuocChon.getGiaVe();
         HoaDon hoaDon = xuLyTaoHoaDon(khachHang, this.selectedChairs.size(), giaVe);
+        if (!billManager.add(hoaDon)) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu hóa đơn!");
+            return;
+        }
+        ArrayList<Ve> listVeVuaTao = new ArrayList<>();
+        dao.QuanLyCTHD_DAO cthdDAO = new dao.QuanLyCTHD_DAO();
+        for (String idGheDuocChon : this.selectedChairs) {
+            // Find the full Ghe object from our list instead of creating a new one
+            Ghe gheThucTe = null;
+            for (Ghe g : dsGheTrongRap) {
+                if (g.getMaGhe().equals(idGheDuocChon)) {
+                    gheThucTe = g;
+                    break;
+                }
+            }
+
+            if (gheThucTe != null) {
+                ve.setMaSuatChieu(this.suatChieuDuocChon.getMaSuatChieu());
+                ve.setNgayBan(LocalDate.now());
+                ve.setDaThanhToan(false);
+                ve.setGhe(gheThucTe); // Now passing the full Ghe object
+
+                // Save Ticket to DB
+                if (ticketManager.add(ve)) {
+                    listVeVuaTao.add(ve);
+
+                    // Save Detail (CTHD)
+                    ChiTietHoaDon cthd = new ChiTietHoaDon(hoaDon, ve, 1, (double)giaVe);
+                    cthdDAO.add(cthd);
+                }
+            }
+        }
+        new HoaDonModal(hoaDon, this, listVeVuaTao);
 
         new ThongTinVeModal(hoaDon, ve, this, this.selectedChairs);
     }
@@ -464,11 +506,11 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
                     }
 
                     btn.addActionListener(e -> {
-                        if (btn.getBackground().equals(Color.ORANGE)) {
+                        if (btn.getBackground().equals(orangeColor)) {
                             btn.setBackground(new Color(100, 100, 100));
                             selectedChairs.remove(ghe.getMaGhe());
                         } else {
-                            btn.setBackground(Color.ORANGE);
+                            btn.setBackground(orangeColor);
                             selectedChairs.add(ghe.getMaGhe());
                         }
                     });
@@ -506,13 +548,13 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
 
         JPanel legendPanel = new JPanel();
         legendPanel.setOpaque(false);
-        addLegendItem(legendPanel, Color.ORANGE, "Ghế đang chọn");
+        addLegendItem(legendPanel, orangeColor, "Ghế đang chọn");
         addLegendItem(legendPanel, new Color(100, 100, 100), "Ghế còn trống");
         addLegendItem(legendPanel, new Color(180, 0, 0), "Ghế đã đặt");
         southPanel.add(legendPanel);
 
         JButton btnConfirm = new JButton("Xác nhận");
-        btnConfirm.setBackground(Color.ORANGE);
+        btnConfirm.setBackground(orangeColor);
         btnConfirm.setForeground(Color.WHITE);
         btnConfirm.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnConfirm.setFocusPainted(false);
@@ -606,6 +648,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         this.txtDiaChi.setText(khachHang.getDiaChi());
         this.cbGioiTinh.setSelectedItem(khachHang.getGioiTinh());
     }
+
 
     private boolean isGheDaDat(Ghe ghe, ArrayList<Ve> ticketList) {
         for (Ve ve : ticketList) {

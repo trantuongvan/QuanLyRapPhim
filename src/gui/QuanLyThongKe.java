@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
 import dao.QuanLyHoaDon_DAO;
@@ -40,7 +41,8 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
     }
 
     public QuanLyThongKe() {
-        setLayout(null);
+        setLayout(new BorderLayout(15, 15));
+        setBorder(new EmptyBorder(15, 15, 15, 15));
 
         Color darkBg = new Color(34, 34, 34);
         setBackground(darkBg);
@@ -55,23 +57,29 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(orangeColor);
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTitle.setBounds(20, 15, 1210, 40);
-        add(lblTitle);
+        add(lblTitle, BorderLayout.NORTH);
 
-        JPanel pnTop = new JPanel() {
+        JPanel pnCenter = new JPanel(new BorderLayout(0, 15));
+        pnCenter.setOpaque(false);
+        add(pnCenter, BorderLayout.CENTER);
+
+        JPanel pnTopAndForm = new JPanel(new BorderLayout(0, 15));
+        pnTopAndForm.setOpaque(false);
+        pnCenter.add(pnTopAndForm, BorderLayout.NORTH);
+
+        //CRUD
+        JPanel pnTop = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
                 g2.dispose();
             }
         };
         pnTop.setOpaque(false);
-        pnTop.setLayout(null);
-        pnTop.setBounds(20, 70, 940, 60);
-        add(pnTop);
+        pnTop.setBorder(new EmptyBorder(12, 15, 12, 15));
 
         txtTimKiem = new JTextField() {
             @Override
@@ -89,20 +97,32 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 16));
         txtTimKiem.setForeground(Color.BLACK);
         txtTimKiem.setCaretColor(Color.BLACK);
-        txtTimKiem.setBounds(178, 15, 200, 30);
-        pnTop.add(txtTimKiem);
+        txtTimKiem.setPreferredSize(new Dimension(150, 35));
+        txtTimKiem.setMinimumSize(new Dimension(150, 35));
 
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnBaoCao = taoNutBoGoc("Lập Báo cáo", orangeColor);
+        btnBaoCao.setPreferredSize(new Dimension(140, 35));
+        btnBaoCao.setMaximumSize(new Dimension(140, 35));
         btnXem = taoNutBoGoc("Làm mới", orangeColor);
-        btnTim.setBounds(393, 15, 80, 30);
-        pnTop.add(btnTim);
-        btnBaoCao.setBounds(488, 15, 140, 30);
-        pnTop.add(btnBaoCao);
-        btnXem.setBounds(643, 15, 120, 30);
-        pnTop.add(btnXem);
 
-        JPanel pnInput = new JPanel() {
+        GridBagConstraints gbcTop = new GridBagConstraints();
+        gbcTop.fill = GridBagConstraints.HORIZONTAL;
+        gbcTop.insets = new Insets(0, 5, 0, 5);
+        gbcTop.gridy = 0;
+
+        gbcTop.gridx = 0;
+        gbcTop.weightx = 1.0;
+        pnTop.add(txtTimKiem, gbcTop);
+        gbcTop.weightx = 0.0;
+        gbcTop.gridx = 1; pnTop.add(btnTim, gbcTop);
+        gbcTop.gridx = 2; pnTop.add(btnBaoCao, gbcTop);
+        gbcTop.gridx = 3; pnTop.add(btnXem, gbcTop);
+
+        pnTopAndForm.add(pnTop, BorderLayout.NORTH);
+
+        //input
+        JPanel pnInput = new JPanel(new BorderLayout(0, 10)) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -113,14 +133,22 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
             }
         };
         pnInput.setOpaque(false);
-        pnInput.setLayout(null);
-        pnInput.setBounds(20, 140, 940, 120);
-        add(pnInput);
+        pnInput.setBorder(new EmptyBorder(10, 20, 20, 20));
 
         JLabel lblThongTin = new JLabel("THỐNG KÊ TỔNG QUAN", SwingConstants.CENTER);
         lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 18));
-        lblThongTin.setBounds(0, 10, 940, 30);
-        pnInput.add(lblThongTin);
+        pnInput.add(lblThongTin, BorderLayout.NORTH);
+
+        JPanel pnStatsLayout = new JPanel(new GridLayout(2, 3, 15, 5));
+        pnStatsLayout.setOpaque(false);
+
+        Font fontLbl = new Font("Tahoma", Font.BOLD, 15);
+        JLabel lblTotalPhimTitle = new JLabel("Tổng số phim", SwingConstants.CENTER);
+        lblTotalPhimTitle.setFont(fontLbl);
+        JLabel lblTotalVeTitle = new JLabel("Tổng số vé đã bán", SwingConstants.CENTER);
+        lblTotalVeTitle.setFont(fontLbl);
+        JLabel lblTotalDoanhThuTitle = new JLabel("Tổng doanh thu (vnđ)", SwingConstants.CENTER);
+        lblTotalDoanhThuTitle.setFont(fontLbl);
 
         JTextField[] tfs = new JTextField[3];
         for (int i = 0; i < 3; i++) {
@@ -133,49 +161,26 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
             tfs[i].setHorizontalAlignment(JTextField.CENTER);
             tfs[i].setEditable(false);
         }
-
         txtTotalPhim = tfs[0];
         txtTotalVe = tfs[1];
         txtTotalDoanhThu = tfs[2];
-
-        Font fontLbl = new Font("Tahoma", Font.BOLD, 15);
-
-        int col1 = 0, col2 = 313, col3 = 626;
-        int wCol = 313;
-        int yTitle = 45;
-        int yVal = 75;
-
-        JLabel lblTotalPhimTitle = new JLabel("Tổng số phim", SwingConstants.CENTER);
-        lblTotalPhimTitle.setFont(fontLbl);
-        lblTotalPhimTitle.setBounds(col1, yTitle, wCol, 30);
-        pnInput.add(lblTotalPhimTitle);
-
-        txtTotalPhim.setBounds(col1, yVal, wCol, 30);
-        pnInput.add(txtTotalPhim);
-
-        JLabel lblTotalVeTitle = new JLabel("Tổng số vé đã bán", SwingConstants.CENTER);
-        lblTotalVeTitle.setFont(fontLbl);
-        lblTotalVeTitle.setBounds(col2, yTitle, wCol, 30);
-        pnInput.add(lblTotalVeTitle);
-
-        txtTotalVe.setBounds(col2, yVal, wCol, 30);
-        pnInput.add(txtTotalVe);
-
-        JLabel lblTotalDoanhThuTitle = new JLabel("Tổng doanh thu (vnđ)", SwingConstants.CENTER);
-        lblTotalDoanhThuTitle.setFont(fontLbl);
-        lblTotalDoanhThuTitle.setBounds(col3, yTitle, wCol, 30);
-        pnInput.add(lblTotalDoanhThuTitle);
-
-        txtTotalDoanhThu.setBounds(col3, yVal, wCol, 30);
         txtTotalDoanhThu.setForeground(redColor);
-        pnInput.add(txtTotalDoanhThu);
 
+        pnStatsLayout.add(lblTotalPhimTitle);
+        pnStatsLayout.add(lblTotalVeTitle);
+        pnStatsLayout.add(lblTotalDoanhThuTitle);
+        pnStatsLayout.add(txtTotalPhim);
+        pnStatsLayout.add(txtTotalVe);
+        pnStatsLayout.add(txtTotalDoanhThu);
+
+        pnInput.add(pnStatsLayout, BorderLayout.CENTER);
+        pnTopAndForm.add(pnInput, BorderLayout.CENTER);
+
+        //table
         String[] columns = { "Mã phim", "Tên phim", "Ngày", "Số vé đã bán", "Tổng doanh thu (vnđ)" };
         model = new DefaultTableModel(columns, 0) {
             @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
+            public boolean isCellEditable(int row, int col) { return false; }
         };
         tblThongKe = new JTable(model);
         tblThongKe.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -184,6 +189,8 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         tblThongKe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblThongKe.getTableHeader().setBackground(redColor);
         tblThongKe.getTableHeader().setForeground(Color.WHITE);
+        ((DefaultTableCellRenderer)tblThongKe.getTableHeader().getDefaultRenderer()).setOpaque(true);
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for(int i=0; i<tblThongKe.getColumnCount(); i++){
@@ -191,12 +198,12 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         }
 
         JScrollPane scrollTable = new JScrollPane(tblThongKe);
-        scrollTable.setBounds(20, 280, 940, 500);
         scrollTable.getViewport().setBackground(Color.WHITE);
         scrollTable.setBorder(BorderFactory.createEmptyBorder());
-        add(scrollTable);
+        pnCenter.add(scrollTable, BorderLayout.CENTER);
 
-        JPanel pnRight = new JPanel() {
+        //ds tháng
+        JPanel pnRight = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -206,9 +213,11 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
                 g2.dispose();
             }
         };
-        pnRight.setLayout(null);
         pnRight.setOpaque(false);
-        pnRight.setBounds(1000, 70, 270, 710);
+        pnRight.setBorder(new EmptyBorder(15, 10, 15, 10));
+
+        pnRight.setPreferredSize(new Dimension(250, 0));
+        add(pnRight, BorderLayout.EAST);
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Danh sách Tháng chiếu");
         String[] thangList = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
@@ -218,28 +227,21 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
 
         treeNgayChieu = new JTree(new DefaultTreeModel(root));
         treeNgayChieu.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        treeNgayChieu.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        //render lại list tháng
         treeNgayChieu.setRowHeight(35);
         treeNgayChieu.putClientProperty("JTree.lineStyle", "Angled");
-        javax.swing.tree.DefaultTreeCellRenderer renderer = new javax.swing.tree.DefaultTreeCellRenderer();
+
+        DefaultTreeCellRenderer renderer = new javax.swing.tree.DefaultTreeCellRenderer();
         renderer.setBackgroundSelectionColor(orangeColor);
         renderer.setTextSelectionColor(Color.WHITE);
         renderer.setBackgroundNonSelectionColor(Color.WHITE);
         renderer.setTextNonSelectionColor(Color.BLACK);
-        renderer.setLeafIcon(null);
-        renderer.setClosedIcon(null);
-        renderer.setOpenIcon(null);
+        renderer.setLeafIcon(null); renderer.setClosedIcon(null); renderer.setOpenIcon(null);
         renderer.setBorderSelectionColor(null);
         treeNgayChieu.setCellRenderer(renderer);
 
         JScrollPane scrollTree = new JScrollPane(treeNgayChieu);
-        scrollTree.setBounds(10 , 10, 230, 690);
         scrollTree.setBorder(BorderFactory.createEmptyBorder());
-        pnRight.add(scrollTree);
-
-        add(pnRight);
+        pnRight.add(scrollTree, BorderLayout.CENTER);
 
         btnXem.addActionListener(this);
         btnBaoCao.addActionListener(this);
@@ -273,20 +275,20 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
         btn.setContentAreaFilled(false);
-        btn.setBorderPainted(false);
         btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btn.setBackground(bgColor);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setMaximumSize(new Dimension(110, 35));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         return btn;
     }
 

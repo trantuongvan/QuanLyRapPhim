@@ -96,8 +96,8 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         txtTimSuat.setFont(new Font("Tahoma", Font.PLAIN, 16));
         txtTimSuat.setForeground(Color.BLACK);
         txtTimSuat.setCaretColor(Color.BLACK);
-        txtTimSuat.setPreferredSize(new Dimension(200, 40));
-        txtTimSuat.setMinimumSize(new Dimension(200, 40));
+        txtTimSuat.setPreferredSize(new Dimension(200, 35));
+        txtTimSuat.setMinimumSize(new Dimension(200, 35));
 
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);

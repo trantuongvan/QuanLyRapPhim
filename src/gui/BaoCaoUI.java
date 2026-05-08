@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-// iText 5
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
@@ -55,25 +54,28 @@ public class BaoCaoUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-        setResizable(false);
+//        setResizable(true);
 
         Color darkBg = new Color(34, 34, 34);
         Color orangeColor = new Color(245, 140, 0);
         Color redColor = new Color(175, 25, 25);
-        Color borderColor = new Color(200, 200, 200);
 
-        JPanel contentPane = new JPanel(null);
+        JPanel contentPane = new JPanel(new BorderLayout(0, 20));
         contentPane.setBackground(darkBg);
+        contentPane.setBorder(new EmptyBorder(20, 25, 20, 25));
         setContentPane(contentPane);
 
         JLabel lblTieuDe = new JLabel("BÁO CÁO THÁNG " + thang);
         lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTieuDe.setBounds(0, 15, 800, 40);
-        contentPane.add(lblTieuDe);
+        contentPane.add(lblTieuDe, BorderLayout.NORTH);
 
-        JPanel pnSummary = new JPanel() {
+        JPanel pnCenter = new JPanel(new BorderLayout(0, 20));
+        pnCenter.setOpaque(false);
+        contentPane.add(pnCenter, BorderLayout.CENTER);
+
+        JPanel pnSummary = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -83,47 +85,63 @@ public class BaoCaoUI extends JFrame {
                 g2.dispose();
             }
         };
-        pnSummary.setLayout(null);
         pnSummary.setOpaque(false);
-        pnSummary.setBounds(25, 70, 735, 120);
-        contentPane.add(pnSummary);
+        pnSummary.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         Font fontLbl = new Font("Tahoma", Font.BOLD, 16);
         Font fontVal = new Font("Tahoma", Font.BOLD, 18);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.gridy = 0;
+
         JLabel lblNgay = new JLabel("Ngày lập báo cáo:");
         lblNgay.setFont(fontLbl);
-        lblNgay.setBounds(40, 20, 160, 30);
-        pnSummary.add(lblNgay);
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnSummary.add(lblNgay, gbc);
 
         JLabel valNgay = new JLabel(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         valNgay.setFont(fontVal);
         valNgay.setForeground(orangeColor);
-        valNgay.setBounds(210, 20, 180, 30);
-        pnSummary.add(valNgay);
-
-        JLabel lblPhim = new JLabel("Tổng số phim:");
-        lblPhim.setFont(fontLbl); lblPhim.setBounds(40, 65, 160, 30);
-        pnSummary.add(lblPhim);
-
-        JLabel valPhim = new JLabel(String.valueOf(totalPhim));
-        valPhim.setFont(fontVal); valPhim.setForeground(orangeColor);
-        valPhim.setBounds(210, 65, 180, 30);
-        pnSummary.add(valPhim);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnSummary.add(valNgay, gbc);
 
         JLabel lblVe = new JLabel("Tổng số vé đã bán:");
-        lblVe.setFont(fontLbl); lblVe.setBounds(380, 20, 160, 30);
-        pnSummary.add(lblVe);
+        lblVe.setFont(fontLbl);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnSummary.add(lblVe, gbc);
 
         JLabel valVe = new JLabel(String.valueOf(totalVe));
-        valVe.setFont(fontVal); valVe.setForeground(orangeColor);
-        valVe.setBounds(550, 20, 180, 30);
-        pnSummary.add(valVe);
+        valVe.setFont(fontVal);
+        valVe.setForeground(orangeColor);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnSummary.add(valVe, gbc);
+
+        gbc.gridy = 1;
+
+        JLabel lblPhim = new JLabel("Tổng số phim:");
+        lblPhim.setFont(fontLbl);
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnSummary.add(lblPhim, gbc);
+
+        JLabel valPhim = new JLabel(String.valueOf(totalPhim));
+        valPhim.setFont(fontVal);
+        valPhim.setForeground(orangeColor);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnSummary.add(valPhim, gbc);
 
         JLabel lblDoanhThu = new JLabel("Tổng doanh thu:");
         lblDoanhThu.setFont(fontLbl);
-        lblDoanhThu.setBounds(380, 65, 160, 30);
-        pnSummary.add(lblDoanhThu);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnSummary.add(lblDoanhThu, gbc);
 
         NumberFormat nf = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
         nf.setMinimumFractionDigits(2);
@@ -133,43 +151,56 @@ public class BaoCaoUI extends JFrame {
         JLabel valDoanhThu = new JLabel(doanhThu + " đ");
         valDoanhThu.setFont(fontVal);
         valDoanhThu.setForeground(redColor);
-        valDoanhThu.setBounds(550, 65, 180, 30);
-        pnSummary.add(valDoanhThu);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnSummary.add(valDoanhThu, gbc);
+
+        pnCenter.add(pnSummary, BorderLayout.NORTH);
 
         model = new DefaultTableModel(new Object[] { "Mã phim", "Tên Phim", "Số Lượng Vé", "Doanh Thu (vnđ)" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int col) { return false; }
+            public boolean isCellEditable(int row, int col){
+                return false;
+            }
         };
         JTable table = new JTable(model);
         table.setFont(new Font("Tahoma", Font.PLAIN, 15));
         table.getTableHeader().setFont(new Font("Tahoma", Font.BOLD, 15));
         table.setRowHeight(35);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setBackground(redColor);
+        table.getTableHeader().setForeground(Color.WHITE);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for(int i=0; i<table.getColumnCount(); i++){
+        for(int i = 0; i < table.getColumnCount(); i++){
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
         capNhatBang(thang);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(25, 210, 735, 330);
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        contentPane.add(scrollPane);
+
+        pnCenter.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel pnSouth = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
+        pnSouth.setOpaque(false);
 
         JButton btnDong = taoNutBoGoc("Đóng", redColor);
         JButton btnInBaoCao = taoNutBoGoc("In Báo Cáo PDF", orangeColor);
-        btnDong.setBounds(240, 565, 140, 45);
-        btnInBaoCao.setBounds(400, 565, 170, 45);
+
+        btnDong.setPreferredSize(new Dimension(140, 45));
+        btnInBaoCao.setPreferredSize(new Dimension(170, 45));
 
         btnDong.addActionListener(e -> close());
         btnInBaoCao.addActionListener(e -> handleInHoaDon());
 
-        contentPane.add(btnDong);
-        contentPane.add(btnInBaoCao);
+        pnSouth.add(btnDong);
+        pnSouth.add(btnInBaoCao);
+
+        contentPane.add(pnSouth, BorderLayout.SOUTH);
 
         setVisible(true);
     }
@@ -180,20 +211,20 @@ public class BaoCaoUI extends JFrame {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.setColor(bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
         btn.setContentAreaFilled(false);
-        btn.setBorderPainted(false);
         btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btn.setBackground(bgColor);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setMaximumSize(new Dimension(110, 35));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         return btn;
     }
 

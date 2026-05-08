@@ -115,12 +115,18 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         pnTop.add(txtTimSuat, gbcTop);
         gbcTop.weightx = 0.0;
 
-        gbcTop.gridx = 1; pnTop.add(btnTim, gbcTop);
-        gbcTop.gridx = 2; pnTop.add(btnThem, gbcTop);
-        gbcTop.gridx = 3; pnTop.add(btnSua, gbcTop);
-        gbcTop.gridx = 4; pnTop.add(btnXoa, gbcTop);
-        gbcTop.gridx = 5; pnTop.add(btnXoaRong, gbcTop);
-        gbcTop.gridx = 6; pnTop.add(btnLamMoi, gbcTop);
+        gbcTop.gridx = 1;
+        pnTop.add(btnTim, gbcTop);
+        gbcTop.gridx = 2;
+        pnTop.add(btnThem, gbcTop);
+        gbcTop.gridx = 3;
+        pnTop.add(btnSua, gbcTop);
+        gbcTop.gridx = 4;
+        pnTop.add(btnXoa, gbcTop);
+        gbcTop.gridx = 5;
+        pnTop.add(btnXoaRong, gbcTop);
+        gbcTop.gridx = 6;
+        pnTop.add(btnLamMoi, gbcTop);
 
         pnTopAndForm.add(pnTop, BorderLayout.NORTH);
 
@@ -190,30 +196,58 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
 
         Font fontLbl = new Font("Tahoma", Font.BOLD, 16);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Ép giãn theo chiều ngang
-        gbc.insets = new Insets(10, 15, 10, 15);  // Khoảng cách Lên-Trái-Xuống-Phải giữa các ô
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 15, 10, 15);
 
         gbc.gridy = 0;
-        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Mã suất:", fontLbl), gbc);
-        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(txtMaSuat, gbc);
-        gbc.gridx = 2; gbc.weightx = 0.0; pnForm.add(taoLabel("Mã phim:", fontLbl), gbc);
-        gbc.gridx = 3; gbc.weightx = 1.0; pnForm.add(txtMaPhim, gbc);
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Mã suất:", fontLbl), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(txtMaSuat, gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Mã phim:", fontLbl), gbc);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnForm.add(txtMaPhim, gbc);
 
         gbc.gridy = 1;
-        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Tên phim:", fontLbl), gbc);
-        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(cbTenPhim, gbc);
-        gbc.gridx = 2; gbc.weightx = 0.0; pnForm.add(taoLabel("Phòng chiếu:", fontLbl), gbc);
-        gbc.gridx = 3; gbc.weightx = 1.0; pnForm.add(cbPhong, gbc);
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Tên phim:", fontLbl), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(cbTenPhim, gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Phòng chiếu:", fontLbl), gbc);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnForm.add(cbPhong, gbc);
 
         gbc.gridy = 2;
-        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Ngày chiếu:", fontLbl), gbc);
-        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(txtNgayChieu, gbc);
-        gbc.gridx = 2; gbc.weightx = 0.0; pnForm.add(taoLabel("Thời gian:", fontLbl), gbc);
-        gbc.gridx = 3; gbc.weightx = 1.0; pnForm.add(txtThoiGian, gbc);
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Ngày chiếu:", fontLbl), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(txtNgayChieu, gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Thời gian:", fontLbl), gbc);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnForm.add(txtThoiGian, gbc);
 
         gbc.gridy = 3;
-        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Giá vé:", fontLbl), gbc);
-        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(txtGiaVe, gbc);
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Giá vé:", fontLbl), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(txtGiaVe, gbc);
 
         pnInput.add(pnForm, BorderLayout.CENTER);
         pnTopAndForm.add(pnInput, BorderLayout.CENTER);

@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,8 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
     private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 16);
 
     public QuanLyPhim() {
-        setLayout(null);
+        setLayout(new BorderLayout(20, 20));
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
         Color darkBg = new Color(34, 34, 34);
         setBackground(darkBg);
@@ -50,22 +52,28 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTieuDe.setForeground(orangeColor);
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTieuDe.setBounds(0, 15, 1300, 40);
-        add(lblTieuDe);
+        add(lblTieuDe, BorderLayout.NORTH);
 
-        JPanel pnTop = new JPanel() {
+        JPanel pnCenter = new JPanel(new BorderLayout(0, 20));
+        pnCenter.setOpaque(false);
+        add(pnCenter, BorderLayout.CENTER);
+
+        JPanel pnTopAndForm = new JPanel(new BorderLayout(0, 20));
+        pnTopAndForm.setOpaque(false);
+        pnCenter.add(pnTopAndForm, BorderLayout.NORTH);
+
+        //CRUD
+        JPanel pnTop = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
             }
         };
         pnTop.setOpaque(false);
-        pnTop.setLayout(null);
-        pnTop.setBounds(40, 70, 1220, 60);
-        add(pnTop);
+        pnTop.setBorder(new EmptyBorder(12, 15, 12, 15));
 
         txtTimPhim = new JTextField() {
             @Override
@@ -74,6 +82,7 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(orangeColor);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2.dispose();
                 super.paintComponent(g);
             }
         };
@@ -82,8 +91,8 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         txtTimPhim.setFont(FONT_TXT);
         txtTimPhim.setForeground(Color.BLACK);
         txtTimPhim.setCaretColor(Color.BLACK);
-        txtTimPhim.setBounds(20, 15, 450, 30);
-        pnTop.add(txtTimPhim);
+        txtTimPhim.setPreferredSize(new Dimension(150, 35));
+        txtTimPhim.setMinimumSize(new Dimension(150, 35));
 
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);
@@ -92,20 +101,33 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);
         btnLamMoi = taoNutBoGoc("Làm mới", orangeColor);
 
-        btnTim.setBounds(500, 15, 80, 30);
-        pnTop.add(btnTim);
-        btnThem.setBounds(600, 15, 90, 30);
-        pnTop.add(btnThem);
-        btnSua.setBounds(710, 15, 90, 30);
-        pnTop.add(btnSua);
-        btnXoa.setBounds(820, 15, 90, 30);
-        pnTop.add(btnXoa);
-        btnXoaRong.setBounds(930, 15, 110, 30);
-        pnTop.add(btnXoaRong);
-        btnLamMoi.setBounds(1060, 15, 110, 30);
-        pnTop.add(btnLamMoi);
+        GridBagConstraints gbcTop = new GridBagConstraints();
+        gbcTop.fill = GridBagConstraints.HORIZONTAL;
+        gbcTop.insets = new Insets(0, 5, 0, 5);
+        gbcTop.gridy = 0;
 
-        JPanel pnInput = new JPanel() {
+        gbcTop.gridx = 0;
+        gbcTop.weightx = 1.0;
+        pnTop.add(txtTimPhim, gbcTop);
+
+        gbcTop.weightx = 0.0;
+        gbcTop.gridx = 2;
+        pnTop.add(btnTim, gbcTop);
+        gbcTop.gridx = 3;
+        pnTop.add(btnThem, gbcTop);
+        gbcTop.gridx = 4;
+        pnTop.add(btnSua, gbcTop);
+        gbcTop.gridx = 5;
+        pnTop.add(btnXoa, gbcTop);
+        gbcTop.gridx = 6;
+        pnTop.add(btnXoaRong, gbcTop);
+        gbcTop.gridx = 7;
+        pnTop.add(btnLamMoi, gbcTop);
+
+        pnTopAndForm.add(pnTop, BorderLayout.NORTH);
+
+        //input
+        JPanel pnInput = new JPanel(new BorderLayout(0, 15)) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
@@ -115,16 +137,16 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
             }
         };
         pnInput.setOpaque(false);
-        pnInput.setLayout(null);
-        pnInput.setBounds(40, 150, 1220, 200);
-        add(pnInput);
+        pnInput.setBorder(new EmptyBorder(15, 20, 20, 20));
 
         JLabel lblThongTin = new JLabel("THÔNG TIN PHIM");
         lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
         lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 20));
         lblThongTin.setForeground(Color.BLACK);
-        lblThongTin.setBounds(0, 10, 1220, 30);
-        pnInput.add(lblThongTin);
+        pnInput.add(lblThongTin, BorderLayout.NORTH);
+
+        JPanel pnForm = new JPanel(new GridBagLayout());
+        pnForm.setOpaque(false);
 
         JTextField[] tfs = new JTextField[5];
         for (int i = 0; i < 5; i++) {
@@ -142,6 +164,7 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
             tfs[i].setForeground(Color.BLACK);
             tfs[i].setFont(FONT_TXT);
             tfs[i].setCaretColor(Color.BLACK);
+            tfs[i].setPreferredSize(new Dimension(0, 35));
         }
 
         txtMaPhim = tfs[0]; txtMaPhim.setEditable(false);
@@ -155,52 +178,58 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         cboTheLoai.setForeground(Color.BLACK);
         cboTheLoai.setBorder(null);
         cboTheLoai.setFont(FONT_TXT);
+        cboTheLoai.setPreferredSize(new Dimension(0, 35));
 
-        int y1 = 45, y2 = 95, y3 = 145;
-        int wLbl = 130, hComp = 35, wFld = 350;
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 15, 10, 15);
 
-        JLabel lblMaPhim = new JLabel("Mã phim:");
-        lblMaPhim.setFont(FONT_LBL);
-        lblMaPhim.setBounds(80, y1, wLbl, hComp);
-        pnInput.add(lblMaPhim);
-        txtMaPhim.setBounds(210, y1, wFld, hComp);
-        pnInput.add(txtMaPhim);
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Mã phim:", FONT_LBL), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(txtMaPhim, gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Tên phim:", FONT_LBL), gbc);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0; pnForm.add(txtTenPhim, gbc);
 
-        JLabel lblNhaSX = new JLabel("Nhà sản xuất:");
-        lblNhaSX.setFont(FONT_LBL);
-        lblNhaSX.setBounds(80, y2, wLbl, hComp);
-        pnInput.add(lblNhaSX);
-        txtNhaSX.setBounds(210, y2, wFld, hComp);
-        pnInput.add(txtNhaSX);
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Nhà sản xuất:", FONT_LBL), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(txtNhaSX, gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Thể loại:", FONT_LBL), gbc);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnForm.add(cboTheLoai, gbc);
 
-        JLabel lblThoiLuong = new JLabel("Thời lượng:");
-        lblThoiLuong.setFont(FONT_LBL);
-        lblThoiLuong.setBounds(80, y3, wLbl, hComp);
-        pnInput.add(lblThoiLuong);
-        txtThoiLuong.setBounds(210, y3, wFld, hComp);
-        pnInput.add(txtThoiLuong);
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Thời lượng:", FONT_LBL), gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        pnForm.add(txtThoiLuong, gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
+        pnForm.add(taoLabel("Quốc gia:", FONT_LBL), gbc);
+        gbc.gridx = 3;
+        gbc.weightx = 1.0;
+        pnForm.add(txtQuocGia, gbc);
 
-        JLabel lblTenPhim = new JLabel("Tên phim:");
-        lblTenPhim.setFont(FONT_LBL);
-        lblTenPhim.setBounds(650, y1, wLbl, hComp);
-        pnInput.add(lblTenPhim);
-        txtTenPhim.setBounds(780, y1, wFld, hComp);
-        pnInput.add(txtTenPhim);
+        pnInput.add(pnForm, BorderLayout.CENTER);
+        pnTopAndForm.add(pnInput, BorderLayout.CENTER);
 
-        JLabel lblTheLoai = new JLabel("Thể loại:");
-        lblTheLoai.setFont(FONT_LBL);
-        lblTheLoai.setBounds(650, y2, wLbl, hComp);
-        pnInput.add(lblTheLoai);
-        cboTheLoai.setBounds(780, y2, wFld, hComp);
-        pnInput.add(cboTheLoai);
 
-        JLabel lblQuocGia = new JLabel("Quốc gia:");
-        lblQuocGia.setFont(FONT_LBL);
-        lblQuocGia.setBounds(650, y3, wLbl, hComp);
-        pnInput.add(lblQuocGia);
-        txtQuocGia.setBounds(780, y3, wFld, hComp);
-        pnInput.add(txtQuocGia);
-
+        //table
         model = new DefaultTableModel(new String[] {
                 "Mã phim", "Tên phim", "Nhà sản xuất", "Thể loại", "Thời lượng", "Quốc gia"
         }, 0) {
@@ -217,12 +246,13 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setBackground(redColor);
         table.getTableHeader().setForeground(Color.WHITE);
+        ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer()).setOpaque(true);
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setBounds(40, 380, 1220, 400);
         scroll.getViewport().setBackground(Color.WHITE);
         scroll.setBorder(BorderFactory.createEmptyBorder());
-        add(scroll);
+
+        pnCenter.add(scroll, BorderLayout.CENTER);
 
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
@@ -256,10 +286,16 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener{
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btn.setPreferredSize(new Dimension(130, 50));
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setMaximumSize(new Dimension(110, 35));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
+    }
+    private JLabel taoLabel(String text, Font font) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(font);
+        return lbl;
     }
     
     @Override

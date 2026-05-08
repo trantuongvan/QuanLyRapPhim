@@ -115,9 +115,12 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         gbcTop.weightx = 1.0;
         pnTop.add(txtTimKiem, gbcTop);
         gbcTop.weightx = 0.0;
-        gbcTop.gridx = 1; pnTop.add(btnTim, gbcTop);
-        gbcTop.gridx = 2; pnTop.add(btnBaoCao, gbcTop);
-        gbcTop.gridx = 3; pnTop.add(btnXem, gbcTop);
+        gbcTop.gridx = 1;
+        pnTop.add(btnTim, gbcTop);
+        gbcTop.gridx = 2;
+        pnTop.add(btnBaoCao, gbcTop);
+        gbcTop.gridx = 3;
+        pnTop.add(btnXem, gbcTop);
 
         pnTopAndForm.add(pnTop, BorderLayout.NORTH);
 

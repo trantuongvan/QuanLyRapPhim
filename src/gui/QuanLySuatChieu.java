@@ -42,7 +42,8 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
     }
 
     public QuanLySuatChieu() {
-        setLayout(null);
+        setLayout(new BorderLayout(15, 15));
+        setBorder(new EmptyBorder(15, 15, 15, 15));
 
         Color darkBg = new Color(34, 34, 34);
         setBackground(darkBg);
@@ -51,27 +52,33 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
 
         quanLySuatChieu_DAO = new QuanLySuatChieu_DAO();
 
-        JLabel lblTitle = new JLabel("QUẢN LÝ SUẤT CHIẾU");
+        JLabel lblTitle = new JLabel("Quản lý suất chiếu");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
         lblTitle.setForeground(orangeColor);
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTitle.setBounds(30, 15, 1210, 40);
-        add(lblTitle);
+        add(lblTitle, BorderLayout.NORTH);
 
-        JPanel pnTop = new JPanel() {
+        JPanel pnCenter = new JPanel(new BorderLayout(0, 15));
+        pnCenter.setOpaque(false);
+        add(pnCenter, BorderLayout.CENTER);
+
+        JPanel pnTopAndForm = new JPanel(new BorderLayout(0, 15));
+        pnTopAndForm.setOpaque(false);
+        pnCenter.add(pnTopAndForm, BorderLayout.NORTH);
+
+        //CRUD
+        JPanel pnTop = new JPanel(new GridBagLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
                 g2.dispose();
             }
         };
         pnTop.setOpaque(false);
-        pnTop.setLayout(null);
-        pnTop.setBounds(20, 70, 940, 60);
-        add(pnTop);
+        pnTop.setBorder(new EmptyBorder(12, 15, 12, 15));
 
         txtTimSuat = new JTextField() {
             @Override
@@ -89,8 +96,8 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         txtTimSuat.setFont(new Font("Tahoma", Font.PLAIN, 16));
         txtTimSuat.setForeground(Color.BLACK);
         txtTimSuat.setCaretColor(Color.BLACK);
-        txtTimSuat.setBounds(20, 15, 200, 30);
-        pnTop.add(txtTimSuat);
+        txtTimSuat.setPreferredSize(new Dimension(200, 40));
+        txtTimSuat.setMinimumSize(new Dimension(200, 40));
 
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);
@@ -99,39 +106,45 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);
         btnLamMoi = taoNutBoGoc("Làm mới", orangeColor);
 
-        btnTim.setBounds(240, 15, 80, 30);
-        pnTop.add(btnTim);
-        btnThem.setBounds(340, 15, 90, 30);
-        pnTop.add(btnThem);
-        btnSua.setBounds(450, 15, 90, 30);
-        pnTop.add(btnSua);
-        btnXoa.setBounds(560, 15, 90, 30);
-        pnTop.add(btnXoa);
-        btnXoaRong.setBounds(670, 15, 110, 30);
-        pnTop.add(btnXoaRong);
-        btnLamMoi.setBounds(805, 15, 110, 30);
-        pnTop.add(btnLamMoi);
+        GridBagConstraints gbcTop = new GridBagConstraints();
+        gbcTop.fill = GridBagConstraints.HORIZONTAL;
+        gbcTop.insets = new Insets(0, 5, 0, 5);
+        gbcTop.gridy = 0;
+        gbcTop.gridx = 0;
+        gbcTop.weightx = 1.0;
+        pnTop.add(txtTimSuat, gbcTop);
+        gbcTop.weightx = 0.0;
 
-        JPanel pnInput = new JPanel() {
+        gbcTop.gridx = 1; pnTop.add(btnTim, gbcTop);
+        gbcTop.gridx = 2; pnTop.add(btnThem, gbcTop);
+        gbcTop.gridx = 3; pnTop.add(btnSua, gbcTop);
+        gbcTop.gridx = 4; pnTop.add(btnXoa, gbcTop);
+        gbcTop.gridx = 5; pnTop.add(btnXoaRong, gbcTop);
+        gbcTop.gridx = 6; pnTop.add(btnLamMoi, gbcTop);
+
+        pnTopAndForm.add(pnTop, BorderLayout.NORTH);
+
+        //Input
+        JPanel pnInput = new JPanel(new BorderLayout(0, 15)) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
                 g2.dispose();
             }
         };
         pnInput.setOpaque(false);
-        pnInput.setLayout(null);
-        pnInput.setBounds(20, 150, 940, 240);
-        add(pnInput);
+        pnInput.setBorder(new EmptyBorder(10, 20, 20, 20));
 
         JLabel lblThongTin = new JLabel("THÔNG TIN SUẤT CHIẾU");
         lblThongTin.setHorizontalAlignment(SwingConstants.CENTER);
         lblThongTin.setFont(new Font("Tahoma", Font.BOLD, 18));
-        lblThongTin.setBounds(0, 10, 980, 30);
-        pnInput.add(lblThongTin);
+        pnInput.add(lblThongTin, BorderLayout.NORTH);
+
+        JPanel pnForm = new JPanel(new GridBagLayout());
+        pnForm.setOpaque(false);
 
         JTextField[] tfs = new JTextField[5];
         for (int i = 0; i < 5; i++) {
@@ -150,6 +163,7 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
             tfs[i].setForeground(Color.BLACK);
             tfs[i].setFont(new Font("Tahoma", Font.PLAIN, 16));
             tfs[i].setCaretColor(Color.BLACK);
+            tfs[i].setPreferredSize(new Dimension(0, 35));
         }
 
         txtMaSuat = tfs[0];
@@ -164,6 +178,7 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         cbTenPhim.setForeground(Color.BLACK);
         cbTenPhim.setBorder(null);
         cbTenPhim.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        cbTenPhim.setPreferredSize(new Dimension(0, 35));
 
         cbPhong = new JComboBox<>();
         layPhong();
@@ -171,60 +186,39 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         cbPhong.setForeground(Color.BLACK);
         cbPhong.setBorder(null);
         cbPhong.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        cbPhong.setPreferredSize(new Dimension(0, 35));
 
-        Font fontLbl = new Font("Tahoma", Font.BOLD, 15);
-        int y1 = 50, y2 = 95, y3 = 140, y4 = 185;
-        int wLbl = 120, hComp = 35, wFld = 280;
+        Font fontLbl = new Font("Tahoma", Font.BOLD, 16);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Ép giãn theo chiều ngang
+        gbc.insets = new Insets(10, 15, 10, 15);  // Khoảng cách Lên-Trái-Xuống-Phải giữa các ô
 
-        JLabel lblMaSuat = new JLabel("Mã suất:");
-        lblMaSuat.setFont(fontLbl);
-        lblMaSuat.setBounds(60, y1, wLbl, hComp);
-        pnInput.add(lblMaSuat);
-        txtMaSuat.setBounds(180, y1, wFld, hComp);
-        pnInput.add(txtMaSuat);
+        gbc.gridy = 0;
+        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Mã suất:", fontLbl), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(txtMaSuat, gbc);
+        gbc.gridx = 2; gbc.weightx = 0.0; pnForm.add(taoLabel("Mã phim:", fontLbl), gbc);
+        gbc.gridx = 3; gbc.weightx = 1.0; pnForm.add(txtMaPhim, gbc);
 
-        JLabel lblTenPhim = new JLabel("Tên phim:");
-        lblTenPhim.setFont(fontLbl);
-        lblTenPhim.setBounds(60, y2, wLbl, hComp);
-        pnInput.add(lblTenPhim);
-        cbTenPhim.setBounds(180, y2, wFld, hComp);
-        pnInput.add(cbTenPhim);
+        gbc.gridy = 1;
+        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Tên phim:", fontLbl), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(cbTenPhim, gbc);
+        gbc.gridx = 2; gbc.weightx = 0.0; pnForm.add(taoLabel("Phòng chiếu:", fontLbl), gbc);
+        gbc.gridx = 3; gbc.weightx = 1.0; pnForm.add(cbPhong, gbc);
 
-        JLabel lblNgay = new JLabel("Ngày chiếu:");
-        lblNgay.setFont(fontLbl);
-        lblNgay.setBounds(60, y3, wLbl, hComp);
-        pnInput.add(lblNgay);
-        txtNgayChieu.setBounds(180, y3, wFld, hComp);
-        pnInput.add(txtNgayChieu);
+        gbc.gridy = 2;
+        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Ngày chiếu:", fontLbl), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(txtNgayChieu, gbc);
+        gbc.gridx = 2; gbc.weightx = 0.0; pnForm.add(taoLabel("Thời gian:", fontLbl), gbc);
+        gbc.gridx = 3; gbc.weightx = 1.0; pnForm.add(txtThoiGian, gbc);
 
-        JLabel lblGia = new JLabel("Giá vé:");
-        lblGia.setFont(fontLbl);
-        lblGia.setBounds(60, y4, wLbl, hComp);
-        pnInput.add(lblGia);
-        txtGiaVe.setBounds(180, y4, wFld, hComp);
-        pnInput.add(txtGiaVe);
+        gbc.gridy = 3;
+        gbc.gridx = 0; gbc.weightx = 0.0; pnForm.add(taoLabel("Giá vé:", fontLbl), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0; pnForm.add(txtGiaVe, gbc);
 
-        JLabel lblMaPhim = new JLabel("Mã phim:");
-        lblMaPhim.setFont(fontLbl);
-        lblMaPhim.setBounds(520, y1, wLbl, hComp);
-        pnInput.add(lblMaPhim);
-        txtMaPhim.setBounds(640, y1, wFld, hComp);
-        pnInput.add(txtMaPhim);
+        pnInput.add(pnForm, BorderLayout.CENTER);
+        pnTopAndForm.add(pnInput, BorderLayout.CENTER);
 
-        JLabel lblPhong = new JLabel("Phòng chiếu:");
-        lblPhong.setFont(fontLbl);
-        lblPhong.setBounds(520, y2, wLbl, hComp);
-        pnInput.add(lblPhong);
-        cbPhong.setBounds(640, y2, wFld, hComp);
-        pnInput.add(cbPhong);
-
-        JLabel lblGio = new JLabel("Thời gian:");
-        lblGio.setFont(fontLbl);
-        lblGio.setBounds(520, y3, wLbl, hComp);
-        pnInput.add(lblGio);
-        txtThoiGian.setBounds(640, y3, wFld, hComp);
-        pnInput.add(txtThoiGian);
-
+        //table
         model = new DefaultTableModel(new String[] { "Mã Suất", "Mã Phim", "Tên Phim", "Phòng", "Ngày chiếu", "Thời gian", "Giá vé" }, 0) {
             @Override
             public boolean isCellEditable(int r, int c) { return false; }
@@ -244,12 +238,11 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         }
 
         JScrollPane scrollTable = new JScrollPane(tblSuatChieu);
-        scrollTable.setBounds(20, 420, 940, 360);
         scrollTable.getViewport().setBackground(Color.WHITE);
         scrollTable.setBorder(BorderFactory.createEmptyBorder());
-        add(scrollTable);
+        pnCenter.add(scrollTable, BorderLayout.CENTER);
 
-        JPanel pnRight = new JPanel() {
+        JPanel pnRight = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -259,9 +252,10 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
                 g2.dispose();
             }
         };
-        pnRight.setLayout(null);
         pnRight.setOpaque(false);
-        pnRight.setBounds(1000, 70, 270, 710);
+        pnRight.setBorder(new EmptyBorder(15, 10, 15, 10));
+        pnRight.setPreferredSize(new Dimension(250, 0));
+        add(pnRight, BorderLayout.EAST);
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Danh sách Tháng chiếu");
         String[] thangList = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
@@ -271,28 +265,21 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
 
         treeNgayChieu = new JTree(new DefaultTreeModel(root));
         treeNgayChieu.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        treeNgayChieu.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        //render lại list tháng
         treeNgayChieu.setRowHeight(35);
         treeNgayChieu.putClientProperty("JTree.lineStyle", "Angled");
+
         javax.swing.tree.DefaultTreeCellRenderer renderer = new javax.swing.tree.DefaultTreeCellRenderer();
         renderer.setBackgroundSelectionColor(orangeColor);
         renderer.setTextSelectionColor(Color.WHITE);
         renderer.setBackgroundNonSelectionColor(Color.WHITE);
         renderer.setTextNonSelectionColor(Color.BLACK);
-        renderer.setLeafIcon(null);
-        renderer.setClosedIcon(null);
-        renderer.setOpenIcon(null);
+        renderer.setLeafIcon(null); renderer.setClosedIcon(null); renderer.setOpenIcon(null);
         renderer.setBorderSelectionColor(null);
         treeNgayChieu.setCellRenderer(renderer);
 
         JScrollPane scrollTree = new JScrollPane(treeNgayChieu);
-        scrollTree.setBounds(10 , 10, 230, 690);
         scrollTree.setBorder(BorderFactory.createEmptyBorder());
-        pnRight.add(scrollTree);
-
-        add(pnRight);
+        pnRight.add(scrollTree, BorderLayout.CENTER);
 
         btnThem.addActionListener(this);
         btnSua.addActionListener(this);
@@ -348,7 +335,6 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         });
     }
 
-    // ================= Các hàm xử lý ====================
     private JButton taoNutBoGoc(String text, Color bgColor) {
         JButton btn = new JButton(text) {
             @Override
@@ -365,10 +351,16 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btn.setPreferredSize(new Dimension(130, 50));
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setMaximumSize(new Dimension(110, 35));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
+    }
+    private JLabel taoLabel(String text, Font font) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(font);
+        return lbl;
     }
     private String tenPhim(String maPhim) {
         dataPhim = new QuanLyPhim_DAO();

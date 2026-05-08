@@ -67,7 +67,7 @@ public class QuanLyVe extends JPanel implements LoadData, ResetForm {
         pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
         pnTop.setPreferredSize(new Dimension(0, 70));
 
-        txtTimVe = createStyledTextField(300);
+        txtTimVe = createStyledTextField(350);
         btnTim = taoNutBoGoc("Xem", new Color(160, 82, 45));
         btnXoa = taoNutBoGoc("Xóa", orangeColor);
         btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);

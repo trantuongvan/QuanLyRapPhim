@@ -327,7 +327,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
     private HoaDon xuLyTaoHoaDon(KhachHang khachHang, int soLuongVe, float giaVe) {
         NhanVien nhanVien = DangNhap.nhanVienDangNhap;
         float tongTien = giaVe * soLuongVe;
-        HoaDon hoaDon = new HoaDon(this.billManager.taoMaHoaDonTuDong(), LocalDate.now(), nhanVien, khachHang, tongTien);
+        HoaDon hoaDon = new HoaDon(this.billManager.taoMaHoaDonTuDong(), LocalDate.now(), nhanVien, khachHang);
         return hoaDon;
     }
 

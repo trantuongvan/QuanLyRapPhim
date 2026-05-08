@@ -68,7 +68,7 @@ public class QuanLySuatChieu extends JPanel implements ActionListener, LoadData 
         JPanel pnTop = createRoundPanel(panelDarkTone);
         pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 15));
 
-        txtTimSuat = createStyledTextField(180,35 );
+        txtTimSuat = createStyledTextField(280,35 );
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);
         btnSua = taoNutBoGoc("Sửa", orangeColor);

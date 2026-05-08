@@ -74,7 +74,7 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         lblTim.setForeground(Color.WHITE);
         lblTim.setFont(new Font("Tahoma", Font.BOLD, 14));
 
-        txtTimKiem = createStyledTextField(150);
+        txtTimKiem = createStyledTextField(250);
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnBaoCao = taoNutBoGoc("Lập Báo cáo", orangeColor);
         btnBaoCao.setPreferredSize(new Dimension(140, 35));
@@ -224,11 +224,18 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
 
     private JButton taoNutBoGoc(String text, Color bgColor) {
         JButton btn = new JButton(text) {
+            private boolean isHovered = false;
+            {
+                addMouseListener(new MouseAdapter() {
+                    public void mouseEntered(MouseEvent e) { isHovered = true; repaint(); }
+                    public void mouseExited(MouseEvent e) { isHovered = false; repaint(); }
+                });
+            }
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
+                g2.setColor(isHovered ? bgColor.darker() : bgColor);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
                 g2.dispose();
                 super.paintComponent(g);
@@ -236,11 +243,11 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         };
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
-        btn.setOpaque(false);
-        btn.setBackground(bgColor);
+        btn.setBorderPainted(false);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Tahoma", Font.BOLD, 13));
-        btn.setPreferredSize(new Dimension(120, 35));
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setPreferredSize(new Dimension(100, 35));
         return btn;
     }
 

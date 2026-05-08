@@ -5,88 +5,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HoaDon {
-	private String maHoaDon;
-	private LocalDate ngayLap;
-	private NhanVien nhanVien;
-	private KhachHang khachHang;
-	private float tongTien;
+    private String maHoaDon;
+    private LocalDate ngayLap;
+    private NhanVien nhanVien;
+    private KhachHang khachHang;
 
-	// This is the missing field that caused the error
-	private List<Ve> danhSachVe;
+    // Đổi danhSachVe thành danhSachCTHD để phục vụ việc tính tiền
+    private List<ChiTietHoaDon> danhSachCTHD;
 
-	public HoaDon() {
-		this("", LocalDate.now(), null, null, 0);
-		this.danhSachVe = new ArrayList<>();
-	}
+    public HoaDon() {
+        this("", LocalDate.now(), null, null);
+    }
 
-	public HoaDon(String maHoaDon, LocalDate ngayLap, NhanVien nhanVien, KhachHang khachHang, float tongTien) {
-		setKhachHang(khachHang);
-		setMaHoaDon(maHoaDon);
-		setNgayLap(ngayLap);
-		setNhanVien(nhanVien);
-		setTongTien(tongTien);
-		this.danhSachVe = new ArrayList<>();
-	}
+    // Đã xóa tham số tongTien ra khỏi Constructor
+    public HoaDon(String maHoaDon, LocalDate ngayLap, NhanVien nhanVien, KhachHang khachHang) {
+        setKhachHang(khachHang);
+        setMaHoaDon(maHoaDon);
+        setNgayLap(ngayLap);
+        setNhanVien(nhanVien);
+        this.danhSachCTHD = new ArrayList<>();
+    }
 
-	public HoaDon(String maHoaDon) {
-		this.maHoaDon = maHoaDon;
-		this.danhSachVe = new ArrayList<>();
-	}
+    public HoaDon(String maHoaDon) {
+        this.maHoaDon = maHoaDon;
+        this.danhSachCTHD = new ArrayList<>();
+    }
 
-	// --- GETTERS AND SETTERS ---
+    public String getMaHoaDon() {
+        return maHoaDon;
+    }
 
-	public String getMaHoaDon() {
-		return maHoaDon;
-	}
+    public void setMaHoaDon(String maHoaDon) {
+        this.maHoaDon = maHoaDon;
+    }
 
-	public void setMaHoaDon(String maHoaDon) {
-		this.maHoaDon = maHoaDon;
-	}
+    public LocalDate getNgayLap() {
+        return ngayLap;
+    }
 
-	public LocalDate getNgayLap() {
-		return ngayLap;
-	}
+    public void setNgayLap(LocalDate ngayLap) {
+        this.ngayLap = ngayLap;
+    }
 
-	public void setNgayLap(LocalDate ngayLap) {
-		this.ngayLap = ngayLap;
-	}
+    public NhanVien getNhanVien() {
+        return nhanVien;
+    }
 
-	public NhanVien getNhanVien() {
-		return nhanVien;
-	}
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
+    }
 
-	public void setNhanVien(NhanVien nhanVien) {
-		this.nhanVien = nhanVien;
-	}
+    public KhachHang getKhachHang() {
+        return khachHang;
+    }
 
-	public KhachHang getKhachHang() {
-		return khachHang;
-	}
+    public void setKhachHang(KhachHang khachHang) {
+        this.khachHang = khachHang;
+    }
 
-	public void setKhachHang(KhachHang khachHang) {
-		this.khachHang = khachHang;
-	}
+    public List<ChiTietHoaDon> getDanhSachCTHD() {
+        return danhSachCTHD;
+    }
 
-	public float getTongTien() {
-		return tongTien;
-	}
+    public void setDanhSachCTHD(List<ChiTietHoaDon> danhSachCTHD) {
+        this.danhSachCTHD = danhSachCTHD;
+    }
 
-	public void setTongTien(float tongTien) {
-		this.tongTien = tongTien;
-	}
+    public double getTongTien() {
+        double tong = 0;
+        if (this.danhSachCTHD != null) {
+            for (ChiTietHoaDon cthd : danhSachCTHD) {
+                tong += cthd.tinhThanhTien();
+            }
+        }
+        return tong;
+    }
 
-	// THE MISSING METHOD
-	public List<Ve> getDanhSachVe() {
-		return danhSachVe;
-	}
+    public List<Ve> getDanhSachVe() {
+        List<Ve> dsVe = new ArrayList<>();
+        if (this.danhSachCTHD != null) {
+            for (ChiTietHoaDon cthd : this.danhSachCTHD) {
+                if (cthd.getVe() != null) {
+                    dsVe.add(cthd.getVe());
+                }
+            }
+        }
+        return dsVe;
+    }
 
-	public void setDanhSachVe(List<Ve> danhSachVe) {
-		this.danhSachVe = danhSachVe;
-	}
-
-	@Override
-	public String toString() {
-		return "HoaDon [maHoaDon=" + maHoaDon + ", ngayLap=" + ngayLap + ", nhanVien=" + nhanVien + ", khachHang="
-				+ khachHang + ", tongtien=" + tongTien + "]";
-	}
+    @Override
+    public String toString() {
+        return "HoaDon [maHoaDon=" + maHoaDon + ", ngayLap=" + ngayLap + ", nhanVien=" + nhanVien + ", khachHang="
+                + khachHang + ", tongTien=" + getTongTien() + "]";
+    }
 }

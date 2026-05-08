@@ -21,6 +21,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
     private JTextField txtMaHD, txtNgayLap, txtMaNV, txtMaKH, txtSoLuongVe, txtTongTien, txtTimHD;
     private JButton btnXoa, btnXoaRong, btnLuu, btnTim;
 
+    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 14);
     private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 18);
     private final Color orangeColor = new Color(245, 140, 0);
     private final Color panelDarkTone = new Color(50, 50, 50);
@@ -44,7 +45,6 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Title
         gbc.gridy = 0;
         JLabel lblTieuDe = new JLabel("QUẢN LÝ HÓA ĐƠN");
         lblTieuDe.setFont(new Font("Tahoma", Font.BOLD, 32));
@@ -52,12 +52,11 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
         lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
         add(lblTieuDe, gbc);
 
-        // Top Panel (Search & Buttons)
         gbc.gridy = 1;
         JPanel pnTop = createRoundedPanel();
         pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
 
-        txtTimHD = createStyledTextField(250);
+        txtTimHD = createStyledTextField(300);
         btnTim = taoNutBoGoc("Xem", new Color(160, 82, 45));
         btnXoa = taoNutBoGoc("Xóa", orangeColor);
         btnXoaRong = taoNutBoGoc("Xóa rỗng", orangeColor);
@@ -71,20 +70,17 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
         pnTop.add(btnXoa); pnTop.add(btnXoaRong); pnTop.add(btnLuu);
         add(pnTop, gbc);
 
-        // Input Panel
         gbc.gridy = 2;
         JPanel pnInput = createRoundedPanel();
         pnInput.setLayout(new GridBagLayout());
         setupInputFields(pnInput);
         add(pnInput, gbc);
 
-        // Table
         gbc.gridy = 3;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         setupTable(gbc);
 
-        // Event Listeners
         btnXoa.addActionListener(e -> xoaHoaDon());
         btnXoaRong.addActionListener(e -> resetForm());
         btnLuu.addActionListener(e -> luu());
@@ -167,11 +163,31 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
     }
 
     private JButton taoNutBoGoc(String text, Color bgColor) {
-        JButton btn = new JButton(text);
-        btn.setBackground(bgColor);
-        btn.setForeground(Color.WHITE);
+        JButton btn = new JButton(text) {
+            private boolean isHovered = false;
+            {
+                addMouseListener(new MouseAdapter() {
+                    public void mouseEntered(MouseEvent e) { isHovered = true; repaint(); }
+                    public void mouseExited(MouseEvent e) { isHovered = false; repaint(); }
+                });
+            }
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(isHovered ? bgColor.darker() : bgColor);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
-        btn.setPreferredSize(new Dimension(120, 35));
+        btn.setBorderPainted(false);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Tahoma", Font.BOLD, 15));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setPreferredSize(new Dimension(120,35));
         return btn;
     }
 
@@ -182,17 +198,29 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
         model.setRowCount(0);
         for (HoaDon hd : danhSach) {
             int sl = billManager.getTongSoLuongVeCuaHoaDon(hd.getMaHoaDon());
-            model.addRow(new Object[]{hd.getMaHoaDon(), hd.getNgayLap(), hd.getNhanVien().getMaNV(), hd.getKhachHang().getMaKH(), sl, hd.getTongTien()});
+
+            float tt = billManager.getTongTienCuaHoaDon(hd.getMaHoaDon());
+
+            model.addRow(new Object[]{
+                    hd.getMaHoaDon(),
+                    hd.getNgayLap(),
+                    hd.getNhanVien().getMaNV(),
+                    hd.getKhachHang().getMaKH(),
+                    sl,
+                    tt
+            });
         }
     }
 
     private void timHoaDon() {
         String ma = txtTimHD.getText().trim();
-        if (ma.isEmpty()) return;
+        if (ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nhập mã hóa đơn cần tìm!");
+            return;
+        }
 
         HoaDon hd = billManager.findHoaDonByID(ma);
         if (hd != null) {
-            // This now works because getDanhSachVe() exists in HoaDon.java
             new HoaDonModal(hd, this, hd.getDanhSachVe());
         } else {
             JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn mã: " + ma);
@@ -215,6 +243,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
     private void hienThiLenForm() {
         int i = table.getSelectedRow();
         if (i >= 0) {
+            txtTimHD.setText(model.getValueAt(i, 0).toString());
             txtMaHD.setText(model.getValueAt(i, 0).toString());
             txtNgayLap.setText(model.getValueAt(i, 1).toString());
             txtMaNV.setText(model.getValueAt(i, 2).toString());

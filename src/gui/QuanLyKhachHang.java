@@ -248,7 +248,7 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Tahoma", Font.BOLD, 15));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(100, 35));
+        btn.setPreferredSize(new Dimension(120, 35));
         return btn;
     }
 

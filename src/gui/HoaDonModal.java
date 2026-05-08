@@ -48,7 +48,6 @@ public class HoaDonModal extends JFrame {
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
-        // --- Header Section ---
         JPanel pNorth = new JPanel(new BorderLayout());
         JLabel lblTitle = new JLabel("HÓA ĐƠN BÁN VÉ", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 22));
@@ -59,17 +58,14 @@ public class HoaDonModal extends JFrame {
         pInfoContainer.setLayout(new BoxLayout(pInfoContainer, BoxLayout.Y_AXIS));
         pInfoContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Provider Info
         JPanel pProvider = createInfoPanel("THÔNG TIN NHÀ CUNG CẤP");
         pProvider.add(new JLabel("Nhân viên: " + hoaDon.getNhanVien().getTenNV()));
         pProvider.add(new JLabel("Địa chỉ: 12 Nguyễn Văn Bảo, Q. Gò Vấp, TP. HCM"));
 
-        // Customer Info
         JPanel pCustomer = createInfoPanel("THÔNG TIN KHÁCH HÀNG");
         pCustomer.add(new JLabel("Khách hàng: " + hoaDon.getKhachHang().getHoTen()));
         pCustomer.add(new JLabel("Số điện thoại: " + hoaDon.getKhachHang().getSoDT()));
 
-        // Invoice Info
         JPanel pInvoice = createInfoPanel("THÔNG TIN GIAO DỊCH");
         pInvoice.add(new JLabel("Mã hóa đơn: " + hoaDon.getMaHoaDon()));
         pInvoice.add(new JLabel("Ngày lập: " + hoaDon.getNgayLap().toString()));
@@ -79,7 +75,6 @@ public class HoaDonModal extends JFrame {
         pInfoContainer.add(pInvoice);
         pNorth.add(pInfoContainer, BorderLayout.CENTER);
 
-        // --- Table Section ---
         String[] columns = { "STT", "Mã vé", "Tên phim", "Số lượng", "Giá vé", "Thành tiền" };
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
@@ -88,7 +83,6 @@ public class HoaDonModal extends JFrame {
         JScrollPane scrollTable = new JScrollPane(table);
         scrollTable.setBorder(BorderFactory.createTitledBorder("DANH SÁCH VÉ"));
 
-        // --- Bottom Section ---
         JPanel pSouth = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton btnPrint = new JButton("In hóa đơn (PDF)");
         JButton btnDone = new JButton("Đóng");
@@ -111,7 +105,6 @@ public class HoaDonModal extends JFrame {
         int stt = 1;
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
-        // Priority 1: Use listVe passed from the booking process
         if (listVe != null && !listVe.isEmpty()) {
             for (Ve ve : listVe) {
                 SuatChieu sc = suatChieuManager.timSuatChieu(ve.getMaSuatChieu());
@@ -127,7 +120,6 @@ public class HoaDonModal extends JFrame {
                 });
             }
         }
-        // Priority 2: If listVe is empty, try fetching from Database (for re-viewing)
         else {
             ArrayList<ChiTietHoaDon> dbList = cthdManager.timCTHDTheoMaHoaDon(hoaDon.getMaHoaDon());
             for (ChiTietHoaDon cthd : dbList) {
@@ -165,7 +157,6 @@ public class HoaDonModal extends JFrame {
                 PdfWriter.getInstance(doc, new FileOutputStream(file));
                 doc.open();
 
-                // Font support for Vietnamese
                 BaseFont bf = BaseFont.createFont("C:/Windows/Fonts/Arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 com.itextpdf.text.Font fontTitle = new com.itextpdf.text.Font(bf, 18, com.itextpdf.text.Font.BOLD);
                 com.itextpdf.text.Font fontBold = new com.itextpdf.text.Font(bf, 12, com.itextpdf.text.Font.BOLD);

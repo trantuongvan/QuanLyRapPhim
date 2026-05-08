@@ -31,7 +31,7 @@ public class QuanLyHoaDon_DAO {
             stmt.setDate(2, Date.valueOf(hoaDon.getNgayLap()));
             stmt.setString(3, hoaDon.getNhanVien().getMaNV());
             stmt.setString(4, hoaDon.getKhachHang().getMaKH());
-            stmt.setFloat(5, hoaDon.getTongTien());
+//            stmt.setFloat(5, hoaDon.getTongTien());
             n = stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,6 +39,20 @@ public class QuanLyHoaDon_DAO {
             close(null, stmt);
         }
         return n > 0;
+    }
+
+    public float getTongTienCuaHoaDon(String maHoaDon) {
+        float tongTien = 0;
+        try {
+            String sql = "SELECT SUM(soLuong * giaVe) AS TongTien FROM ChiTietHoaDon WHERE maHoaDon = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, maHoaDon);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                tongTien = rs.getFloat("TongTien");
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return tongTien;
     }
 
     public HoaDon findHoaDonByID(String maHoaDon) {
@@ -62,7 +76,7 @@ public class QuanLyHoaDon_DAO {
                 QuanLyKhachHang_DAO khachHangDAO = new QuanLyKhachHang_DAO();
                 NhanVien nv = nhanVienDAO.timTheoMa(maNV);
                 KhachHang kh = khachHangDAO.findKhachHang(maKH);
-                hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh, tongTien);
+                hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,13 +107,12 @@ public class QuanLyHoaDon_DAO {
                 Date ngayLapDate = rs.getDate("ngayLap");
                 String maNV = rs.getString("maNV");
                 String maKH = rs.getString("maKH");
-                float tongTien = rs.getFloat("tongTien");
 
                 QuanLyNhanVien_DAO nhanVienDAO = new QuanLyNhanVien_DAO();
                 QuanLyKhachHang_DAO khachHangDAO = new QuanLyKhachHang_DAO();
                 NhanVien nv = nhanVienDAO.timTheoMa(maNV);
                 KhachHang kh = khachHangDAO.findKhachHang(maKH);
-                HoaDon hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh, tongTien);
+                HoaDon hoaDon = new HoaDon(maHoaDon, ngayLapDate.toLocalDate(), nv, kh);
                 danhSachHoaDon.add(hoaDon);
             }
         } catch (Exception e) {

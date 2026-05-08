@@ -22,6 +22,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
     private JButton btnThem, btnSua, btnXoa, btnTaiLai, btnTim, btnXoaTrang;
     private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private final Font FONT_LBL = new Font("Tahoma", Font.BOLD, 14);
     private final Font FONT_TXT = new Font("Tahoma", Font.PLAIN, 18);
     private final Color orangeColor = new Color(245, 140, 0);
     private final Color panelDarkTone = new Color(50, 50, 50);
@@ -78,21 +79,17 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         JPanel pnInput = createStyledPanel();
         pnInput.setLayout(new GridBagLayout());
         GridBagConstraints innerGbc = new GridBagConstraints();
-        innerGbc.insets = new Insets(8, 20, 8, 20);
         innerGbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Header Label
         innerGbc.gridx = 0; innerGbc.gridy = 0;
         innerGbc.gridwidth = 4;
+        innerGbc.insets = new Insets(15, 20, 15, 20); // Cách trên dưới rộng ra chút
         JLabel lblHeader = new JLabel("THÔNG TIN CHI TIẾT");
         lblHeader.setFont(new Font("Tahoma", Font.BOLD, 20));
         lblHeader.setForeground(Color.WHITE);
         lblHeader.setHorizontalAlignment(SwingConstants.CENTER);
         pnInput.add(lblHeader, innerGbc);
-
-        // Reset width for inputs
-        innerGbc.gridwidth = 1;
-        innerGbc.weightx = 0.1;
 
         // Fields
         txtMa = createStyledTextField(200);
@@ -106,16 +103,23 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         cboGioiTinh.setBackground(orangeColor);
         cboGioiTinh.setFont(FONT_TXT);
 
-        // Row 1: Ma NV & Ten NV
+        // Cấu hình các dòng
         addRow(pnInput, innerGbc, 1, "Mã nhân viên:", txtMa, "Họ tên:", txtTen);
-        // Row 2: Gioi Tinh & Ngay Sinh
         addRow(pnInput, innerGbc, 2, "Giới tính:", cboGioiTinh, "Ngày sinh:", txtNgaySinh);
-        // Row 3: SDT & Email
         addRow(pnInput, innerGbc, 3, "Số điện thoại:", txtSdt, "Email:", txtEmail);
-        // Row 4: Dia Chi (Span)
-        innerGbc.gridy = 4; innerGbc.gridx = 0;
+
+        // Xử lý riêng cho dòng Địa chỉ vì nó gộp cột (span)
+        innerGbc.gridy = 4;
+        innerGbc.gridx = 0;
+        innerGbc.gridwidth = 1;
+        innerGbc.weightx = 0; // Label không dãn
+        innerGbc.insets = new Insets(8, 20, 20, 10); // Sát vào textfield bên phải
         pnInput.add(createWhiteLabel("Địa chỉ:"), innerGbc);
-        innerGbc.gridx = 1; innerGbc.gridwidth = 3;
+
+        innerGbc.gridx = 1;
+        innerGbc.gridwidth = 3;
+        innerGbc.weightx = 1.0; // Textfield dãn hết cỡ
+        innerGbc.insets = new Insets(8, 0, 20, 20);
         pnInput.add(txtDiaChi, innerGbc);
 
         add(pnInput, gbc);
@@ -170,12 +174,34 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         return lbl;
     }
 
+    // Tinh chỉnh khoảng cách Insets trong hàm này
     private void addRow(JPanel p, GridBagConstraints c, int row, String l1, JComponent c1, String l2, JComponent c2) {
         c.gridy = row;
-        c.gridx = 0; p.add(createWhiteLabel(l1), c);
-        c.gridx = 1; c.weightx = 0.5; p.add(c1, c);
-        c.gridx = 2; c.weightx = 0.1; p.add(createWhiteLabel(l2), c);
-        c.gridx = 3; c.weightx = 0.5; p.add(c2, c);
+        c.gridwidth = 1;
+
+        // Cột 1: Label trái
+        c.gridx = 0;
+        c.weightx = 0; // Label không dãn
+        c.insets = new Insets(8, 20, 8, 10); // Cách trái 20px, cách field bên phải 10px
+        p.add(createWhiteLabel(l1), c);
+
+        // Cột 2: TextField trái
+        c.gridx = 1;
+        c.weightx = 0.5; // Field dãn
+        c.insets = new Insets(8, 0, 8, 40); // Cách label 2 một khoảng 40px cho thoáng
+        p.add(c1, c);
+
+        // Cột 3: Label phải
+        c.gridx = 2;
+        c.weightx = 0; // Label không dãn
+        c.insets = new Insets(8, 0, 8, 10); // Cách field bên phải 10px
+        p.add(createWhiteLabel(l2), c);
+
+        // Cột 4: TextField phải
+        c.gridx = 3;
+        c.weightx = 0.5; // Field dãn
+        c.insets = new Insets(8, 0, 8, 20); // Cách lề phải 20px
+        p.add(c2, c);
     }
 
     private JTextField createStyledTextField(int width) {
@@ -196,13 +222,6 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         tf.setCaretColor(Color.BLACK);
         tf.setPreferredSize(new Dimension(width, 35));
         return tf;
-    }
-
-    private JLabel taoLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(FONT_LBL);
-        lbl.setForeground(Color.BLACK);
-        return lbl;
     }
 
     private JButton taoNutBoGoc(String text, Color bgColor) {
@@ -230,7 +249,7 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Tahoma", Font.BOLD, 15));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(100, 35));
+        btn.setPreferredSize(new Dimension(120, 35));
         return btn;
     }
 
@@ -340,9 +359,9 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
         String maNV = model.getValueAt(row, 0).toString();
         String tenNV = model.getValueAt(row, 1).toString();
         int confirm = JOptionPane.showConfirmDialog(this,
-            "Bạn có chắc muốn xóa nhân viên:\n" + tenNV + " (" + maNV + ")?",
-            "Xác nhận xóa",
-            JOptionPane.YES_NO_OPTION
+                "Bạn có chắc muốn xóa nhân viên:\n" + tenNV + " (" + maNV + ")?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION
         );
         if (confirm == JOptionPane.YES_OPTION) {
             if (daoNV.xoaNhanVien(maNV)) {
@@ -376,8 +395,6 @@ public class QuanLyNhanVien extends JPanel implements LoadData {
             }
         }
     }
-
-
 
     private void clearForm() {
         txtMa.setText(""); txtTen.setText(""); txtDiaChi.setText("");

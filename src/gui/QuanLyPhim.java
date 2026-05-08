@@ -54,7 +54,7 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         JPanel pnTop = createStyledPanel();
         pnTop.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 15));
 
-        txtTimPhim = createStyledTextField(300);
+        txtTimPhim = createStyledTextField(380);
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnThem = taoNutBoGoc("Thêm", orangeColor);
         btnSua = taoNutBoGoc("Sửa", orangeColor);

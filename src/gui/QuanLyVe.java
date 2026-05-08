@@ -327,6 +327,7 @@ public class QuanLyVe extends JPanel implements LoadData, ResetForm {
         }
     }
 
+
     private void hienThiLenForm() {
         int i = table.getSelectedRow();
         if (i >= 0 && i < this.danhSach.size()) {

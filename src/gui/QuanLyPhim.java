@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -219,6 +220,11 @@ public class QuanLyPhim extends JPanel implements LoadData, ActionListener {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setPreferredSize(new Dimension(100, 35));
         return btn;
+    }
+    private JLabel taoLabel(String text, Font font) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(font);
+        return lbl;
     }
     
     @Override

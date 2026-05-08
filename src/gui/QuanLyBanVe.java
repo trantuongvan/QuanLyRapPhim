@@ -171,6 +171,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         txtSDT.addActionListener(e -> AutoFillCustomer());
     }
 
+
     private void styleComboBox(JComboBox cb) {
         cb.setBackground(orangeColor);
         cb.setForeground(Color.black);

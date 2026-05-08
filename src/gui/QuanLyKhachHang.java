@@ -216,6 +216,13 @@ public class QuanLyKhachHang extends JPanel implements ActionListener, MouseList
         return tf;
     }
 
+    private JLabel taoLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(FONT_LBL);
+        lbl.setForeground(Color.BLACK);
+        return lbl;
+    }
+
     private JButton taoNutBoGoc(String text, Color bgColor) {
         JButton btn = new JButton(text) {
             private boolean isHovered = false;

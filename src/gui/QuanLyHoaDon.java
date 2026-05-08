@@ -159,6 +159,13 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
         return tf;
     }
 
+    private JLabel taoLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(FONT_LBL);
+        lbl.setForeground(Color.BLACK);
+        return lbl;
+    }
+
     private JButton taoNutBoGoc(String text, Color bgColor) {
         JButton btn = new JButton(text);
         btn.setBackground(bgColor);
@@ -167,6 +174,7 @@ public class QuanLyHoaDon extends JPanel implements LoadData, ResetForm {
         btn.setPreferredSize(new Dimension(120, 35));
         return btn;
     }
+
 
     @Override
     public void loadData() {

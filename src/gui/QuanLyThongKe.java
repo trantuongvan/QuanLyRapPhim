@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
@@ -76,6 +77,8 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
         txtTimKiem = createStyledTextField(150);
         btnTim = taoNutBoGoc("Tìm", new Color(160, 82, 45));
         btnBaoCao = taoNutBoGoc("Lập Báo cáo", orangeColor);
+        btnBaoCao.setPreferredSize(new Dimension(140, 35));
+        btnBaoCao.setMaximumSize(new Dimension(140, 35));
         btnXem = taoNutBoGoc("Làm mới", orangeColor);
 
         pnTop.add(lblTim);
@@ -232,7 +235,6 @@ public class QuanLyThongKe extends JPanel implements ActionListener, LoadData {
             }
         };
         btn.setContentAreaFilled(false);
-        btn.setBorderPainted(false);
         btn.setFocusPainted(false);
         btn.setOpaque(false);
         btn.setBackground(bgColor);

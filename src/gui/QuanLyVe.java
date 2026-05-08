@@ -275,6 +275,7 @@ public class QuanLyVe extends JPanel implements LoadData, ResetForm {
         return btn;
     }
 
+
     @Override
     public void loadData() {
         if (ticketManager != null) {

@@ -611,6 +611,7 @@ public class QuanLyBanVe extends JPanel implements LoadData, ResetForm {
         this.cbGioiTinh.setSelectedItem(khachHang.getGioiTinh());
     }
 
+
     private boolean isGheDaDat(Ghe ghe, ArrayList<Ve> ticketList) {
         for (Ve ve : ticketList) {
             if (ve.getGhe().getMaGhe().equalsIgnoreCase(ghe.getMaGhe())) {
